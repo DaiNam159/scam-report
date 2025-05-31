@@ -15,6 +15,6 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: any) {
-    return this.authService.register(body.email, body.password);
+    return this.authService.register(body.email, body.password, body.isAdmin);
   }
 }

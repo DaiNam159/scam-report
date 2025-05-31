@@ -25,19 +25,27 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
-  async register(email: string, password: string) {
-    const existingUser = await this.userService.findByEmail(email);
-    if (existingUser) {
-      throw new BadRequestException('Email already registered');
-    }
+
+  async register(email: string, password: string, isAdmin = false) {
+    const existing = await this.userService.findByEmail(email);
+    if (existing) throw new BadRequestException('Email already used');
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await this.userService.create({ email, password: hashed });
+    const user = await this.userService.create({
+      email,
+      password: hashed,
+      isAdmin,
+    });
+
     return { message: 'User created', userId: user.id };
   }
 }
