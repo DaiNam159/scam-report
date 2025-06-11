@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ShieldAlert, Sparkles, Info } from "lucide-react";
 import Link from "next/link";
+import { AuthService } from "@/services/AuthService";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,27 +20,16 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/auth/login", {
-        email: form.email,
-        password: form.password,
-      });
+      await AuthService.login(form.email, form.password);
+      const profile = await AuthService.getProfile(); // lấy thông tin người dùng
 
-      const token = res.data.access_token;
-      localStorage.setItem("token", token);
-
-      // Giải mã token để biết có phải admin hay không
-      const payloadBase64 = token.split(".")[1];
-      const payload = JSON.parse(atob(payloadBase64));
-      const isAdmin = payload.isAdmin;
-
-      // Điều hướng dựa vào vai trò
-      if (isAdmin) {
+      if (profile.isAdmin) {
         router.push("/admin");
       } else {
         router.push("/");
       }
-    } catch (error) {
-      alert("Sai email hoặc mật khẩu");
+    } catch (err: any) {
+      alert(err.message || "Sai email hoặc mật khẩu");
     } finally {
       setLoading(false);
     }

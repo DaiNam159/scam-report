@@ -1,6 +1,7 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function AdminLayout({
   children,
@@ -9,22 +10,29 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
+  const [loading, setLoading] = useState(true);
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (!payload.isAdmin) {
-      router.push("/user/homepage");
-    }
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/auth/me", {
+        withCredentials: true, // Gửi cookie
+      })
+      .then((res) => {
+        const user = res.data;
+        if (!user.isAdmin) {
+          router.push("/");
+        } else {
+          setLoading(false); // Cho phép render
+        }
+      })
+      .catch(() => {
+        router.push("/login");
+      });
   }, []);
 
   return (
     <div className="p-5">
-      <h2 className="text-xl font-bold mb-4">Admin Dashboard</h2>
+      <h2 className="mb-4 text-xl font-bold">Admin Dashboard</h2>
       {children}
     </div>
   );

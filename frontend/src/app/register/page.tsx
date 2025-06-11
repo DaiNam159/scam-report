@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { ShieldAlert, Sparkles, Info } from "lucide-react";
 import Link from "next/link";
-
+import { AuthService } from "@/services/AuthService";
+import { useRouter } from "next/navigation";
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -17,13 +19,23 @@ export default function RegisterPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.password !== form.confirm) {
+      alert("Mật khẩu không khớp");
+      return;
+    }
     setLoading(true);
-    // Xử lý đăng ký ở đây
-    setTimeout(() => setLoading(false), 1200);
+    try {
+      await AuthService.register(form.email, form.password);
+      alert("Đăng ký thành công, vui lòng đăng nhập");
+      router.push("/login");
+    } catch (err: any) {
+      alert(err.message || "Đăng ký thất bại");
+    } finally {
+      setLoading(false);
+    }
   };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-gradient-to-br from-[#fff8e1] via-[#fbe9e7] to-[#e3f2fd]">
       <div className="relative flex flex-col items-center w-full max-w-md p-8 mx-auto overflow-hidden bg-white border border-gray-100 shadow-2xl rounded-3xl">

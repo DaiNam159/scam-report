@@ -178,7 +178,7 @@ const UserHome = () => (
     <section className="relative py-20 px-2 text-center overflow-hidden flex flex-col items-center justify-center min-h-[60vh]">
       <div className="absolute inset-0 pointer-events-none select-none opacity-10 bg-[url('/pattern.svg')] bg-repeat" />
       <motion.div
-        className="max-w-4xl mx-auto relative z-10"
+        className="relative z-10 max-w-4xl mx-auto"
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, type: "spring" }}
@@ -192,7 +192,7 @@ const UserHome = () => (
           Cảnh Báo & Tra Cứu Lừa Đảo Trực Tuyến
         </motion.h1>
         <motion.p
-          className="text-xl md:text-2xl text-gray-700 mb-8"
+          className="mb-8 text-xl text-gray-700 md:text-2xl"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7 }}
@@ -218,12 +218,12 @@ const UserHome = () => (
     </section>
 
     {/* Stats Section */}
-    <section className="max-w-6xl mx-auto py-10 px-2">
+    <section className="max-w-6xl px-2 py-10 mx-auto">
       <div className="flex flex-wrap justify-center gap-10">
         {stats.map((h, i) => (
           <motion.div
             key={i}
-            className="flex flex-col items-center bg-white border border-gray-100 rounded-2xl shadow-lg p-8 w-60 hover:shadow-2xl transition"
+            className="flex flex-col items-center p-8 transition bg-white border border-gray-100 shadow-lg rounded-2xl w-60 hover:shadow-2xl"
             custom={i}
             initial="hidden"
             whileInView="visible"
@@ -231,21 +231,21 @@ const UserHome = () => (
             variants={fadeInUp}
           >
             <motion.div {...pulse}>{h.icon}</motion.div>
-            <div className="text-3xl font-extrabold text-black mt-3">
+            <div className="mt-3 text-3xl font-extrabold text-black">
               {h.value}
             </div>
-            <div className="text-gray-600 text-base">{h.label}</div>
+            <div className="text-base text-gray-600">{h.label}</div>
           </motion.div>
         ))}
       </div>
     </section>
 
     {/* Main Features Section */}
-    <section className="max-w-7xl mx-auto py-20 px-2">
-      <h2 className="text-3xl font-extrabold text-center mb-14 text-black tracking-tight">
+    <section className="px-2 py-20 mx-auto max-w-7xl">
+      <h2 className="text-3xl font-extrabold tracking-tight text-center text-black mb-14">
         Tính năng nổi bật
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
+      <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-4">
         {mainFeatures.map((f, i) => (
           <motion.div
             key={i}
@@ -270,7 +270,7 @@ const UserHome = () => (
             <h3 className="font-bold text-xl text-[#e53935] mt-4 mb-2 group-hover:underline">
               {f.title}
             </h3>
-            <p className="text-gray-700 text-base mb-6">{f.desc}</p>
+            <p className="mb-6 text-base text-gray-700">{f.desc}</p>
             <Link
               href={f.link}
               className="text-[#e53935] font-semibold hover:underline"
@@ -296,15 +296,15 @@ const UserHome = () => (
     </section>
 
     {/* Why Us Section */}
-    <section className="bg-gray-50 py-20 px-2">
-      <h2 className="text-3xl font-extrabold text-center mb-14 text-black tracking-tight">
+    <section className="px-2 py-20 bg-gray-50">
+      <h2 className="text-3xl font-extrabold tracking-tight text-center text-black mb-14">
         Vì sao chọn chúng tôi?
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 gap-12 mx-auto sm:grid-cols-2 md:grid-cols-4 max-w-7xl">
         {whyUs.map((item, i) => (
           <motion.div
             key={i}
-            className="flex flex-col items-center bg-white rounded-3xl shadow-lg p-10 hover:shadow-2xl transition"
+            className="flex flex-col items-center p-10 transition bg-white shadow-lg rounded-3xl hover:shadow-2xl"
             custom={i}
             initial="hidden"
             whileInView="visible"
@@ -321,7 +321,7 @@ const UserHome = () => (
             <div className="font-bold text-lg mt-4 mb-2 text-[#e53935]">
               {item.title}
             </div>
-            <div className="text-gray-700 text-center text-base">
+            <div className="text-base text-center text-gray-700">
               {item.desc}
             </div>
           </motion.div>
@@ -330,44 +330,44 @@ const UserHome = () => (
     </section>
 
     {/* Đối tác & Bảo trợ */}
-    <section className="py-16 px-2 bg-white">
-      <h2 className="text-2xl font-bold text-center mb-10 text-black tracking-tight">
+    <section className="px-2 py-16 bg-white">
+      <h2 className="mb-10 text-2xl font-bold tracking-tight text-center text-black">
         Đối tác & Bảo trợ
       </h2>
-      <div className="flex flex-wrap justify-center items-center gap-10 max-w-5xl mx-auto">
+      <div className="flex flex-wrap items-center justify-center max-w-5xl gap-10 mx-auto">
         {partners.map((p, i) => (
           <div key={i} className="flex flex-col items-center">
             <img
               src={p.logo}
               alt={p.name}
-              className="w-28 h-20 object-contain grayscale hover:grayscale-0 transition"
+              className="object-contain h-20 transition w-28 grayscale hover:grayscale-0"
             />
-            <span className="mt-2 text-gray-700 text-sm">{p.name}</span>
+            <span className="mt-2 text-sm text-gray-700">{p.name}</span>
           </div>
         ))}
       </div>
     </section>
 
     {/* Tin tức & cảnh báo mới nhất */}
-    <section className="py-20 px-2 bg-white">
-      <h2 className="text-2xl font-bold text-center mb-12 text-black tracking-tight">
+    <section className="px-2 py-20 bg-white">
+      <h2 className="mb-12 text-2xl font-bold tracking-tight text-center text-black">
         Tin tức & Cảnh báo mới nhất
       </h2>
-      <div className="flex flex-wrap justify-center gap-10 max-w-5xl mx-auto">
+      <div className="flex flex-wrap justify-center max-w-5xl gap-10 mx-auto">
         {news.map((item, i) => (
           <motion.div
             key={i}
-            className="bg-gray-50 rounded-3xl shadow p-8 w-96 flex flex-col items-start border border-gray-100 hover:shadow-xl transition"
+            className="flex flex-col items-start p-8 transition border border-gray-100 shadow bg-gray-50 rounded-3xl w-96 hover:shadow-xl"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.12, duration: 0.7, type: "spring" }}
           >
-            <div className="text-xs text-gray-500 mb-2">{item.date}</div>
+            <div className="mb-2 text-xs text-gray-500">{item.date}</div>
             <div className="font-bold text-lg text-[#e53935] mb-2">
               {item.title}
             </div>
-            <div className="text-gray-700 mb-4">{item.desc}</div>
+            <div className="mb-4 text-gray-700">{item.desc}</div>
             <Link
               href={item.link}
               className="text-[#e53935] font-semibold hover:underline mt-auto"
@@ -380,15 +380,15 @@ const UserHome = () => (
     </section>
 
     {/* Phản hồi người dùng */}
-    <section className="py-20 px-2 bg-gray-50">
-      <h2 className="text-2xl font-bold text-center mb-12 text-black tracking-tight">
+    <section className="px-2 py-20 bg-gray-50">
+      <h2 className="mb-12 text-2xl font-bold tracking-tight text-center text-black">
         Người dùng nói gì về chúng tôi?
       </h2>
-      <div className="flex flex-wrap justify-center gap-10 max-w-5xl mx-auto">
+      <div className="flex flex-wrap justify-center max-w-5xl gap-10 mx-auto">
         {feedbacks.map((fb, i) => (
           <motion.div
             key={i}
-            className="bg-white rounded-3xl shadow-lg p-8 w-96 flex flex-col items-center border border-gray-100 hover:shadow-2xl transition"
+            className="flex flex-col items-center p-8 transition bg-white border border-gray-100 shadow-lg rounded-3xl w-96 hover:shadow-2xl"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -397,9 +397,9 @@ const UserHome = () => (
             <img
               src={fb.avatar}
               alt={fb.name}
-              className="w-16 h-16 rounded-full mb-4 object-cover border-2 border-red-200"
+              className="object-cover w-16 h-16 mb-4 border-2 border-red-200 rounded-full"
             />
-            <div className="italic text-gray-700 mb-4 text-center">
+            <div className="mb-4 italic text-center text-gray-700">
               "{fb.content}"
             </div>
             <div className="font-semibold text-[#e53935]">{fb.name}</div>
@@ -409,15 +409,15 @@ const UserHome = () => (
     </section>
 
     {/* Hỏi đáp nhanh */}
-    <section className="py-20 px-2 bg-white">
-      <h2 className="text-2xl font-bold text-center mb-12 text-black tracking-tight">
+    <section className="px-2 py-20 bg-white">
+      <h2 className="mb-12 text-2xl font-bold tracking-tight text-center text-black">
         Câu hỏi thường gặp
       </h2>
-      <div className="flex flex-wrap justify-center gap-10 max-w-5xl mx-auto">
+      <div className="flex flex-wrap justify-center max-w-5xl gap-10 mx-auto">
         {faq.map((item, i) => (
           <motion.div
             key={i}
-            className="bg-gray-50 rounded-3xl shadow p-8 w-96 flex flex-col border border-gray-100 hover:shadow-xl transition"
+            className="flex flex-col p-8 transition border border-gray-100 shadow bg-gray-50 rounded-3xl w-96 hover:shadow-xl"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -431,7 +431,7 @@ const UserHome = () => (
     </section>
 
     {/* Contact Section */}
-    <section className="bg-gradient-to-r from-red-100 to-white py-16 px-2 text-center">
+    <section className="px-2 py-16 text-center bg-gradient-to-r from-red-100 to-white">
       <motion.div
         className="max-w-2xl mx-auto"
         initial={{ opacity: 0, y: 40 }}
@@ -442,7 +442,7 @@ const UserHome = () => (
         <h2 className="text-2xl font-bold mb-3 text-[#e53935]">
           Bạn cần hỗ trợ?
         </h2>
-        <p className="text-gray-700 mb-6 text-lg">
+        <p className="mb-6 text-lg text-gray-700">
           Đội ngũ của chúng tôi luôn sẵn sàng lắng nghe, hỗ trợ và đồng hành
           cùng bạn trong công cuộc phòng chống lừa đảo trực tuyến.
         </p>
