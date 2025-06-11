@@ -1,53 +1,35 @@
 "use client";
-import ReportForm from "@/components/user/report/ReportForm";
-import type { ReportType } from "@/types/ReportType";
-import { useState } from "react";
 
-const REPORT_TYPES: ReportType[] = [
-  "email_content",
-  "email_address",
-  "sms",
-  "phone_number",
-  "person",
-  "website",
-  "social_profile",
-];
+import ReportSide from "@/components/user/report/ReportSide";
+import MiddleSide from "@/components/user/report/MiddleSide";
+import LeftSide from "@/components/user/report/LeftSide";
 
-export default function UserHomePage() {
-  const [typeReport, setTypeReport] = useState<ReportType>("email_content");
-
-  const handleTypeChange = (type: ReportType) => {
-    setTypeReport(type);
-  };
+export default function ReportPage() {
+  const FAQS = [
+    {
+      a: "Để báo cáo lừa đảo, bạn cần cung cấp thông tin chi tiết về hành vi lừa đảo, kèm theo bằng chứng nếu có.",
+      q: "Cần cung cấp những thông tin gì khi báo cáo?",
+    },
+    {
+      a: "Bạn có thể báo cáo qua trang web này hoặc gửi email đến địa chỉ hỗ trợ.",
+      q: "Tôi có thể báo cáo lừa đảo ở đâu?",
+    },
+    {
+      a: "Chúng tôi sẽ xem xét và xử lý báo cáo của bạn trong thời gian sớm nhất. Bạn sẽ nhận được thông báo khi có kết quả.",
+      q: "Bao lâu thì tôi nhận được phản hồi sau khi báo cáo?",
+    },
+    {
+      a: "Bạn có thể liên hệ với chúng tôi qua email hoặc số điện thoại trên trang Liên hệ.",
+      q: "Tôi cần hỗ trợ thêm, làm thế nào để liên hệ?",
+    },
+  ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-gray-100">
-      <div className="flex flex-col items-center w-full max-w-2xl p-8 bg-white border border-gray-100 shadow-lg rounded-3xl">
-        <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 text-[#e53935] tracking-tight drop-shadow">
-          Báo cáo hành vi lừa đảo
-        </h1>
-        <p className="mb-8 text-lg text-center text-gray-700">
-          Vui lòng chọn loại báo cáo bạn muốn gửi:
-        </p>
-        <div className="w-full max-w-xs mb-10">
-          <label className="block mb-2 text-base font-semibold text-left text-gray-700">
-            Loại báo cáo
-          </label>
-          <select
-            value={typeReport}
-            onChange={(e) => handleTypeChange(e.target.value as ReportType)}
-            className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black text-lg shadow"
-          >
-            {REPORT_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type.replace(/_/g, " ").toUpperCase()}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="w-full">
-          <ReportForm type={typeReport} />
-        </div>
+    <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-gradient-to-br from-[#fff8e1] via-[#fbe9e7] to-[#e3f2fd]">
+      <div className="flex flex-col items-start w-full gap-8 max-w-7xl xl:gap-12 md:flex-row">
+        <ReportSide />
+        <MiddleSide></MiddleSide>
+        <LeftSide FAQS={FAQS}></LeftSide>
       </div>
     </div>
   );

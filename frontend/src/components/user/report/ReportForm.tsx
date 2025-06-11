@@ -14,7 +14,7 @@ const typeConfig: Record<
   }
 > = {
   email_content: {
-    titleLabel: "Tiêu đề email",
+    titleLabel: "Nội dung email",
     targetLabel: "Email gửi đến / gửi đi",
     targetPlaceholder: "ví dụ: example@gmail.com",
     targetType: "email",
@@ -22,7 +22,7 @@ const typeConfig: Record<
     evidenceLabel: "Link bằng chứng (ảnh, video...)",
   },
   email_address: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Địa chỉ email",
     targetLabel: "Địa chỉ email nghi ngờ",
     targetPlaceholder: "ví dụ: scammer@example.com",
     targetType: "email",
@@ -30,7 +30,7 @@ const typeConfig: Record<
     evidenceLabel: "Link bằng chứng (ảnh, video...)",
   },
   sms: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Tin nhắn SMS",
     targetLabel: "Số điện thoại gửi tin nhắn",
     targetPlaceholder: "ví dụ: 0912345678",
     targetType: "tel",
@@ -38,7 +38,7 @@ const typeConfig: Record<
     evidenceLabel: "Ảnh chụp tin nhắn / video",
   },
   phone_number: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Số điện thoại",
     targetLabel: "Số điện thoại nghi ngờ",
     targetPlaceholder: "ví dụ: 0987654321",
     targetType: "tel",
@@ -46,7 +46,7 @@ const typeConfig: Record<
     evidenceLabel: "Bằng chứng (ghi âm, ảnh...)",
   },
   person: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Tên người / tổ chức",
     targetLabel: "Tên người / tổ chức bị tố cáo",
     targetPlaceholder: "ví dụ: Nguyễn Văn A",
     targetType: "text",
@@ -54,7 +54,7 @@ const typeConfig: Record<
     evidenceLabel: "Bằng chứng liên quan",
   },
   website: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Địa chỉ trang web",
     targetLabel: "Địa chỉ trang web",
     targetPlaceholder: "ví dụ: http://example.com",
     targetType: "url",
@@ -62,7 +62,7 @@ const typeConfig: Record<
     evidenceLabel: "Ảnh / video ghi lại",
   },
   social_profile: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Trang mạng xã hội",
     targetLabel: "Link trang cá nhân",
     targetPlaceholder: "ví dụ: https://facebook.com/abc123",
     targetType: "url",
@@ -70,7 +70,7 @@ const typeConfig: Record<
     evidenceLabel: "Ảnh chụp đoạn chat / bằng chứng khác",
   },
   bank_account: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Số tài khoản ngân hàng",
     targetLabel: "Số tài khoản ngân hàng",
     targetPlaceholder: "ví dụ: 123456789",
     targetType: "text",
@@ -78,7 +78,7 @@ const typeConfig: Record<
     evidenceLabel: "Bằng chứng chuyển khoản, ảnh, video...",
   },
   e_wallet: {
-    titleLabel: "Tiêu đề",
+    titleLabel: "Ví điện tử",
     targetLabel: "Ví điện tử/SĐT ví",
     targetPlaceholder: "ví dụ: ZaloPay: 0987654321",
     targetType: "text",
@@ -115,14 +115,12 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
       onSubmit={handleSubmit}
       className="max-w-2xl p-8 mx-auto space-y-6 bg-white border border-gray-100 shadow-lg rounded-3xl"
     >
-      <h2 className="text-3xl font-extrabold text-center mb-6 text-[#e53935] tracking-tight drop-shadow">
+      <h2 className="text-3xl font-bold text-center mb-6 text-[#e53935] tracking-tight drop-shadow">
         Báo cáo: <span className="text-black">{config.titleLabel}</span>
       </h2>
 
       <div>
-        <label className="block mb-1 font-semibold text-gray-700">
-          Tiêu đề
-        </label>
+        <label className="block mb-1 font-bold text-gray-700">Tiêu đề</label>
         <input
           type="text"
           name="title"

@@ -4,32 +4,70 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 
 interface LookupFormProps {
-  onSearch: (query: string) => void;
+  onSearch: (query: string, checkContent?: boolean) => void;
 }
 
 const LookupForm = ({ onSearch }: LookupFormProps) => {
   const [query, setQuery] = useState("");
+  const [mode, setMode] = useState<"info" | "content">("info");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) onSearch(query.trim());
+    if (query.trim()) onSearch(query.trim(), mode === "content");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-full">
-      <label className="font-semibold text-gray-700 mb-1 text-base">
+    <form onSubmit={handleSubmit} className="flex flex-col w-full gap-2">
+      <label className="mb-1 text-base font-semibold text-gray-700">
         Nhập thông tin cần tra cứu
       </label>
-      <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+      <div className="flex gap-6 mb-2">
+        <label className="flex items-center gap-2 text-sm text-gray-700 select-none">
           <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Số điện thoại, email, website, STK ngân hàng..."
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black text-lg shadow"
+            type="radio"
+            name="lookupMode"
+            value="info"
+            checked={mode === "info"}
+            onChange={() => setMode("info")}
+            className="w-4 h-4"
           />
+          Tra cứu thông tin (số điện thoại, email, website, STK...)
+        </label>
+        <label className="flex items-center gap-2 text-sm text-gray-700 select-none">
+          <input
+            type="radio"
+            name="lookupMode"
+            value="content"
+            checked={mode === "content"}
+            onChange={() => setMode("content")}
+            className="w-4 h-4"
+          />
+          Kiểm tra nội dung email hoặc tin nhắn SMS
+        </label>
+      </div>
+      <div className="flex flex-col items-center w-full gap-3 sm:flex-row">
+        <div className="relative flex-1 w-full">
+          {mode === "info" && (
+            <>
+              <Search className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Số điện thoại, email, website, STK ngân hàng..."
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black text-lg shadow"
+              />
+            </>
+          )}
+          {mode === "content" && (
+            <textarea
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Nhập nội dung email hoặc tin nhắn SMS cần kiểm tra..."
+              rows={5}
+              className="w-full pl-4 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black text-lg shadow resize-y"
+            />
+          )}
         </div>
         <button
           type="submit"

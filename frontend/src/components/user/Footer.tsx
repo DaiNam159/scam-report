@@ -1,21 +1,21 @@
 import Link from "next/link";
 
 const UserFooter = () => (
-  <footer className="bg-gradient-to-r from-[#fff8f6] to-[#fffde7] border-t border-gray-100 mt-20 pt-12 pb-6 px-4 text-gray-700">
-    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+  <footer className="bg-gradient-to-r from-[#fff8f6] to-[#fffde7] border-t border-gray-100  pt-12 pb-6 px-4 text-gray-700">
+    <div className="grid grid-cols-1 gap-10 mx-auto max-w-7xl md:grid-cols-4">
       {/* Logo & Slogan */}
       <div className="flex flex-col items-start gap-3">
         <div className="flex items-center gap-3">
           <img
             src="/logo.webp"
             alt="Logo"
-            className="w-14 h-14 rounded-full shadow"
+            className="rounded-full shadow w-14 h-14"
           />
           <span className="font-extrabold text-2xl text-[#e53935]">
             Scam Report
           </span>
         </div>
-        <span className="text-base text-gray-600 mt-2 font-medium">
+        <span className="mt-2 text-base font-medium text-gray-600">
           Báo cáo & Cảnh báo lừa đảo trực tuyến
           <br />
           Vì một cộng đồng mạng an toàn!
@@ -50,7 +50,7 @@ const UserFooter = () => (
       {/* Contact */}
       <div>
         <div className="font-semibold text-[#e53935] mb-3 text-lg">Liên hệ</div>
-        <div className="text-base mb-1">
+        <div className="mb-1 text-base">
           Email:{" "}
           <a
             href="mailto:support@scamreport.vn"
@@ -59,10 +59,10 @@ const UserFooter = () => (
             support@scamreport.vn
           </a>
         </div>
-        <div className="text-base mb-1">
+        <div className="mb-1 text-base">
           Địa chỉ: 123 Đường An Toàn, Quận 1, TP.HCM
         </div>
-        <div className="text-base mb-1">
+        <div className="mb-1 text-base">
           Hotline:{" "}
           <a href="tel:19001234" className="text-[#e53935] hover:underline">
             1900 1234
@@ -78,7 +78,7 @@ const UserFooter = () => (
             <img
               src="/facebook-brands.svg"
               alt="Facebook"
-              className="w-7 h-7 opacity-80 hover:opacity-100 transition"
+              className="transition w-7 h-7 opacity-80 hover:opacity-100"
             />
           </a>
           <a
@@ -90,7 +90,7 @@ const UserFooter = () => (
             <img
               src="/zalo-seeklogo.svg"
               alt="Zalo"
-              className="w-7 h-7 opacity-80 hover:opacity-100 transition"
+              className="transition w-7 h-7 opacity-80 hover:opacity-100"
             />
           </a>
         </div>
@@ -114,7 +114,7 @@ const UserFooter = () => (
         </div>
       </div>
     </div>
-    <div className="max-w-7xl mx-auto mt-10 text-center text-xs text-gray-400 border-t border-gray-100 pt-4">
+    <div className="pt-4 mx-auto mt-10 text-xs text-center text-gray-400 border-t border-gray-100 max-w-7xl">
       Một sản phẩm vì cộng đồng | Thiết kế hiện đại, bảo mật & thân thiện người
       dùng.
     </div>
