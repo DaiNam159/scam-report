@@ -28,8 +28,8 @@ export default function ReportPage() {
     <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-gradient-to-br from-[#fff8e1] via-[#fbe9e7] to-[#e3f2fd]">
       <div className="flex flex-col items-start w-full gap-8 max-w-7xl xl:gap-12 md:flex-row">
         <ReportSide />
-        <MiddleSide></MiddleSide>
-        <LeftSide FAQS={FAQS}></LeftSide>
+        <MiddleSide />
+        <LeftSide FAQS={FAQS} />
       </div>
     </div>
   );

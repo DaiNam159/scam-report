@@ -38,7 +38,6 @@ export class AuthController {
     return this.authService.register(body.email, body.password, body.isAdmin);
   }
 
-  // 👇 Route chỉ admin mới truy cập
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('admin-only')
   @Roles('admin') // nếu dùng role = 'admin'
@@ -48,7 +47,6 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   getProfile(@Req() req) {
-    console.log('User payload:', req.user);
     return req.user;
   }
   @Post('logout')

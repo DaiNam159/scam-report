@@ -1,15 +1,4 @@
-import axios from "axios";
-
-const API_BASE = "http://localhost:5000"; // Thay bằng URL backend của bạn
-
-// Tạo một instance mặc định
-const api = axios.create({
-  baseURL: API_BASE,
-  withCredentials: true, // GỬI COOKIE TỰ ĐỘNG
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import api from "@/lib/axiosInstance";
 
 export const AuthService = {
   async login(email: string, password: string) {
@@ -47,7 +36,7 @@ export const AuthService = {
       const res = await api.post("/auth/logout");
       return res.data;
     } catch (error: any) {
-      console.error("❌ Logout failed:", error);
+      console.error("Logout failed:", error);
       throw new Error("Logout failed");
     }
   },
