@@ -14,7 +14,4 @@ export class ReportWebsite {
 
   @Column({ type: 'text' })
   url: string;
-
-  @Column({ type: 'text', nullable: true })
-  screenshot_url: string;
 }

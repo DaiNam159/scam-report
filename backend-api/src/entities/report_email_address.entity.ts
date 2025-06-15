@@ -14,7 +14,4 @@ export class ReportEmailAddress {
 
   @Column({ type: 'varchar', length: 255 })
   email_address: string;
-
-  @Column({ type: 'text', nullable: true })
-  reason: string; // lý do nghi ngờ
 }

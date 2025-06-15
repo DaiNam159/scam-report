@@ -30,7 +30,4 @@ export class ReportPersonOrg {
   email_address: string; // Email liên hệ
   @Column({ type: 'text', nullable: true })
   social_links: string;
-
-  @Column({ type: 'text', nullable: true })
-  evidence: string; // Bằng chứng liên quan (có thể là mô tả hoặc đường dẫn đến file đính kèm)
 }

@@ -4,8 +4,4 @@ export class EmailAddressDto {
   @IsOptional()
   @IsString()
   emailAddress?: string;
-
-  @IsOptional()
-  @IsString()
-  reason?: string;
 }

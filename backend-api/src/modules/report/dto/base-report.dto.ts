@@ -24,13 +24,17 @@ export class BaseReportDto {
 
   @IsOptional()
   @IsString()
-  userIp?: string;
+  evidence?: string;
 
   @IsOptional()
-  @IsInt()
-  userId?: number;
+  @IsString()
+  userIp?: string;
 
   @IsOptional()
   @IsEnum(['pending', 'approved', 'rejected'])
   status: string = 'pending';
+
+  @IsOptional()
+  @IsString()
+  contact: string;
 }

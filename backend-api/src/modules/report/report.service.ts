@@ -48,15 +48,17 @@ export class ReportService {
 
     // inject các bảng khác tương tự
   ) {}
-  async createReport(dto: CreateReportDto, ip: string) {
+  async createReport(dto: CreateReportDto, ip: string, userId: number) {
     // 1. Lưu vào bảng chính
     const report = this.reportRepo.create({
       report_type: dto.reportType as ReportType,
       title: dto.title,
       description: dto.description,
+      evidence: dto.evidence,
       user_ip: ip,
-      ...(dto.userId ? { user: { id: dto.userId } } : {}),
+      ...(userId ? { user: { id: userId } } : {}),
       status: (dto.status as ReportStatus) || ReportStatus.PENDING,
+      contact: dto.contact,
     } as Partial<Report>);
 
     const saved = await this.reportRepo.save(report);
@@ -68,7 +70,6 @@ export class ReportService {
         data: {
           report_id: saved.id,
           email_address: dto.emailAddress,
-          reason: dto.reason,
         },
       }),
       person_org: (dto) => ({
@@ -79,7 +80,6 @@ export class ReportService {
           role: dto.role,
           identification: dto.identification,
           address: dto.address,
-          evidence: dto.evidence,
           socialLinks: dto.socialLinks,
         },
       }),
@@ -99,7 +99,6 @@ export class ReportService {
         data: {
           report_id: saved.id,
           phone_number: dto.phoneNumber,
-          reason: dto.reason,
         },
       }),
       sms: (dto) => ({
@@ -115,7 +114,6 @@ export class ReportService {
         data: {
           report_id: saved.id,
           website_url: dto.websiteUrl,
-          screenshot_url: dto.screenshotUrl,
         },
       }),
       social: (dto) => ({
@@ -158,5 +156,36 @@ export class ReportService {
       id: saved.id,
       message: 'Report created successfully',
     };
+  }
+
+  async getReport(reportId: number) {
+    try {
+      const report = await this.reportRepo
+        .createQueryBuilder('report')
+        .select(['report.report_type'])
+        .where('report.id = :id', { id: reportId })
+        .getOne();
+
+      if (!report) {
+        throw new Error('Report not found');
+      }
+
+      const reportData = await this.reportRepo.findOne({
+        where: { id: reportId },
+        relations: [report.report_type, 'user'],
+      });
+      if (reportData && reportData.user) {
+        const { id, email, fullName } = reportData.user;
+        reportData.user = {
+          id,
+          email,
+          fullName,
+        } as any;
+      }
+
+      return reportData;
+    } catch (err) {
+      throw err;
+    }
   }
 }

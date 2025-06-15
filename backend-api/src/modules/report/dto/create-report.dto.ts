@@ -24,7 +24,6 @@ export class CreateReportDto
 {
   // Gộp các trường
   emailAddress?: string;
-  reason?: string;
 
   emailSubject?: string;
   emailBody?: string;
@@ -36,7 +35,6 @@ export class CreateReportDto
   smsContent?: string;
 
   websiteUrl?: string;
-  screenshotUrl?: string;
 
   platform?: string;
   profileUrl?: string;
@@ -54,5 +52,4 @@ export class CreateReportDto
   role?: string;
   identification?: string;
   address?: string;
-  evidence?: string;
 }

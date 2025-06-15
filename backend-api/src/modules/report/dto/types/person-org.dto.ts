@@ -20,8 +20,4 @@ export class PersonOrgDto {
   @IsOptional()
   @IsString()
   socialLinks?: string;
-
-  @IsOptional()
-  @IsString()
-  evidence?: string;
 }

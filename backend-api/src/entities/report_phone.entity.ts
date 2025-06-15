@@ -14,7 +14,4 @@ export class ReportPhone {
 
   @Column({ type: 'varchar', length: 20 })
   phone_number: string;
-
-  @Column({ type: 'text', nullable: true })
-  reason: string;
 }
