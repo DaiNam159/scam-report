@@ -11,8 +11,7 @@ const UserHeader = () => {
     const fetchProfile = async () => {
       try {
         const userProfile = await AuthService.getProfile(); // đúng cách
-        console.log("Profile:", userProfile);
-        setProfile(userProfile); // nếu null thì set null, nếu có thì set user
+        setProfile(userProfile.user); // nếu null thì set null, nếu có thì set user
       } catch (error) {
         console.warn("Không lấy được profile:", error);
         setProfile(null); // fallback nếu lỗi

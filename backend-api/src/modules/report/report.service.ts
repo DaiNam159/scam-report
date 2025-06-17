@@ -176,6 +176,7 @@ export class ReportService {
       });
       if (reportData && reportData.user) {
         const { id, email, fullName } = reportData.user;
+
         reportData.user = {
           id,
           email,

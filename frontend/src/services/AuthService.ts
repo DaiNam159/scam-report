@@ -24,8 +24,7 @@ export const AuthService = {
   async getProfile() {
     try {
       const res = await api.get("/auth/me");
-      console.log("User profile:", res.data);
-      return res.data; // { userId, email, isAdmin, ... }
+      return res.data;
     } catch (error: any) {
       throw new Error("Not authenticated");
     }

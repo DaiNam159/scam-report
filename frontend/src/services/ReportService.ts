@@ -11,4 +11,12 @@ export const ReportService = {
       throw new Error("Không thể gửi báo cáo. Vui lòng thử lại sau.");
     }
   },
+  async getReport() {
+    try {
+      const res = await api.get(reportUrl);
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  },
 };

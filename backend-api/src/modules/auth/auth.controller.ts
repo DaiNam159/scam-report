@@ -15,6 +15,7 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { OptionalJwtAuthGuard } from 'src/common/guards/optional-jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -45,9 +46,16 @@ export class AuthController {
     return req.user;
   }
   @Get('me')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(OptionalJwtAuthGuard)
   getProfile(@Req() req) {
-    return req.user;
+    if (!req.user) {
+      return { isLoggedIn: false };
+    }
+
+    return {
+      isLoggedIn: true,
+      user: req.user,
+    };
   }
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {

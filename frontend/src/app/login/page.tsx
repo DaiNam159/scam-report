@@ -22,9 +22,9 @@ export default function LoginPage() {
     try {
       await AuthService.login(form.email, form.password);
       const profile = await AuthService.getProfile(); // lấy thông tin người dùng
-
-      if (profile.isAdmin) {
-        router.push("/admin");
+      const userProfie = profile.user;
+      if (userProfie.isAdmin) {
+        router.push("/admin/dashboard");
       } else {
         router.push("/");
       }
