@@ -11,12 +11,37 @@ export const ReportService = {
       throw new Error("Không thể gửi báo cáo. Vui lòng thử lại sau.");
     }
   },
-  async getReport() {
+  async getReports(page: number = 1, limit: number = 5) {
     try {
-      const res = await api.get(reportUrl);
+      const res = await api.get(`${reportUrl}?page=${page}&limit=${limit}`);
       return res.data;
     } catch (err) {
       throw err;
+    }
+  },
+  async getReportById(id: number) {
+    try {
+      const res = await api.get(`${reportUrl}/${id}`);
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  async approveReport(id: number) {
+    try {
+      const res = await api.put(`${reportUrl}/approve`, { id });
+      return res;
+    } catch (error) {
+      console.log("hehehahaha: ", error);
+      throw error;
+    }
+  },
+  async rejectReport(id: number) {
+    try {
+      const res = await api.put(`${reportUrl}/reject`, { id });
+      return res;
+    } catch (error) {
+      throw error;
     }
   },
 };

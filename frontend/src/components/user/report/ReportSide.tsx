@@ -20,7 +20,7 @@ export default function ReportSide() {
     "phone",
     "person_org",
     "website",
-    "social_profile",
+    "social",
     "bank_account",
     "e_wallet",
   ];
@@ -32,7 +32,7 @@ export default function ReportSide() {
     phone: <Smartphone className="inline w-5 h-5 mr-2 text-[#fbc02d]" />,
     person_org: <User className="inline w-5 h-5 mr-2 text-[#43a047]" />,
     website: <Globe className="inline w-5 h-5 mr-2 text-[#1e88e5]" />,
-    social_profile: <Users className="inline w-5 h-5 mr-2 text-[#8e24aa]" />,
+    social: <Users className="inline w-5 h-5 mr-2 text-[#8e24aa]" />,
     bank_account: <CreditCard className="inline w-5 h-5 mr-2 text-[#6d4c41]" />,
     e_wallet: <CreditCard className="inline w-5 h-5 mr-2 text-[#6d4c41]" />,
   };
@@ -48,13 +48,13 @@ export default function ReportSide() {
         return "Địa chỉ email lừa đảo";
       case "sms":
         return "Tin nhắn lừa đảo (SMS)";
-      case "phone_number":
+      case "phone":
         return "Số điện thoại lừa đảo";
-      case "person":
+      case "person_org":
         return "Người lừa đảo";
       case "website":
         return "Website lừa đảo";
-      case "social_profile":
+      case "social":
         return "Hồ sơ mạng xã hội lừa đảo";
       case "bank_account":
         return "Tài khoản ngân hàng lừa đảo";

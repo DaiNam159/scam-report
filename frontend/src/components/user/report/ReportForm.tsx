@@ -56,6 +56,21 @@ const typeConfig: Record<
         name: "address",
         type: "text",
         placeholder: "ví dụ: 123 Đường Láng, Hà Nội",
+        required: false,
+      },
+      {
+        label: "Số điện thoại",
+        name: "phoneNumber",
+        type: "tel",
+        placeholder: "ví dụ: 0912345678",
+        required: false,
+      },
+      {
+        label: "Địa chỉ email",
+        name: "emailAddress",
+        type: "email",
+        placeholder: "ví dụ: someone@example.com",
+        required: false,
       },
       {
         label: "Link mạng xã hội",
@@ -139,7 +154,7 @@ const typeConfig: Record<
       },
     ],
   },
-  social_profile: {
+  social: {
     titleLabel: "Trang mạng xã hội",
     fields: [
       {
@@ -161,12 +176,6 @@ const typeConfig: Record<
         name: "username",
         type: "text",
         placeholder: "ví dụ: user123",
-      },
-      {
-        label: "Link mạng xã hội khác",
-        name: "socialLinks",
-        type: "url",
-        placeholder: "ví dụ: https://twitter.com/user123",
       },
     ],
   },
@@ -264,7 +273,8 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await ReportService.submitReport(formData);
+      const finalData = { ...formData, reportType: type };
+      const res = await ReportService.submitReport(finalData);
       setFormData(initialFormState(type));
     } catch (err) {
       console.log("Lỗi khi gửi form: ", err);

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReportEmailAddress } from 'src/entities/report_email_address.entity';
 import { ReportPersonOrg } from 'src/entities/report_person_org.entity';
@@ -75,12 +75,14 @@ export class ReportService {
       person_org: (dto) => ({
         repo: this.personOrgRepo,
         data: {
-          reportId: saved.id,
+          report_id: saved.id,
           name: dto.name,
           role: dto.role,
           identification: dto.identification,
           address: dto.address,
-          socialLinks: dto.socialLinks,
+          phone_number: dto.phoneNumber,
+          email_address: dto.emailAddress,
+          social_links: dto.socialLinks,
         },
       }),
       email_content: (dto) => ({
@@ -113,7 +115,7 @@ export class ReportService {
         repo: this.websiteRepo,
         data: {
           report_id: saved.id,
-          website_url: dto.websiteUrl,
+          url: dto.websiteUrl,
         },
       }),
       social: (dto) => ({
@@ -123,7 +125,6 @@ export class ReportService {
           platform: dto.platform,
           profile_url: dto.profileUrl,
           username: dto.username,
-          social_links: dto.socialLinks,
         },
       }),
       bank_account: (dto) => ({
@@ -158,7 +159,7 @@ export class ReportService {
     };
   }
 
-  async getReport(reportId: number) {
+  async getReportById(reportId: number) {
     try {
       const report = await this.reportRepo
         .createQueryBuilder('report')
@@ -169,7 +170,6 @@ export class ReportService {
       if (!report) {
         throw new Error('Report not found');
       }
-
       const reportData = await this.reportRepo.findOne({
         where: { id: reportId },
         relations: [report.report_type, 'user'],
@@ -187,6 +187,163 @@ export class ReportService {
       return reportData;
     } catch (err) {
       throw err;
+    }
+  }
+  async getReports(page = 1, limit = 5) {
+    try {
+      const [reports, total] = await this.reportRepo.findAndCount({
+        relations: [
+          'user',
+          'email_address',
+          'person_org',
+          'email_content',
+          'phone',
+          'sms',
+          'website',
+          'social',
+          'bank_account',
+          'e_wallet',
+        ],
+        select: {
+          id: true,
+          report_type: true,
+          title: true,
+          description: true,
+          evidence: true,
+          user_ip: true,
+          status: true,
+          contact: true,
+          created_at: true,
+          user: {
+            id: true,
+            fullName: true,
+            email: true,
+          },
+          email_address: {
+            report_id: true,
+            email_address: true,
+          },
+          person_org: {
+            report_id: true,
+            name: true,
+            role: true,
+            identification: true,
+            address: true,
+            phone_number: true,
+            email_address: true,
+            social_links: true,
+          },
+          email_content: {
+            report_id: true,
+            email_subject: true,
+            email_body: true,
+            sender_address: true,
+            attachments: true,
+            suspicious_links: true,
+          },
+          phone: {
+            report_id: true,
+            phone_number: true,
+          },
+          sms: {
+            report_id: true,
+            phone_number: true,
+            sms_content: true,
+          },
+          website: {
+            report_id: true,
+            url: true,
+          },
+          social: {
+            report_id: true,
+            platform: true,
+            profile_url: true,
+            username: true,
+          },
+          bank_account: {
+            report_id: true,
+            bank_name: true,
+            account_number: true,
+            account_holder_name: true,
+          },
+          e_wallet: {
+            report_id: true,
+            wallet_type: true,
+            wallet_id: true,
+            account_holder_name: true,
+          },
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        order: {
+          created_at: 'DESC',
+        },
+      });
+
+      // Filter các loại không khớp với report_type
+      for (const r of reports) {
+        const type = r.report_type;
+        for (const key of [
+          'email_address',
+          'person_org',
+          'email_content',
+          'phone',
+          'sms',
+          'website',
+          'social',
+          'bank_account',
+          'e_wallet',
+        ]) {
+          if (key !== type) delete r[key];
+        }
+      }
+
+      return {
+        data: reports,
+        total,
+        page,
+        pageSize: limit,
+        totalPages: Math.ceil(total / limit),
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async approveReport(reportId: number) {
+    try {
+      const reportData = await this.reportRepo.findOne({
+        where: { id: reportId },
+      });
+      if (!reportData) {
+        throw new NotFoundException('Report not found');
+      }
+      reportData.status = ReportStatus.APPROVED;
+      await this.reportRepo.save(reportData);
+      return {
+        message: `Approved report ${reportData.id}`,
+        reportData,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  async rejectReport(reportId: number) {
+    try {
+      const reportData = await this.reportRepo.findOne({
+        where: { id: reportId },
+      });
+      if (!reportData) {
+        throw new NotFoundException('Report not found');
+      }
+      reportData.status = ReportStatus.REJECTED;
+      await this.reportRepo.save(reportData);
+      return {
+        message: `Approved report ${reportData.id}`,
+        reportData,
+      };
+    } catch (error) {
+      throw error;
     }
   }
 }

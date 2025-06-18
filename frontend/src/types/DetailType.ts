@@ -1,7 +1,7 @@
 import { ReportType } from "./ReportType";
 
 export interface DetailItem {
-  id: string;
+  id: number;
   value: string;
   type: ReportType;
   reportCount: number;
@@ -11,7 +11,7 @@ export interface DetailItem {
 }
 
 export interface Report {
-  id: string;
+  id: number;
   reporter: string; // hoặc ẩn danh
   message: string;
   date: string;

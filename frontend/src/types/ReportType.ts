@@ -13,3 +13,8 @@ export type ReportType =
 export interface ReportFormProps {
   type: ReportType;
 }
+export enum ReportStatus {
+  APPROVED = "approved",
+  PENDING = "pending",
+  REJECTED = "rejected",
+}

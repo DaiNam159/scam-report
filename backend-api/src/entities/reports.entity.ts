@@ -39,7 +39,7 @@ export enum ReportStatus {
 
 @Entity('reports')
 export class Report {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryGeneratedColumn('increment', { type: 'int' })
   id: number;
 
   @Column({
