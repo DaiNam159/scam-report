@@ -55,7 +55,7 @@ const typeConfig: Record<
         label: "Địa chỉ",
         name: "address",
         type: "text",
-        placeholder: "ví dụ: 123 Đường Láng, Hà Nội",
+        placeholder: "ví dụ: 331 QL1A, Phường An Phú Đông, Quận 12, TP.HCM",
         required: false,
       },
       {
@@ -69,14 +69,14 @@ const typeConfig: Record<
         label: "Địa chỉ email",
         name: "emailAddress",
         type: "email",
-        placeholder: "ví dụ: someone@example.com",
+        placeholder: "ví dụ: scam@example.com",
         required: false,
       },
       {
         label: "Link mạng xã hội",
         name: "socialLinks",
         type: "url",
-        placeholder: "ví dụ: https://facebook.com/abc123",
+        placeholder: "ví dụ: https://facebook.com/scam123",
       },
     ],
   },
@@ -91,17 +91,24 @@ const typeConfig: Record<
         required: true,
       },
       {
+        label: "Nội dung email",
+        name: "emailBody",
+        type: "text",
+        placeholder: "Nhập nội dung email",
+        required: true,
+      },
+      {
         label: "Địa chỉ người gửi",
         name: "senderAddress",
         type: "email",
-        placeholder: "ví dụ: sender@example.com",
+        placeholder: "ví dụ: scam@example.com",
         required: true,
       },
       {
         label: "Link đáng ngờ",
         name: "suspiciousLinks",
         type: "url",
-        placeholder: "ví dụ: http://suspicious.com",
+        placeholder: "ví dụ: http://scam.com",
       },
       {
         label: "Tệp đính kèm",
@@ -149,7 +156,7 @@ const typeConfig: Record<
         label: "Địa chỉ trang web",
         name: "websiteUrl",
         type: "url",
-        placeholder: "ví dụ: http://example.com",
+        placeholder: "ví dụ: http://scam.com",
         required: true,
       },
     ],
@@ -168,14 +175,14 @@ const typeConfig: Record<
         label: "Link trang cá nhân",
         name: "profileUrl",
         type: "url",
-        placeholder: "ví dụ: https://facebook.com/abc123",
+        placeholder: "ví dụ: https://facebook.com/scam123",
         required: true,
       },
       {
         label: "Tên người dùng",
         name: "username",
         type: "text",
-        placeholder: "ví dụ: user123",
+        placeholder: "ví dụ: scam123",
       },
     ],
   },
@@ -285,19 +292,19 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl p-8 mx-auto space-y-6 bg-white border border-gray-100 shadow-lg rounded-3xl"
+      className="max-w-2xl p-6 mx-auto space-y-4 bg-white border border-gray-100 shadow-lg rounded-3xl"
     >
-      <h2 className="text-3xl font-bold text-center mb-6 text-[#e53935] tracking-tight drop-shadow">
+      <h2 className="text-2xl font-bold text-center mb-4 text-[#e53935] tracking-tight drop-shadow">
         Báo cáo: <span className="text-black">{config.titleLabel}</span>
       </h2>
 
       {/* Basic Report Information */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700">
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold text-gray-700">
           Thông tin cơ bản
         </h3>
         <div>
-          <label className="block mb-1 font-semibold text-gray-700">
+          <label className="block mb-1 text-sm font-medium text-gray-700">
             Tiêu đề
           </label>
           <input
@@ -305,26 +312,26 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
             placeholder="Nhập tiêu đề ngắn gọn"
           />
         </div>
         <div>
-          <label className="block mb-1 font-semibold text-gray-700">
+          <label className="block mb-1 text-sm font-medium text-gray-700">
             Mô tả chi tiết
           </label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
+            rows={3}
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
             placeholder="Mô tả chi tiết vụ việc, diễn biến, số tiền, thời gian, v.v..."
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-semibold text-gray-700">
+          <label className="block mb-1 text-sm font-medium text-gray-700">
             Thông tin liên hệ (nếu muốn phản hồi)
           </label>
           <input
@@ -333,19 +340,19 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
             value={formData.contact}
             onChange={handleChange}
             placeholder="Email hoặc số điện thoại"
-            className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
           />
         </div>
       </div>
 
       {/* Detailed Report Information */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-700">
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold text-gray-700">
           Chi tiết báo cáo
         </h3>
         {config.fields.map((field) => (
           <div key={field.name}>
-            <label className="block mb-1 font-semibold text-gray-700">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               {field.label}
             </label>
             {field.name === "emailBody" || field.name === "smsContent" ? (
@@ -354,8 +361,8 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
                 value={formData[field.name as keyof typeof formData]}
                 onChange={handleChange}
                 required={field.required}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
+                rows={3}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
                 placeholder={field.placeholder}
               />
             ) : (
@@ -366,13 +373,13 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
                 onChange={handleChange}
                 placeholder={field.placeholder}
                 required={field.required}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
               />
             )}
           </div>
         ))}
         <div>
-          <label className="block mb-1 font-semibold text-gray-700">
+          <label className="block mb-1 text-sm font-medium text-gray-700">
             Bằng chứng
           </label>
           <input
@@ -380,7 +387,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
             name="evidence"
             value={formData.evidence}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
             placeholder="Link Google Drive, imgur, YouTube..."
           />
         </div>
@@ -388,7 +395,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
 
       <button
         type="submit"
-        className="w-full py-3 font-bold text-lg rounded-xl bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
+        className="w-full py-3 font-semibold text-base rounded-xl bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
       >
         Gửi báo cáo
       </button>

@@ -2,7 +2,17 @@ import { fetchNewsByTopic } from "@/services/NewsService";
 import { Sparkles, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
-export default function MiddleSide() {
+interface Props {
+  reportPending: number;
+  reportApproved: number;
+  userCount: number;
+}
+
+export default function MiddleSide({
+  reportPending,
+  reportApproved,
+  userCount,
+}: Props) {
   const [news, setNews] = useState<
     { title: string; link: string; pubDate?: string; contentSnippet?: string }[]
   >([]);
@@ -27,21 +37,25 @@ export default function MiddleSide() {
             <div className="flex flex-col gap-2 text-sm">
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-700">
-                  Báo cáo đã gửi
+                  Báo cáo chờ xử lý
                 </span>
-                <span className="font-bold text-[#e53935]">12,345</span>
+                <span className="font-bold text-[#e53935]">
+                  {reportPending}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-700">
-                  Cảnh báo cộng đồng
+                  Báo cáo đã xác thực
                 </span>
-                <span className="font-bold text-[#fbc02d]">8,210</span>
+                <span className="font-bold text-[#fbc02d]">
+                  {reportApproved}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-700">
                   Người dùng tham gia
                 </span>
-                <span className="font-bold text-[#43a047]">5,678</span>
+                <span className="font-bold text-[#43a047]">{userCount}</span>
               </div>
             </div>
           </div>

@@ -346,4 +346,85 @@ export class ReportService {
       throw error;
     }
   }
+  async deleteReport(reportId: number) {
+    try {
+      const reportData = await this.reportRepo.findOne({
+        where: { id: reportId },
+      });
+      if (!reportData) {
+        throw new NotFoundException('Report not found');
+      }
+      await this.reportRepo.remove(reportData);
+      return {
+        message: `Deleted report ${reportId}`,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getTotalReportApproved() {
+    try {
+      const total = await this.reportRepo.count({
+        where: { status: ReportStatus.APPROVED },
+      });
+      console.log('Total approved reports:', total);
+      return total;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getTotalReportPending() {
+    try {
+      const total = await this.reportRepo.count({
+        where: { status: ReportStatus.PENDING },
+      });
+      return total;
+    } catch (error) {
+      throw error;
+    }
+  }
+  // async searchRelatedReports(keyword: string): Promise<any[]> {
+  //   const formattedKeyword = `%${keyword}%`;
+
+  //   const emailReports = await this.emailContentRepo
+  //     .createQueryBuilder('email')
+  //     .leftJoinAndSelect('email.report', 'report')
+  //     .where('email.email_subject LIKE :kw', { kw: formattedKeyword })
+  //     .orWhere('email.email_body LIKE :kw', { kw: formattedKeyword })
+  //     .orWhere('email.sender_address LIKE :kw', { kw: formattedKeyword })
+  //     .getMany();
+
+  //   const smsReports = await this.smsRepo
+  //     .createQueryBuilder('sms')
+  //     .leftJoinAndSelect('sms.report', 'report')
+  //     .where('sms.sms_content LIKE :kw', { kw: formattedKeyword })
+  //     .orWhere('sms.phone_number LIKE :kw', { kw: formattedKeyword })
+  //     .getMany();
+
+  //   const personOrgReports = await this.personOrgRepo
+  //     .createQueryBuilder('person')
+  //     .leftJoinAndSelect('person.report', 'report')
+  //     .where('person.name LIKE :kw', { kw: formattedKeyword })
+  //     .orWhere('person.email_address LIKE :kw', { kw: formattedKeyword })
+  //     .orWhere('person.phone_number LIKE :kw', { kw: formattedKeyword })
+  //     .getMany();
+
+  //   return [
+  //     ...emailReports.map((r) => ({
+  //       type: 'email',
+  //       report_id: r.report.id,
+  //       matched: r,
+  //     })),
+  //     ...smsReports.map((r) => ({
+  //       type: 'sms',
+  //       report_id: r.report.id,
+  //       matched: r,
+  //     })),
+  //     ...personOrgReports.map((r) => ({
+  //       type: 'person_org',
+  //       report_id: r.report.id,
+  //       matched: r,
+  //     })),
+  //   ];
+  // }
 }

@@ -22,4 +22,12 @@ export class UserService {
     const user = this.userRepo.create(userData);
     return this.userRepo.save(user);
   }
+  async countUsers() {
+    try {
+      const count = await this.userRepo.count();
+      return count;
+    } catch (error) {
+      throw new Error('Error counting users: ' + error.message);
+    }
+  }
 }

@@ -6,7 +6,7 @@ export type ReportType =
   | "phone"
   | "person_org"
   | "website"
-  | "social_profile"
+  | "social"
   | "bank_account"
   | "e_wallet";
 

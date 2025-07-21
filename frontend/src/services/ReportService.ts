@@ -44,4 +44,28 @@ export const ReportService = {
       throw error;
     }
   },
+  async deleteReport(id: number) {
+    try {
+      const res = await api.delete(`${reportUrl}/${id}`);
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  },
+  async countApprovedReport() {
+    try {
+      const res = await api.get(`${reportUrl}/count-approved`);
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  async countPendingReport() {
+    try {
+      const res = await api.get(`${reportUrl}/count-pending`);
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

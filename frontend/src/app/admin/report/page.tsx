@@ -38,7 +38,7 @@ export default function ReportPage() {
   const handleDelete = async (id: number) => {
     if (confirm("Bạn có chắc chắn muốn xóa báo cáo này không?")) {
       try {
-        // await ReportService.delete(id);
+        await ReportService.deleteReport(id);
         setReports((prev) => prev.filter((r) => r.id !== id));
       } catch (error) {
         console.error("Lỗi khi xóa báo cáo:", error);

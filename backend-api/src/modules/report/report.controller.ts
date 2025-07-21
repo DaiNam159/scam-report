@@ -1,6 +1,8 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -29,7 +31,14 @@ export class ReportController {
 
     return this.reportService.createReport(dto, String(ip), userId);
   }
-
+  @Get('count-approved')
+  async getCountApprovedReports() {
+    return this.reportService.getTotalReportApproved();
+  }
+  @Get('count-pending')
+  async getCountPendingReports() {
+    return this.reportService.getTotalReportPending();
+  }
   @UseGuards(AuthGuard('jwt'), AdminGuard)
   @Get()
   getReports(
@@ -38,6 +47,13 @@ export class ReportController {
   ) {
     return this.reportService.getReports(page, limit);
   }
+  // @Get('search-related')
+  // async searchRelated(@Query('q') keyword: string) {
+  //   if (!keyword || keyword.trim() === '') {
+  //     throw new BadRequestException('Missing search keyword');
+  //   }
+  //   return this.reportService.searchRelatedReports(keyword.trim());
+  // }
   @Get(':id')
   async getReportById(@Param('id', ParseIntPipe) id: number) {
     return this.reportService.getReportById(id);
@@ -53,5 +69,10 @@ export class ReportController {
   @Put('reject')
   async rejectReport(@Body() dto: EditStatusDto) {
     return this.reportService.rejectReport(dto.id);
+  }
+  @UseGuards(AuthGuard('jwt'), AdminGuard)
+  @Delete(':id')
+  async deleteReport(@Param('id', ParseIntPipe) id: number) {
+    return this.reportService.deleteReport(id);
   }
 }

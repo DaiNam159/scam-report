@@ -5,7 +5,7 @@ import { Report } from './reports.entity';
 
 @Entity('report_bank_account')
 export class ReportBankAccount {
-  @PrimaryColumn({ type: 'bigint' })
+  @PrimaryColumn({ type: 'int' })
   report_id: number;
 
   @OneToOne(() => Report, { onDelete: 'CASCADE' })

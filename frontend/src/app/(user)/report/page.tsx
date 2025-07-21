@@ -3,6 +3,9 @@
 import ReportSide from "@/components/user/report/ReportSide";
 import MiddleSide from "@/components/user/report/MiddleSide";
 import LeftSide from "@/components/user/report/LeftSide";
+import { useEffect, useState } from "react";
+import { ReportService } from "@/services/ReportService";
+import { UserService } from "@/services/UserService";
 
 export default function ReportPage() {
   const FAQS = [
@@ -24,11 +27,35 @@ export default function ReportPage() {
     },
   ];
 
+  const [reportApproved, setReportApproved] = useState(1);
+  const [reportPending, setReportPending] = useState(1);
+  const [userCount, setUserCount] = useState(1);
+  const fetchReportStats = async () => {
+    try {
+      const approveReport = await ReportService.countApprovedReport();
+
+      const pendingReport = await ReportService.countPendingReport();
+      const userCount = await UserService.countUsers();
+      setReportApproved(approveReport);
+      setReportPending(pendingReport);
+      setUserCount(userCount);
+    } catch (error) {
+      console.error("Error fetching report stats:", error);
+    }
+  };
+  useEffect(() => {
+    fetchReportStats();
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-gradient-to-br from-[#fff8e1] via-[#fbe9e7] to-[#e3f2fd]">
       <div className="flex flex-col items-start w-full gap-8 max-w-7xl xl:gap-12 md:flex-row">
         <ReportSide />
-        <MiddleSide />
+        <MiddleSide
+          reportApproved={reportApproved}
+          reportPending={reportPending}
+          userCount={userCount}
+        />
         <LeftSide FAQS={FAQS} />
       </div>
     </div>

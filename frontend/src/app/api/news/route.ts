@@ -6,7 +6,7 @@ const parser = new Parser();
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const encodedKeyword = encodeURIComponent("An ninh mạng");
+  const encodedKeyword = encodeURIComponent("Lừa đảo mạng");
   const feedURL = `https://news.google.com/rss/search?q=${encodedKeyword}&hl=vi&gl=VN&ceid=VN:vi`;
   try {
     const feed = await parser.parseURL(feedURL);
