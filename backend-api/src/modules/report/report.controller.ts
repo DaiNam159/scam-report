@@ -31,6 +31,11 @@ export class ReportController {
 
     return this.reportService.createReport(dto, String(ip), userId);
   }
+  @Post('related-reports')
+  async createRelatedReports(@Body() body: { input_text: string }) {
+    return this.reportService.searchRelatedReports(body.input_text);
+  }
+
   @Get('count-approved')
   async getCountApprovedReports() {
     return this.reportService.getTotalReportApproved();

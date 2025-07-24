@@ -68,4 +68,15 @@ export const ReportService = {
       throw error;
     }
   },
+  async relatedReports(input_text: string) {
+    try {
+      const res = await api.post(`${reportUrl}/related-reports`, {
+        input_text,
+      });
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching related reports:", error);
+      throw error;
+    }
+  },
 };

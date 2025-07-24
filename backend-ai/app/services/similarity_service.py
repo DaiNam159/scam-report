@@ -147,28 +147,64 @@ def get_combined_report_text(report: Report) -> str:
     return ' '.join(p for p in parts if p).strip()
 
 
-def related_search(input_text: str, db:Session):
+# def related_search(input_text: str, db:Session):
+#     all_reports = get_all_report_texts(db)
+#     if not all_reports:
+#         return []
+
+#     texts = [r["content"] for r in all_reports]
+#     tfidf = TfidfVectorizer().fit_transform(texts + [input_text])
+#     cosine = cosine_similarity(tfidf[-1], tfidf[:-1]).flatten()
+
+#     related_reports = []
+#     for i, score in enumerate(cosine):
+#         if( all_reports[i]["type"] in ("email_address", "phone") and all_reports[i]["content"]==input_text):
+#             related_reports.append({
+#                 "match_percent": round(float(score), 4),
+#                 "matched_report_id": all_reports[i]["report_id"]
+#             })
+#         if (score > 0.3 and all_reports[i]["type"] not in ("email_address", "phone")):
+#             related_reports.append({
+#                 "match_percent": round(float(score), 4),
+#                 "matched_report_id": all_reports[i]["report_id"]
+#             })
+
+#     related_reports.sort(key=lambda x: x["match_percent"], reverse=True)
+    
+#     return related_reports
+
+
+def normalize_text(text: str) -> str:
+    text = text.lower()
+    text = re.sub(r"[^\w\s]", "", text) 
+    text = re.sub(r"\s+", " ", text)    
+    return text.strip()
+
+def word_overlap_similarity(a: str, b: str) -> float:
+    a_words = set(normalize_text(a).split())
+    b_words = set(normalize_text(b).split())
+    if not a_words or not b_words:
+        return 0
+    return len(a_words & b_words) / len(a_words)
+
+def related_search(input_text: str, db: Session):
     all_reports = get_all_report_texts(db)
     if not all_reports:
         return []
 
-    texts = [r["content"] for r in all_reports]
-    tfidf = TfidfVectorizer().fit_transform(texts + [input_text])
-    cosine = cosine_similarity(tfidf[-1], tfidf[:-1]).flatten()
-
+    input_text = input_text.lower()
     related_reports = []
-    for i, score in enumerate(cosine):
-        if( all_reports[i]["type"] in ("email_address", "phone") and all_reports[i]["content"]==input_text):
+
+    for r in all_reports:
+        content = r["content"].lower()
+
+        score = word_overlap_similarity(input_text, content)
+
+        if (r["type"] in ("email_address", "phone") and r["content"] == input_text) or score > (2/3):
             related_reports.append({
-                "match_percent": round(float(score), 4),
-                "matched_report_id": all_reports[i]["report_id"]
-            })
-        if (score > 0.3 and all_reports[i]["type"] not in ("email_address", "phone")):
-            related_reports.append({
-                "match_percent": round(float(score), 4),
-                "matched_report_id": all_reports[i]["report_id"]
+                "match_percent": round(score, 4),
+                "matched_report_id": r["report_id"]
             })
 
     related_reports.sort(key=lambda x: x["match_percent"], reverse=True)
-    
     return related_reports

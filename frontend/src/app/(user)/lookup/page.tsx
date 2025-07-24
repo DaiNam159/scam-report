@@ -2,6 +2,7 @@
 
 import LookupForm from "@/components/user/lookup/LookupForm";
 import LookupResult from "@/components/user/lookup/LookupResult";
+import { ReportService } from "@/services/ReportService";
 import {
   ShieldAlert,
   Search,
@@ -24,8 +25,7 @@ export default function LookupPage() {
     setResult(null);
 
     try {
-      const res = await fetch(`/api/lookup?query=${encodeURIComponent(query)}`);
-      const data = await res.json();
+      const data = await ReportService.relatedReports(query);
       setResult(data);
     } catch (err) {
       console.error("Lỗi khi tra cứu:", err);
@@ -160,10 +160,10 @@ export default function LookupPage() {
               </div>
               <div className="flex flex-col items-center w-full">
                 <Sparkles className="w-10 h-10 text-[#fbc02d] mb-2 animate-bounce" />
-                <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-2 text-[#e53935] tracking-tight drop-shadow flex items-center gap-2">
+                <h1 className="text-xl md:text-2xl font-extrabold text-center mb-2 text-[#e53935] tracking-tight drop-shadow flex items-center gap-2">
                   Tra cứu thông tin lừa đảo
                 </h1>
-                <p className="max-w-2xl mb-2 text-lg text-center text-gray-700">
+                <p className="max-w-2xl mb-2 text-sm text-center text-gray-700">
                   Kiểm tra số điện thoại, email, tài khoản ngân hàng, website,
                   mạng xã hội... để phát hiện dấu hiệu lừa đảo trước khi giao
                   dịch.

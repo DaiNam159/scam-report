@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReportEmailAddress } from 'src/entities/report_email_address.entity';
 import { ReportPersonOrg } from 'src/entities/report_person_org.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Report, ReportStatus, ReportType } from 'src/entities/reports.entity';
 import { ReportWebsite } from 'src/entities/report_website.entity';
@@ -12,7 +12,7 @@ import { ReportSocial } from 'src/entities/report_social.entity';
 import { ReportBankAccount } from 'src/entities/report_bank_account.entity';
 import { ReportSms } from 'src/entities/report_sms.entity';
 import { ReportPhone } from 'src/entities/report_phone.entity';
-
+import axios from 'axios';
 @Injectable()
 export class ReportService {
   constructor(
@@ -383,48 +383,138 @@ export class ReportService {
       throw error;
     }
   }
-  // async searchRelatedReports(keyword: string): Promise<any[]> {
-  //   const formattedKeyword = `%${keyword}%`;
 
-  //   const emailReports = await this.emailContentRepo
-  //     .createQueryBuilder('email')
-  //     .leftJoinAndSelect('email.report', 'report')
-  //     .where('email.email_subject LIKE :kw', { kw: formattedKeyword })
-  //     .orWhere('email.email_body LIKE :kw', { kw: formattedKeyword })
-  //     .orWhere('email.sender_address LIKE :kw', { kw: formattedKeyword })
-  //     .getMany();
+  async searchRelatedReports(inputText: string) {
+    try {
+      const baseUrl = process.env.FAST_API_URL;
 
-  //   const smsReports = await this.smsRepo
-  //     .createQueryBuilder('sms')
-  //     .leftJoinAndSelect('sms.report', 'report')
-  //     .where('sms.sms_content LIKE :kw', { kw: formattedKeyword })
-  //     .orWhere('sms.phone_number LIKE :kw', { kw: formattedKeyword })
-  //     .getMany();
+      if (!baseUrl) {
+        throw new Error(
+          'FAST_API_URL không được cấu hình trong environment variables',
+        );
+      }
+      if (!inputText) {
+        throw new Error('Cần nhập vào thông tin để tìm kiếm báo cáo liên quan');
+      }
+      if (inputText.length < 10) {
+        throw new Error('Thông tin quá ngắn');
+      }
+      const response = await axios.post(`${baseUrl}/related-reports`, {
+        text: inputText,
+      });
 
-  //   const personOrgReports = await this.personOrgRepo
-  //     .createQueryBuilder('person')
-  //     .leftJoinAndSelect('person.report', 'report')
-  //     .where('person.name LIKE :kw', { kw: formattedKeyword })
-  //     .orWhere('person.email_address LIKE :kw', { kw: formattedKeyword })
-  //     .orWhere('person.phone_number LIKE :kw', { kw: formattedKeyword })
-  //     .getMany();
+      const related_data = response.data;
+      const ids = related_data.map((item) => item.matched_report_id);
+      if (!ids.length) return [];
 
-  //   return [
-  //     ...emailReports.map((r) => ({
-  //       type: 'email',
-  //       report_id: r.report.id,
-  //       matched: r,
-  //     })),
-  //     ...smsReports.map((r) => ({
-  //       type: 'sms',
-  //       report_id: r.report.id,
-  //       matched: r,
-  //     })),
-  //     ...personOrgReports.map((r) => ({
-  //       type: 'person_org',
-  //       report_id: r.report.id,
-  //       matched: r,
-  //     })),
-  //   ];
-  // }
+      const reports = await this.reportRepo.find({
+        where: { id: In(ids) },
+        relations: [
+          'user',
+          'email_address',
+          'person_org',
+          'email_content',
+          'phone',
+          'sms',
+          'website',
+          'social',
+          'bank_account',
+          'e_wallet',
+        ],
+        select: {
+          id: true,
+          report_type: true,
+          title: true,
+          description: true,
+          evidence: true,
+          user_ip: true,
+          status: true,
+          contact: true,
+          created_at: true,
+          user: {
+            id: true,
+            fullName: true,
+            email: true,
+          },
+          email_address: {
+            report_id: true,
+            email_address: true,
+          },
+          person_org: {
+            report_id: true,
+            name: true,
+            role: true,
+            identification: true,
+            address: true,
+            phone_number: true,
+            email_address: true,
+            social_links: true,
+          },
+          email_content: {
+            report_id: true,
+            email_subject: true,
+            email_body: true,
+            sender_address: true,
+            attachments: true,
+            suspicious_links: true,
+          },
+          phone: {
+            report_id: true,
+            phone_number: true,
+          },
+          sms: {
+            report_id: true,
+            phone_number: true,
+            sms_content: true,
+          },
+          website: {
+            report_id: true,
+            url: true,
+          },
+          social: {
+            report_id: true,
+            platform: true,
+            profile_url: true,
+            username: true,
+          },
+          bank_account: {
+            report_id: true,
+            bank_name: true,
+            account_number: true,
+            account_holder_name: true,
+          },
+          e_wallet: {
+            report_id: true,
+            wallet_type: true,
+            wallet_id: true,
+            account_holder_name: true,
+          },
+        },
+      });
+      for (const r of reports) {
+        const type = r.report_type;
+        for (const key of [
+          'email_address',
+          'person_org',
+          'email_content',
+          'phone',
+          'sms',
+          'website',
+          'social',
+          'bank_account',
+          'e_wallet',
+        ]) {
+          if (key !== type) delete r[key];
+        }
+      }
+      return reports;
+    } catch (error) {
+      console.error('Lỗi khi gọi FastAPI:', error.message);
+      if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+      }
+      throw new Error(`Không thể tìm kiếm báo cáo liên quan: ${error.message}`);
+    }
+  }
 }
