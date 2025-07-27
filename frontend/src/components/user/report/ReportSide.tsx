@@ -71,11 +71,11 @@ export default function ReportSide() {
           <div className="absolute pointer-events-none -top-8 -right-8 opacity-10">
             <ShieldAlert className="w-40 h-40 text-[#e53935]" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-2 text-[#e53935] tracking-tight drop-shadow flex items-center gap-2">
+          <h1 className="text-xl md:text-2xl font-bold text-center mb-2 text-[#e53935] tracking-tight drop-shadow flex items-center gap-2">
             <Sparkles className="w-8 h-8 text-[#fbc02d]" />
             Báo cáo lừa đảo
           </h1>
-          <p className="mb-6 text-base text-center text-gray-700 md:text-lg">
+          <p className="mb-6 text-base text-center text-gray-700 md:text-sm">
             Chung tay bảo vệ cộng đồng khỏi các hành vi lừa đảo công nghệ. Hãy
             gửi báo cáo của bạn ngay!
           </p>
@@ -86,7 +86,7 @@ export default function ReportSide() {
             <select
               value={typeReport}
               onChange={(e) => handleTypeChange(e.target.value as ReportType)}
-              className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black text-lg shadow"
+              className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black text-sm shadow"
             >
               {REPORT_TYPES.map((type) => (
                 <option key={type} value={type}>

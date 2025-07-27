@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './modules/admin/admin.module';
 import { ReportService } from './modules/report/report.service';
 import { ReportModule } from './modules/report/report.module';
+import { UploadModule } from './modules/upload/upload.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,6 +20,7 @@ import { ReportModule } from './modules/report/report.module';
     AuthModule,
     AdminModule,
     ReportModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
