@@ -1,4 +1,5 @@
 import { ReportService } from "@/services/ReportService";
+import { UploadService } from "@/services/UploadService";
 import { ReportType } from "@/types/ReportType";
 import { ReportFormProps } from "@/types/ReportType";
 import React, { useState } from "react";
@@ -378,18 +379,43 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
             )}
           </div>
         ))}
+
         <div>
           <label className="block mb-1 text-sm font-medium text-gray-700">
-            Bằng chứng
+            Bằng chứng (ảnh)
           </label>
+
           <input
-            type="url"
-            name="evidence"
-            value={formData.evidence}
-            onChange={handleChange}
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              try {
+                // gọi service upload
+                const result = await UploadService.uploadFile(file);
+
+                // lưu url ảnh vào formData
+                setFormData((prev) => ({
+                  ...prev,
+                  evidence: result.url, // backend cần trả về { url: '...' }
+                }));
+              } catch (error) {
+                console.error("Lỗi khi upload ảnh:", error);
+              }
+            }}
             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
-            placeholder="Link Google Drive, imgur, YouTube..."
           />
+
+          {/* hiển thị ảnh nếu có */}
+          {formData.evidence && (
+            <img
+              src={formData.evidence}
+              alt="Bằng chứng"
+              className="w-32 mt-2 border rounded-xl"
+            />
+          )}
         </div>
       </div>
 

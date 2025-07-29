@@ -62,7 +62,6 @@ export class ReportService {
     } as Partial<Report>);
 
     const saved = await this.reportRepo.save(report);
-    console.log('Report saved:', saved);
     // 2. Tùy theo reportType -> lưu vào bảng phụ tương ứng
     const reportHandlers = {
       email_address: (dto) => ({
@@ -367,7 +366,6 @@ export class ReportService {
       const total = await this.reportRepo.count({
         where: { status: ReportStatus.APPROVED },
       });
-      console.log('Total approved reports:', total);
       return total;
     } catch (error) {
       throw error;

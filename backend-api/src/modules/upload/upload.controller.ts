@@ -14,9 +14,6 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     const bufferStream = Readable.from(file.buffer);
-    console.log('cloud_name:', process.env.CLOUDINARY_CLOUD_NAME);
-    console.log('api_key:', process.env.CLOUDINARY_API_KEY);
-    console.log('api_secret:', process.env.CLOUDINARY_API_SECRET);
     const result: any = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
