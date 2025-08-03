@@ -1,21 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Globe, Search, Shield } from "lucide-react";
 
 interface LookupFormProps {
-  onSearch: (query: string, checkContent?: boolean) => void;
+  onSearch: (
+    query: string,
+    checkContent?: boolean,
+    useGoogleSafe?: boolean
+  ) => void;
 }
 
 const LookupForm = ({ onSearch }: LookupFormProps) => {
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"info" | "content">("info");
-
+  const [useGoogleSafe, setUseGoogleSafe] = useState(false);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) onSearch(query.trim(), mode === "content");
+    if (query.trim()) onSearch(query.trim(), mode === "content", useGoogleSafe);
   };
-
+  const isUrl = (str: string) => {
+    try {
+      new URL(str);
+      return true;
+    } catch {
+      return (
+        str.includes("http") ||
+        str.includes("www.") ||
+        str.includes(".com") ||
+        str.includes(".vn")
+      );
+    }
+  };
   return (
     <form onSubmit={handleSubmit} className="flex flex-col w-full gap-2">
       <label className="mb-1 text-sm font-semibold text-gray-700">
@@ -76,6 +92,40 @@ const LookupForm = ({ onSearch }: LookupFormProps) => {
           Tra cứu
         </button>
       </div>
+
+      {/* Checkbox Google Safe Browsing - chỉ hiển thị khi là URL */}
+      {query.trim() && isUrl(query) && (
+        <div className="flex items-center gap-3 p-3 border border-blue-200 bg-blue-50 rounded-xl">
+          <Shield className="w-5 h-5 text-blue-600" />
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useGoogleSafe}
+              onChange={(e) => setUseGoogleSafe(e.target.checked)}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <span className="text-gray-700">
+              Sử dụng <strong>Google Safe Browsing</strong> để kiểm tra tính an
+              toàn của website
+            </span>
+          </label>
+          <Globe className="w-4 h-4 text-blue-600" />
+        </div>
+      )}
+
+      {/* Thông tin thêm về Google Safe Browsing */}
+      {useGoogleSafe && (
+        <div className="p-3 border border-green-200 bg-green-50 rounded-xl">
+          <div className="flex items-start gap-2 text-xs text-green-700">
+            <Shield className="w-4 h-4 mt-0.5 text-green-600" />
+            <div>
+              <strong>Google Safe Browsing:</strong> Sẽ kiểm tra website có chứa
+              malware, phishing, hoặc nội dung nguy hiểm khác. Đây là dịch vụ
+              chính thức từ Google.
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 };

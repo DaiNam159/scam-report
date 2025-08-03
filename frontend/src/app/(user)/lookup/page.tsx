@@ -1,8 +1,10 @@
 "use client";
 
+import GoogleSafeResult from "@/components/user/lookup/GoogleSafeResult";
 import LookupForm from "@/components/user/lookup/LookupForm";
 import LookupResult from "@/components/user/lookup/LookupResult";
 import { ReportService } from "@/services/ReportService";
+import { SafetyService } from "@/services/SafetyService";
 import {
   ShieldAlert,
   Search,
@@ -19,17 +21,46 @@ import { useState } from "react";
 export default function LookupPage() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [googleSafeResult, setGoogleSafeResult] = useState<any>(null);
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = async (
+    query: string,
+    checkContent?: boolean,
+    useGoogleSafe?: boolean
+  ) => {
     setLoading(true);
     setResult(null);
+    setGoogleSafeResult(null);
+
+    console.log("handleSearch called with:", {
+      query,
+      checkContent,
+      useGoogleSafe,
+    }); // Debug log
 
     try {
-      const data = await ReportService.relatedReports(query);
-      setResult(data);
+      if (useGoogleSafe) {
+        // Gọi Google Safe Browsing API
+        console.log("Calling Google Safe Browsing API for:", query); // Debug log
+        const safeResult = await SafetyService.checkUrl(query);
+        setGoogleSafeResult(safeResult);
+      } else {
+        // Tìm báo cáo liên quan
+        console.log("Searching related reports for:", query); // Debug log
+        const data = await ReportService.relatedReports(query);
+        setResult(data);
+      }
     } catch (err) {
       console.error("Lỗi khi tra cứu:", err);
-      setResult({ found: false });
+      if (useGoogleSafe) {
+        setGoogleSafeResult({
+          url: query,
+          isSafe: false,
+          error: "Lỗi khi kiểm tra với Google Safe Browsing",
+        });
+      } else {
+        setResult({ found: false });
+      }
     } finally {
       setLoading(false);
     }
@@ -195,7 +226,11 @@ export default function LookupPage() {
                   </div>
                 </div>
                 <div className="w-full">
-                  <LookupResult loading={loading} result={result} />
+                  {googleSafeResult ? (
+                    <GoogleSafeResult result={googleSafeResult} />
+                  ) : (
+                    <LookupResult loading={loading} result={result} />
+                  )}
                 </div>
                 {/* Lưu ý */}
                 <div className="w-full mt-10">
