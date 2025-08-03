@@ -2,7 +2,7 @@ import { ReportService } from "@/services/ReportService";
 import { UploadService } from "@/services/UploadService";
 import { ReportType } from "@/types/ReportType";
 import { ReportFormProps } from "@/types/ReportType";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Configuration for type-specific fields
 const typeConfig: Record<
@@ -243,6 +243,7 @@ const initialFormState = (type: ReportType) => ({
   title: "",
   description: "",
   evidence: "",
+  evidencePublicId: "",
   emailAddress: "",
   name: "",
   role: "",
@@ -270,13 +271,29 @@ const initialFormState = (type: ReportType) => ({
 const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
   const config = typeConfig[type];
   const [formData, setFormData] = useState(initialFormState(type));
-
+  const [isUploading, setIsUploading] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  useEffect(() => {
+    const checkRequiredFields = (): boolean => {
+      const requiredBasic =
+        formData.title.trim() !== "" && formData.description.trim() !== "";
+      const requiredFields = typeConfig[type].fields.filter((f) => f.required);
+      const requiredValid = requiredFields.every((field) => {
+        const value = formData[field.name as keyof typeof formData];
+        return typeof value === "string" && value.trim() !== "";
+      });
+
+      return requiredBasic && requiredValid && !isUploading;
+    };
+
+    setIsFormValid(checkRequiredFields());
+  }, [formData, isUploading, type]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -289,7 +306,9 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
       throw err;
     }
   };
-
+  const handleDeleteEvidence = async (evidencePublicId: string) => {
+    await UploadService.deleteFile(evidencePublicId);
+  };
   return (
     <form
       onSubmit={handleSubmit}
@@ -391,25 +410,34 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
             onChange={async (e) => {
               const file = e.target.files?.[0];
               if (!file) return;
-
+              setIsUploading(true); // Bắt đầu upload
               try {
+                if (formData.evidencePublicId) {
+                  handleDeleteEvidence(formData.evidencePublicId);
+                }
                 // gọi service upload
                 const result = await UploadService.uploadFile(file);
-
                 // lưu url ảnh vào formData
                 setFormData((prev) => ({
                   ...prev,
-                  evidence: result.url, // backend cần trả về { url: '...' }
+                  evidence: result.url,
+                  evidencePublicId: result.public_id, // backend cần trả về { public_id: '...' }'
                 }));
               } catch (error) {
                 console.error("Lỗi khi upload ảnh:", error);
+              } finally {
+                setIsUploading(false); // Kết thúc upload
               }
             }}
             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"
           />
-
+          {isUploading && (
+            <div className="flex items-center justify-center w-32 h-32 mt-2 border border-gray-300 rounded-xl bg-gray-50">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#e53935]"></div>
+            </div>
+          )}
           {/* hiển thị ảnh nếu có */}
-          {formData.evidence && (
+          {formData.evidence && !isUploading && (
             <img
               src={formData.evidence}
               alt="Bằng chứng"
@@ -421,7 +449,12 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
 
       <button
         type="submit"
-        className="w-full py-3 font-semibold text-base rounded-xl bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
+        disabled={!isFormValid}
+        className={`w-full py-3 font-semibold text-base rounded-xl bg-gradient-to-r ${
+          isFormValid
+            ? "from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d]"
+            : "from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] cursor-not-allowed opacity-50 brightness-90"
+        } text-white shadow transition`}
       >
         Gửi báo cáo
       </button>

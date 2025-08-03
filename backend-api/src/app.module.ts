@@ -10,6 +10,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { ReportService } from './modules/report/report.service';
 import { ReportModule } from './modules/report/report.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { SafetyModule } from './modules/safety/safety.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +22,7 @@ import { UploadModule } from './modules/upload/upload.module';
     AdminModule,
     ReportModule,
     UploadModule,
+    SafetyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,7 @@
 import {
+  Body,
   Controller,
+  Delete,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -26,7 +28,20 @@ export class UploadController {
       );
       bufferStream.pipe(uploadStream);
     });
+    console.log('File uploaded successfully:', result);
+    return { url: result.secure_url, public_id: result.public_id };
+  }
 
-    return { url: result.secure_url };
+  @Delete()
+  async deleteFile(@Body() body: { public_id: string }) {
+    const { public_id } = body;
+
+    try {
+      const result = await cloudinary.uploader.destroy(public_id);
+      return { message: 'Deleted', result };
+    } catch (err) {
+      console.error('Error deleting file:', err);
+      throw new Error('Unable to delete file.');
+    }
   }
 }

@@ -1,12 +1,19 @@
 "use client";
 import { AuthService } from "@/services/AuthService";
+import { ReportService } from "@/services/ReportService";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+type DateUpdated = {
+  day: number;
+  month: number;
+  year: number;
+};
 const UserHeader = () => {
   const router = useRouter();
-  const [profile, setProfile] = useState<any>(null); // Khởi tạo với fullName rỗng
+  const [profile, setProfile] = useState<any>(null);
+  const [dateUpdated, setDateUpdated] = useState<DateUpdated | null>(null);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -19,7 +26,17 @@ const UserHeader = () => {
     };
     fetchProfile(); // Gọi hàm async trong useEffect
   }, []);
-
+  useEffect(() => {
+    const fetchDateUpdated = async () => {
+      try {
+        const lastUpdated = await ReportService.getLastReportUpdate();
+        setDateUpdated(lastUpdated);
+      } catch (error) {
+        console.error("Error fetching last report update:", error);
+      }
+    };
+    fetchDateUpdated();
+  }, []);
   const handleLogout = async () => {
     await AuthService.logout().then(() => {
       setProfile(null); // Xoá profile sau khi đăng xuất
@@ -103,7 +120,8 @@ const UserHeader = () => {
         <div className="font-medium text-gray-600">Trang chủ / Tra cứu</div>
         <div>
           <span className="px-3 py-1 text-xs font-semibold text-white bg-black rounded">
-            Cập nhật ngày 31/05/2025
+            Cập nhật ngày {dateUpdated?.day}/{dateUpdated?.month}/
+            {dateUpdated?.year}
           </span>
         </div>
       </div>

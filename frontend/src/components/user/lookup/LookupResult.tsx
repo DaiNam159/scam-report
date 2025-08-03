@@ -95,6 +95,7 @@ import {
   Wallet,
   MessageSquare,
   MessageSquareText,
+  Hourglass,
 } from "lucide-react";
 
 interface LookupResultProps {
@@ -274,7 +275,38 @@ const getReportDetails = (report: any) => {
       return null;
   }
 };
-
+const getStatusBadge = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "approved":
+      return (
+        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+          <CheckCircle2 className="w-3 h-3 mr-1" />
+          Đã duyệt
+        </span>
+      );
+    case "pending":
+      return (
+        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
+          <Hourglass className="w-3 h-3 mr-1" />
+          Chờ duyệt
+        </span>
+      );
+    case "rejected":
+      return (
+        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-full">
+          <ShieldAlert className="w-3 h-3 mr-1" />
+          Bị từ chối
+        </span>
+      );
+    default:
+      return (
+        <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-full">
+          <Info className="w-3 h-3 mr-1" />
+          Chưa xác định
+        </span>
+      );
+  }
+};
 const LookupResult = ({ loading, result }: LookupResultProps) => {
   if (loading) {
     return (
@@ -316,6 +348,8 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
                   <span className="inline-block bg-[#fbc02d] text-[#b71c1c] font-semibold px-3 py-1 rounded-full text-xs">
                     {getReportTypeName(report.report_type)}
                   </span>
+                  {/* Thêm status badge */}
+                  {getStatusBadge(report.status)}
                 </div>
                 <div className="flex items-center gap-1 text-xs text-gray-500">
                   <Calendar className="w-3 h-3" />
@@ -347,6 +381,14 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
                   >
                     Xem bằng chứng
                   </a>
+                </div>
+              )}
+
+              {/* Thêm thông tin status chi tiết nếu cần */}
+              {report.status === "pending" && (
+                <div className="p-2 mt-2 text-xs text-yellow-700 rounded bg-yellow-50">
+                  <Info className="inline w-3 h-3 mr-1" />
+                  Báo cáo này đang được xem xét bởi quản trị viên
                 </div>
               )}
             </div>

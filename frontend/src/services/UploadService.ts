@@ -19,4 +19,15 @@ export const UploadService = {
       throw new Error("Unable to upload file. Please try again later.");
     }
   },
+  async deleteFile(publicId: string) {
+    try {
+      const res = await api.delete(reportUrl, {
+        data: { public_id: publicId },
+      });
+      return res.data;
+    } catch (err) {
+      console.error("Error deleting file:", err);
+      throw new Error("Unable to delete file. Please try again later.");
+    }
+  },
 };

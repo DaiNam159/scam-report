@@ -55,6 +55,7 @@ export class ReportService {
       title: dto.title,
       description: dto.description,
       evidence: dto.evidence,
+      evidence_public_id: dto.evidencePublicId,
       user_ip: ip,
       ...(userId ? { user: { id: userId } } : {}),
       status: (dto.status as ReportStatus) || ReportStatus.PENDING,
@@ -406,7 +407,10 @@ export class ReportService {
       if (!ids.length) return [];
 
       const reports = await this.reportRepo.find({
-        where: { id: In(ids) },
+        where: {
+          id: In(ids),
+          status: In([ReportStatus.APPROVED, ReportStatus.PENDING]),
+        },
         relations: [
           'user',
           'email_address',
@@ -513,6 +517,29 @@ export class ReportService {
         console.error('Response data:', error.response.data);
       }
       throw new Error(`Không thể tìm kiếm báo cáo liên quan: ${error.message}`);
+    }
+  }
+  async getLastReportUpdate() {
+    try {
+      const latestReport = await this.reportRepo.findOne({
+        where: {},
+        select: ['updated_at'],
+        order: { updated_at: 'DESC' },
+      });
+      if (!latestReport) return null;
+
+      const updatedAt = new Date(latestReport.updated_at);
+
+      const day = updatedAt.getDate();
+      const month = updatedAt.getMonth() + 1;
+      const year = updatedAt.getFullYear();
+
+      return { day, month, year };
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian cập nhật báo cáo:', error.message);
+      throw new Error(
+        `Không thể lấy thời gian cập nhật báo cáo: ${error.message}`,
+      );
     }
   }
 }

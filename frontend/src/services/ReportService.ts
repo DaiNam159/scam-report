@@ -2,6 +2,17 @@ import api from "@/lib/axiosInstance";
 
 const reportUrl = "/report";
 export const ReportService = {
+  async getLastReportUpdate() {
+    try {
+      const res = await api.get(`${reportUrl}/update-date`);
+      return res.data;
+    } catch (err) {
+      console.error("Error fetching last report update:", err);
+      throw new Error(
+        "Unable to fetch last report update. Please try again later."
+      );
+    }
+  },
   async submitReport(data: any) {
     try {
       const res = await api.post(reportUrl, data);

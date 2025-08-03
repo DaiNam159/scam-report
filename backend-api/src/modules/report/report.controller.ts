@@ -35,6 +35,10 @@ export class ReportController {
   async createRelatedReports(@Body() body: { input_text: string }) {
     return this.reportService.searchRelatedReports(body.input_text);
   }
+  @Get('update-date')
+  async updateReportDate() {
+    return this.reportService.getLastReportUpdate();
+  }
 
   @Get('count-approved')
   async getCountApprovedReports() {

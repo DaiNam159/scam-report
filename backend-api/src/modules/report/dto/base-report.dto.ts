@@ -28,6 +28,10 @@ export class BaseReportDto {
 
   @IsOptional()
   @IsString()
+  evidencePublicId?: string;
+
+  @IsOptional()
+  @IsString()
   userIp?: string;
 
   @IsOptional()

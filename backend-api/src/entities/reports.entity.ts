@@ -62,6 +62,8 @@ export class Report {
 
   @Column({ type: 'text', nullable: true })
   evidence: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  evidence_public_id: string;
 
   @Column({ type: 'varchar', length: 45, nullable: true })
   user_ip: string;
