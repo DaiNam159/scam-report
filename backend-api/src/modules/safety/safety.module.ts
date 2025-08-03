@@ -4,6 +4,6 @@ import { SafetyController } from './safety.controller';
 
 @Module({
   providers: [SafetyService],
-  controllers: [SafetyController]
+  controllers: [SafetyController],
 })
 export class SafetyModule {}

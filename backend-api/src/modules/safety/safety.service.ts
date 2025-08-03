@@ -10,7 +10,9 @@ export class SafetyService {
 
   constructor(private configService: ConfigService) {
     this.apiKey =
-      this.configService.get<string>('GOOGLE_SAFE_BROWSING_API_KEY') || '';
+      process.env.SAFETY_API_KEY ||
+      this.configService.get<string>('SAFETY_API_KEY') ||
+      '';
   }
 
   async checkUrl(url: string): Promise<{
@@ -32,6 +34,8 @@ export class SafetyService {
     };
 
     try {
+      console.log('Checking URL:', url);
+      console.log('Using API Key:', this.apiKey);
       const res = await axios.post(`${this.endpoint}?key=${this.apiKey}`, body);
       const matches = res.data.matches;
       console.log('Using API KEY:', this.apiKey);
