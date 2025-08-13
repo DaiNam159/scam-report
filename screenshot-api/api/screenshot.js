@@ -7,7 +7,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { url, width = 1920, height = 1080, fullPage = "true" } = req.query;
+    const { width = 1920, height = 1080, fullPage = "true" } = {};
+    const url = "https://chongluadao.vn"; // Lấy URL từ query params
 
     if (!url) {
       return res.status(400).json({ error: "Thiếu tham số url" });
@@ -63,7 +64,7 @@ export default async function handler(req, res) {
       });
 
       // Chờ thêm 2 giây cho trang load hoàn toàn
-      await page.waitForTimeout(2000);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (navigationError) {
       console.error("Navigation error:", navigationError);
       await browser.close();
@@ -76,7 +77,6 @@ export default async function handler(req, res) {
     const screenshot = await page.screenshot({
       fullPage: fullPage === "true",
       type: "png",
-      quality: 90,
     });
 
     await browser.close();
