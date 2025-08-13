@@ -22,7 +22,50 @@ export default function LookupPage() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [googleSafeResult, setGoogleSafeResult] = useState<any>(null);
+  const [urlCheckResults, setUrlCheckResults] = useState<any[]>([]);
+  const [currentQuery, setCurrentQuery] = useState<string>("");
+  // const handleSearch = async (
+  //   query: string,
+  //   checkContent?: boolean,
+  //   useGoogleSafe?: boolean
+  // ) => {
+  //   setLoading(true);
+  //   setResult(null);
+  //   setGoogleSafeResult(null);
 
+  //   console.log("handleSearch called with:", {
+  //     query,
+  //     checkContent,
+  //     useGoogleSafe,
+  //   }); // Debug log
+
+  //   try {
+  //     if (useGoogleSafe) {
+  //       // Gọi Google Safe Browsing API
+  //       console.log("Calling Google Safe Browsing API for:", query); // Debug log
+  //       const safeResult = await SafetyService.checkUrl(query);
+  //       setGoogleSafeResult(safeResult);
+  //     } else {
+  //       // Tìm báo cáo liên quan
+  //       console.log("Searching related reports for:", query); // Debug log
+  //       const data = await ReportService.relatedReports(query);
+  //       setResult(data);
+  //     }
+  //   } catch (err) {
+  //     console.error("Lỗi khi tra cứu:", err);
+  //     if (useGoogleSafe) {
+  //       setGoogleSafeResult({
+  //         url: query,
+  //         isSafe: false,
+  //         error: "Lỗi khi kiểm tra với Google Safe Browsing",
+  //       });
+  //     } else {
+  //       setResult({ found: false });
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSearch = async (
     query: string,
     checkContent?: boolean,
@@ -30,42 +73,92 @@ export default function LookupPage() {
   ) => {
     setLoading(true);
     setResult(null);
-    setGoogleSafeResult(null);
-
-    console.log("handleSearch called with:", {
-      query,
-      checkContent,
-      useGoogleSafe,
-    }); // Debug log
-
+    setUrlCheckResults([]);
+    setCurrentQuery(query);
     try {
       if (useGoogleSafe) {
-        // Gọi Google Safe Browsing API
-        console.log("Calling Google Safe Browsing API for:", query); // Debug log
-        const safeResult = await SafetyService.checkUrl(query);
-        setGoogleSafeResult(safeResult);
+        // Khởi tạo state cho cả 2 API
+        const initialResults = [
+          { name: "Google Safe Browsing", loading: true, result: undefined },
+          { name: "IPQS", loading: true, result: undefined },
+        ];
+        setUrlCheckResults([...initialResults]);
+
+        // Gọi Google Safe Browsing trước
+        try {
+          const safeBrowsingResult =
+            await SafetyService.checkUrlWithSafeBrowsing(query);
+
+          // Cập nhật kết quả Google Safe Browsing
+          setUrlCheckResults((prev) =>
+            prev.map((api) =>
+              api.name === "Google Safe Browsing"
+                ? { ...api, loading: false, result: safeBrowsingResult }
+                : api
+            )
+          );
+
+          // Delay nhỏ để user thấy được kết quả từng bước
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        } catch (error) {
+          console.error("Error with Safe Browsing:", error);
+          setUrlCheckResults((prev) =>
+            prev.map((api) =>
+              api.name === "Google Safe Browsing"
+                ? {
+                    ...api,
+                    loading: false,
+                    result: {
+                      isSafe: false,
+                      error: "Lỗi khi kiểm tra với Google Safe Browsing",
+                    },
+                  }
+                : api
+            )
+          );
+        }
+
+        // Sau đó gọi IPQS
+        try {
+          const ipqsResult = await SafetyService.checkUrlWithIPQS(query);
+
+          // Cập nhật kết quả IPQS
+          setUrlCheckResults((prev) =>
+            prev.map((api) =>
+              api.name === "IPQS"
+                ? { ...api, loading: false, result: ipqsResult }
+                : api
+            )
+          );
+        } catch (error) {
+          console.error("Error with IPQS:", error);
+          setUrlCheckResults((prev) =>
+            prev.map((api) =>
+              api.name === "IPQS"
+                ? {
+                    ...api,
+                    loading: false,
+                    result: {
+                      isSafe: false,
+                      error: "Lỗi khi kiểm tra với IPQS",
+                    },
+                  }
+                : api
+            )
+          );
+        }
       } else {
         // Tìm báo cáo liên quan
-        console.log("Searching related reports for:", query); // Debug log
         const data = await ReportService.relatedReports(query);
         setResult(data);
       }
     } catch (err) {
       console.error("Lỗi khi tra cứu:", err);
-      if (useGoogleSafe) {
-        setGoogleSafeResult({
-          url: query,
-          isSafe: false,
-          error: "Lỗi khi kiểm tra với Google Safe Browsing",
-        });
-      } else {
-        setResult({ found: false });
-      }
+      setResult({ found: false });
     } finally {
       setLoading(false);
     }
   };
-
   const QUICK_TIPS = [
     "Luôn kiểm tra kỹ thông tin người nhận trước khi chuyển tiền.",
     "Không chia sẻ mã OTP, mật khẩu với bất kỳ ai.",
@@ -226,8 +319,11 @@ export default function LookupPage() {
                   </div>
                 </div>
                 <div className="w-full">
-                  {googleSafeResult ? (
-                    <GoogleSafeResult result={googleSafeResult} />
+                  {urlCheckResults.length > 0 ? (
+                    <GoogleSafeResult
+                      url={currentQuery}
+                      apiResults={urlCheckResults}
+                    />
                   ) : (
                     <LookupResult loading={loading} result={result} />
                   )}

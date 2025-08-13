@@ -17,7 +17,15 @@ const LookupForm = ({ onSearch }: LookupFormProps) => {
   const [useGoogleSafe, setUseGoogleSafe] = useState(false);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) onSearch(query.trim(), mode === "content", useGoogleSafe);
+    if (query.trim()) {
+      console.log("LookupForm submitting:", {
+        query: query.trim(),
+        mode,
+        useGoogleSafe,
+      }); // Debug log
+
+      onSearch(query.trim(), mode === "content", useGoogleSafe);
+    }
   };
   const isUrl = (str: string) => {
     try {
@@ -94,19 +102,21 @@ const LookupForm = ({ onSearch }: LookupFormProps) => {
       </div>
 
       {/* Checkbox Google Safe Browsing - chỉ hiển thị khi là URL */}
-      {query.trim() && isUrl(query) && (
+      {query.trim() && mode === "info" && isUrl(query) && (
         <div className="flex items-center gap-3 p-3 border border-blue-200 bg-blue-50 rounded-xl">
           <Shield className="w-5 h-5 text-blue-600" />
           <label className="flex items-center gap-2 text-sm cursor-pointer">
             <input
               type="checkbox"
               checked={useGoogleSafe}
-              onChange={(e) => setUseGoogleSafe(e.target.checked)}
+              onChange={(e) => {
+                console.log("Checkbox changed:", e.target.checked); // Debug log
+                setUseGoogleSafe(e.target.checked);
+              }}
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <span className="text-gray-700">
-              Sử dụng <strong>Google Safe Browsing</strong> để kiểm tra tính an
-              toàn của website
+              Kiểm tra tính an toàn của website
             </span>
           </label>
           <Globe className="w-4 h-4 text-blue-600" />
