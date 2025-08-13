@@ -1,9 +1,18 @@
 {
   "name": "screenshot-api",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Screenshot API using Puppeteer and Vercel",
+  "main": "api/screenshot.js",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
-    "@sparticuz/chrome-aws-lambda": "^17.1.3",
-    "puppeteer-core": "^17.1.3"
+    "chrome-aws-lambda": "^10.1.0",
+    "puppeteer-core": "^13.5.0"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel dev"
   }
 }

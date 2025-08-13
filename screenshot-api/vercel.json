@@ -1,12 +1,14 @@
 {
-  "version": 2,
-  "builds": [
+  "functions": {
+    "api/screenshot.js": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["hnd1", "sin1", "hkg1"],
+  "rewrites": [
     {
-      "src": "api/screenshot.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }
