@@ -14,8 +14,9 @@
     "puppeteer-core": "^10.1.0"
   },
   "scripts": {
-    "dev": "vercel dev",
     "build": "echo 'No build step required'",
-    "start": "vercel dev"
+    "install": "npx puppeteer browsers install chrome",
+    "postinstall": "apt-get update && apt-get install -y chromium",
+    "start": "node server.js"
   }
 }

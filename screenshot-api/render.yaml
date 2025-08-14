@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: screenshot-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PUPPETEER_CACHE_DIR
+        value: /opt/render/.cache/puppeteer
