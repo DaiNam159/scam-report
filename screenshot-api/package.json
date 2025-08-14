@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "echo 'No build step required'",
+    "install": "npx puppeteer browsers install chrome",
     "start": "node server.js"
   }
 }
