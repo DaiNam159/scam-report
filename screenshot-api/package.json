@@ -16,6 +16,7 @@
   "scripts": {
     "build": "echo 'No build step required'",
     "install": "npx puppeteer browsers install chrome",
+    "postinstall": "apt-get update && apt-get install -y chromium",
     "start": "node server.js"
   }
 }
