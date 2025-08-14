@@ -1,11 +1,8 @@
 import express from "express";
 import screenshotHandler from "./api/screenshot.js";
-
+import puppeteer from "puppeteer";
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-const express = require("express");
-const puppeteer = require("puppeteer");
 
 app.get("api/screenshot", async (req, res) => {
   try {
