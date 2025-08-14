@@ -14,8 +14,7 @@
     "puppeteer-core": "^10.1.0"
   },
   "scripts": {
-    "dev": "vercel dev",
     "build": "echo 'No build step required'",
-    "start": "vercel dev"
+    "start": "node server.js"
   }
 }
