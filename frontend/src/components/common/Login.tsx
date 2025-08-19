@@ -91,10 +91,7 @@ export default function LoginComponent() {
         </form>
         <div className="w-full mt-6 text-sm text-center text-gray-500">
           Chưa có tài khoản?{" "}
-          <a
-            href="/register"
-            className="text-[#e53935] underline font-semibold"
-          >
+          <a href="/dang-ky" className="text-[#e53935] underline font-semibold">
             Đăng ký ngay
           </a>
         </div>

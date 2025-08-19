@@ -121,7 +121,10 @@ export default function RegisterComponent() {
         </form>
         <div className="w-full mt-6 text-sm text-center text-gray-500">
           Đã có tài khoản?{" "}
-          <a href="/login" className="text-[#e53935] underline font-semibold">
+          <a
+            href="/dang-nhap"
+            className="text-[#e53935] underline font-semibold"
+          >
             Đăng nhập
           </a>
         </div>

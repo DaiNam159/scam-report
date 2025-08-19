@@ -20,12 +20,12 @@ export default function AdminLayout({
       try {
         const res = await AuthService.getProfile();
         if (!res.isLoggedIn || !res.user.isAdmin) {
-          router.push("/login");
+          router.push("/dang-nhap");
         } else {
           setLoading(false);
         }
       } catch (err) {
-        router.push("/login");
+        router.push("/dang-nhap");
       }
     };
     fetchProfile();
@@ -60,7 +60,7 @@ export default function AdminLayout({
             <FaTachometerAlt className="mr-2" /> Bảng điều khiển
           </Link>
           <Link
-            href="/admin/report"
+            href="/admin/bao-cao"
             className="flex items-center px-4 py-2 hover:bg-gray-700"
           >
             <FaFileAlt className="mr-2" /> Quản lý báo cáo
@@ -82,7 +82,7 @@ export default function AdminLayout({
             <button
               onClick={async () => {
                 await AuthService.logout();
-                router.push("/login");
+                router.push("/dang-nhap");
               }}
               className="px-4 py-2 text-white transition bg-red-500 rounded-md hover:bg-red-600"
             >

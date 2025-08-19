@@ -213,13 +213,20 @@ export default function BlacklistTable({
   const router = useRouter();
   const columns = getColumnsForType(selectedType);
 
-  // Sử dụng pagination từ props nếu có,否则 fallback về local pagination
+  // Sử dụng pagination từ props nếu có, fallback về local pagination
   const currentPage = pagination?.page || page;
   const totalPages =
     pagination?.totalPages || Math.ceil(data.length / PAGE_SIZE);
   const pagedData = pagination
     ? data
     : data.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // Reset page khi selectedType thay đổi
+  useEffect(() => {
+    if (!pagination) {
+      setPage(1);
+    }
+  }, [selectedType, pagination]);
 
   if (!data || data.length === 0) {
     return (

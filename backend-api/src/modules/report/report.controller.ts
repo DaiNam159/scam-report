@@ -19,6 +19,7 @@ import { OptionalJwtAuthGuard } from 'src/common/guards/optional-jwt-auth.guard'
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { EditStatusDto } from './dto/edit-status.dto';
+import { GetReportsDto } from './dto/get-reports.dto';
 
 @Controller('report')
 export class ReportController {
@@ -40,6 +41,10 @@ export class ReportController {
   async updateReportDate() {
     return this.reportService.getLastReportUpdate();
   }
+  @Get('count-all')
+  async getCountAllReports() {
+    return this.reportService.getTotalReport();
+  }
 
   @Get('count-approved')
   async getCountApprovedReports() {
@@ -49,13 +54,10 @@ export class ReportController {
   async getCountPendingReports() {
     return this.reportService.getTotalReportPending();
   }
-  @UseGuards(AuthGuard('jwt'), AdminGuard)
+  // @UseGuards(AuthGuard('jwt'), AdminGuard)
   @Get()
-  getReports(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-  ) {
-    return this.reportService.getReports(page, limit);
+  getReports(@Query() query: GetReportsDto) {
+    return this.reportService.getReports(query);
   }
   // @Get('search-related')
   // async searchRelated(@Query('q') keyword: string) {

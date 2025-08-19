@@ -31,7 +31,7 @@ export default function DetailRenderer({ report }: Props) {
       <Field label="Liên hệ" value={report.contact} />
       <Field
         label="Người gửi"
-        value={report.user.fullName || report.user.email}
+        value={report.user?.fullName || report.user?.email || "Ẩn danh"}
       />
       <Field label="Trạng thái" value={report.status} />
       <Field label="Ngày tạo" value={formatDate(report.created_at)} />

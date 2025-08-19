@@ -14,6 +14,7 @@ import { ReportSms } from 'src/entities/report_sms.entity';
 import { ReportPhone } from 'src/entities/report_phone.entity';
 import axios from 'axios';
 import { Stats } from 'src/entities/stats.entity';
+import { GetReportsDto } from './dto/get-reports.dto';
 @Injectable()
 export class ReportService {
   constructor(
@@ -193,121 +194,121 @@ export class ReportService {
       throw err;
     }
   }
-  async getReports(page = 1, limit = 5) {
+  async getReports(query: GetReportsDto) {
     try {
-      const [reports, total] = await this.reportRepo.findAndCount({
-        relations: [
-          'user',
-          'email_address',
-          'person_org',
-          'email_content',
-          'phone',
-          'sms',
-          'website',
-          'social',
-          'bank_account',
-          'e_wallet',
-        ],
-        select: {
-          id: true,
-          report_type: true,
-          title: true,
-          description: true,
-          evidence: true,
-          user_ip: true,
-          status: true,
-          contact: true,
-          created_at: true,
-          user: {
-            id: true,
-            fullName: true,
-            email: true,
-          },
-          email_address: {
-            report_id: true,
-            email_address: true,
-          },
-          person_org: {
-            report_id: true,
-            name: true,
-            role: true,
-            identification: true,
-            address: true,
-            phone_number: true,
-            email_address: true,
-            social_links: true,
-          },
-          email_content: {
-            report_id: true,
-            email_subject: true,
-            email_body: true,
-            sender_address: true,
-            attachments: true,
-            suspicious_links: true,
-          },
-          phone: {
-            report_id: true,
-            phone_number: true,
-          },
-          sms: {
-            report_id: true,
-            phone_number: true,
-            sms_content: true,
-          },
-          website: {
-            report_id: true,
-            url: true,
-          },
-          social: {
-            report_id: true,
-            platform: true,
-            profile_url: true,
-            username: true,
-          },
-          bank_account: {
-            report_id: true,
-            bank_name: true,
-            account_number: true,
-            account_holder_name: true,
-          },
-          e_wallet: {
-            report_id: true,
-            wallet_type: true,
-            wallet_id: true,
-            account_holder_name: true,
-          },
-        },
-        skip: (page - 1) * limit,
-        take: limit,
-        order: {
-          created_at: 'DESC',
-        },
-      });
+      const {
+        page = 1,
+        limit = 10,
+        type,
+        status,
+        search,
+        dateFrom,
+        dateTo,
+        userEmail,
+        sortBy,
+        sortOrder,
+      } = query;
 
-      // Filter các loại không khớp với report_type
-      for (const r of reports) {
-        const type = r.report_type;
-        for (const key of [
-          'email_address',
-          'person_org',
-          'email_content',
-          'phone',
-          'sms',
-          'website',
-          'social',
-          'bank_account',
-          'e_wallet',
-        ]) {
-          if (key !== type) delete r[key];
-        }
+      const qb = this.reportRepo
+        .createQueryBuilder('report')
+        .leftJoinAndSelect('report.user', 'user')
+        .leftJoinAndSelect('report.email_address', 'email_address')
+        .leftJoinAndSelect('report.person_org', 'person_org')
+        .leftJoinAndSelect('report.email_content', 'email_content')
+        .leftJoinAndSelect('report.phone', 'phone')
+        .leftJoinAndSelect('report.sms', 'sms')
+        .leftJoinAndSelect('report.website', 'website')
+        .leftJoinAndSelect('report.social', 'social')
+        .leftJoinAndSelect('report.bank_account', 'bank_account')
+        .leftJoinAndSelect('report.e_wallet', 'e_wallet')
+        .skip((page - 1) * limit)
+        .take(limit);
+
+      // lọc theo type
+      if (type) {
+        qb.andWhere('report.report_type = :type', { type });
       }
 
+      // lọc theo status
+      if (status) {
+        qb.andWhere('report.status = :status', { status });
+      }
+
+      // lọc theo email user
+      if (userEmail) {
+        qb.andWhere('user.email LIKE :userEmail', {
+          userEmail: `%${userEmail}%`,
+        });
+      }
+
+      // lọc theo search (title hoặc description)
+      if (search) {
+        qb.andWhere(
+          '(report.title LIKE :search OR report.description LIKE :search)',
+          { search: `%${search}%` },
+        );
+      }
+
+      // lọc theo khoảng thời gian
+      if (dateFrom) {
+        qb.andWhere('report.created_at >= :dateFrom', { dateFrom });
+      }
+      if (dateTo) {
+        qb.andWhere('report.created_at <= :dateTo', { dateTo });
+      }
+
+      // Logic sort động
+      let sortField = 'report.created_at';
+      let sortDir: 'ASC' | 'DESC' = 'DESC';
+      if (sortBy) {
+        // Chỉ cho phép sort theo các trường hợp lệ
+        const allowedSort: Record<string, string> = {
+          id: 'report.id',
+          title: 'report.title',
+          report_type: 'report.report_type',
+          status: 'report.status',
+          created_at: 'report.created_at',
+        };
+        if (allowedSort[sortBy]) {
+          sortField = allowedSort[sortBy];
+        }
+      }
+      if (sortOrder && (sortOrder === 'ASC' || sortOrder === 'DESC')) {
+        sortDir = sortOrder.toUpperCase() as 'ASC' | 'DESC';
+      }
+      qb.orderBy(sortField, sortDir);
+
+      const [reports, total] = await qb.getManyAndCount();
+      const cleaned = reports.map((report) => {
+        const { report_type } = report;
+        const allowed = [
+          'email_address',
+          'email_content',
+          'website',
+          'phone',
+          'sms',
+          'social',
+          'person_org',
+          'bank_account',
+          'e_wallet',
+        ];
+
+        // remove các quan hệ null không liên quan
+        const filtered = Object.fromEntries(
+          Object.entries(report).filter(([key]) => {
+            if (!allowed.includes(key)) return true; // giữ field gốc như id, title, description, ...
+            return key === report_type; // chỉ giữ đúng type
+          }),
+        );
+
+        return filtered;
+      });
+
       return {
-        data: reports,
+        data: cleaned,
         total,
         page,
-        pageSize: limit,
-        totalPages: Math.ceil(total / limit),
+        limit,
       };
     } catch (error) {
       throw error;
@@ -381,6 +382,14 @@ export class ReportService {
       const total = await this.reportRepo.count({
         where: { status: ReportStatus.PENDING },
       });
+      return total;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getTotalReport() {
+    try {
+      const total = await this.reportRepo.count();
       return total;
     } catch (error) {
       throw error;
