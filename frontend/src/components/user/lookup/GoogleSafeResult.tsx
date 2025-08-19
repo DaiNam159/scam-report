@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Shield,
   ShieldAlert,
@@ -315,7 +315,10 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
 
   const hasErrors = apiResults.some((api) => api.result?.error);
   const isLoading = apiResults.some((api) => api.loading);
-
+  const [isImgLoading, setIsImgLoading] = useState(true);
+  useEffect(() => {
+    setIsImgLoading(true);
+  }, [url]);
   return (
     <div className="p-6 bg-white border border-gray-200 shadow rounded-2xl">
       {/* Header */}
@@ -329,66 +332,101 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
         </div>
       </div>
 
-      {/* Kết quả tổng quan */}
-      {!isLoading && (
-        <div
-          className={`p-4 rounded-lg mb-4 ${
-            overallSafe
-              ? "bg-green-50 border border-green-200"
-              : hasErrors
-              ? "bg-orange-50 border border-orange-200"
-              : "bg-red-50 border border-red-200"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            {overallSafe ? (
-              <>
-                <Shield className="w-6 h-6 text-green-600" />
-                <span className="font-bold text-green-800">
-                  Website An Toàn
-                </span>
-              </>
-            ) : hasErrors ? (
-              <>
-                <AlertTriangle className="w-6 h-6 text-orange-600" />
-                <span className="font-bold text-orange-800">
-                  Không thể xác định hoàn toàn
-                </span>
-              </>
-            ) : (
-              <>
-                <ShieldAlert className="w-6 h-6 text-red-600" />
-                <span className="font-bold text-red-800">
-                  Cảnh báo: Website Nguy Hiểm!
-                </span>
-              </>
+      {/* 2 cột: Kết quả & Ảnh */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {/* Cột 1: Kết quả nguy cơ */}
+        <div>
+          {/* Kết quả tổng quan */}
+          {!isLoading && (
+            <div
+              className={`p-4 rounded-lg mb-4 ${
+                overallSafe
+                  ? "bg-green-50 border border-green-200"
+                  : hasErrors
+                  ? "bg-orange-50 border border-orange-200"
+                  : "bg-red-50 border border-red-200"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                {overallSafe ? (
+                  <>
+                    <Shield className="w-6 h-6 text-green-600" />
+                    <span className="font-bold text-green-800">
+                      Website An Toàn
+                    </span>
+                  </>
+                ) : hasErrors ? (
+                  <>
+                    <AlertTriangle className="w-6 h-6 text-orange-600" />
+                    <span className="font-bold text-orange-800">
+                      Không thể xác định hoàn toàn
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldAlert className="w-6 h-6 text-red-600" />
+                    <span className="font-bold text-red-800">
+                      Cảnh báo: Website Nguy Hiểm!
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Kết quả từng API */}
+          <div className="space-y-3">
+            <h4 className="font-semibold text-gray-700">
+              Kết quả từ bên thứ 3
+            </h4>
+            {apiResults.map((api, index) => (
+              <div key={index}>{renderApiResult(api)}</div>
+            ))}
+          </div>
+
+          {/* Khuyến cáo khi có mối đe dọa */}
+          {!isLoading && !overallSafe && !hasErrors && (
+            <div className="p-4 mt-4 border border-red-200 rounded-lg bg-red-50">
+              <div className="text-sm text-red-800">
+                <strong>⚠️ Khuyến cáo:</strong>
+                <ul className="mt-2 space-y-1 list-disc list-inside">
+                  <li>Không truy cập vào website này</li>
+                  <li>Không nhập thông tin cá nhân</li>
+                  <li>Không tải xuống bất kỳ file nào</li>
+                  <li>Cảnh báo người khác về website này</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Cột 2: Ảnh website */}
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-full overflow-hidden border border-gray-200 shadow rounded-xl bg-gray-50 relative min-h-[200px] flex items-center justify-center">
+            {isImgLoading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-50">
+                <Loader2 className="w-10 h-10 text-blue-400 animate-spin" />
+              </div>
             )}
+            <img
+              src={`${
+                process.env.NEXT_PUBLIC_API_URL
+              }/safety/screenshot-website?url=${encodeURIComponent(url)}`}
+              alt="Website screenshot"
+              className={`object-contain w-full transition-opacity duration-300 ${
+                isImgLoading ? "opacity-0" : "opacity-100"
+              }`}
+              style={{ minHeight: 200, background: "#f3f4f6" }}
+              loading="lazy"
+              onLoad={() => setIsImgLoading(false)}
+              onError={() => setIsImgLoading(false)}
+            />
+          </div>
+          <div className="mt-2 text-xs text-center text-gray-500">
+            Ảnh chụp màn hình website
           </div>
         </div>
-      )}
-
-      {/* Kết quả từng API */}
-      <div className="space-y-3">
-        <h4 className="font-semibold text-gray-700">Kết quả từ bên thứ 3</h4>
-        {apiResults.map((api, index) => (
-          <div key={index}>{renderApiResult(api)}</div>
-        ))}
       </div>
-
-      {/* Khuyến cáo khi có mối đe dọa */}
-      {!isLoading && !overallSafe && !hasErrors && (
-        <div className="p-4 mt-4 border border-red-200 rounded-lg bg-red-50">
-          <div className="text-sm text-red-800">
-            <strong>⚠️ Khuyến cáo:</strong>
-            <ul className="mt-2 space-y-1 list-disc list-inside">
-              <li>Không truy cập vào website này</li>
-              <li>Không nhập thông tin cá nhân</li>
-              <li>Không tải xuống bất kỳ file nào</li>
-              <li>Cảnh báo người khác về website này</li>
-            </ul>
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <div className="pt-4 mt-4 border-t border-gray-200">

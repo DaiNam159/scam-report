@@ -11,6 +11,8 @@ import { ReportService } from './modules/report/report.service';
 import { ReportModule } from './modules/report/report.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { SafetyModule } from './modules/safety/safety.module';
+import { BlacklistModule } from './modules/blacklist/blacklist.module';
+import { TestModule } from './modules/test/test.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,6 +25,8 @@ import { SafetyModule } from './modules/safety/safety.module';
     ReportModule,
     UploadModule,
     SafetyModule,
+    BlacklistModule,
+    TestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

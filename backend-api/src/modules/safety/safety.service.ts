@@ -53,14 +53,11 @@ export class SafetyService {
     };
 
     try {
-      console.log('Checking URL:', url);
       const res = await axios.post(
         `${this.endpoint}?key=${this.safe_browsing_apiKey}`,
         body,
       );
       const matches = res.data.matches;
-      console.log('Using API KEY:', this.safe_browsing_apiKey);
-      console.log('Matches found:', res.data);
       if (matches && matches.length > 0) {
         return {
           url,

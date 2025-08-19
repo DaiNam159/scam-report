@@ -2,34 +2,30 @@
 
 import BlacklistFilter from "@/components/user/blacklist/BlacklistFilter";
 import BlacklistTable from "@/components/user/blacklist/BlacklistTable";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { ReportType } from "@/types/ReportType";
 import { BlacklistItem } from "@/types/BlacklistType";
 import { ShieldAlert, Users, Info, Sparkles } from "lucide-react";
+import { BlacklistService, BlacklistStats } from "@/services/BlacklistService";
 
 export default function BlacklistPage() {
   const [type, setType] = useState<ReportType>("email_address");
   const [data, setData] = useState<BlacklistItem[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // Thống kê giả lập
-  const STATS = [
-    {
-      label: "Tổng mục bị báo cáo",
-      value: 1280,
-      icon: <ShieldAlert className="w-6 h-6 text-[#e53935] animate-pulse" />,
-    },
-    {
-      label: "Lượt báo cáo",
-      value: 23456,
-      icon: <Sparkles className="w-6 h-6 text-[#fbc02d]" />,
-    },
-    {
-      label: "Người dùng đóng góp",
-      value: 3200,
-      icon: <Users className="w-6 h-6 text-[#43a047]" />,
-    },
-  ];
+  const [stats, setStats] = useState<BlacklistStats>({
+    totalItems: 1280,
+    totalReports: 23456,
+    totalUsers: 3200,
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+  });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
   // FAQ giả lập
   const FAQS = [
@@ -47,146 +43,173 @@ export default function BlacklistPage() {
     },
   ];
 
+  // Load thống kê khi component mount
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const statsData = await BlacklistService.getBlacklistStats();
+        setStats(statsData);
+      } catch (error) {
+        console.error("Error loading stats:", error);
+        // Giữ nguyên stats mặc định nếu API lỗi
+      }
+    };
+
+    loadStats();
+  }, []);
+
+  // Load blacklist khi type hoặc search thay đổi
   useEffect(() => {
     const fetchBlacklist = async () => {
       setLoading(true);
+      setError(null);
+
       try {
-        // Đảm bảo type và fakeData đồng bộ với filter
+        const response = await BlacklistService.getBlacklist({
+          type,
+          search: searchQuery || undefined,
+          page: 1,
+          limit: 10,
+          sortBy: "reportCount",
+          sortOrder: "desc",
+        });
+
+        setData(response.data);
+        setPagination(response.pagination);
+      } catch (err) {
+        console.error("Lỗi khi lấy danh sách đen:", err);
+        setError(err instanceof Error ? err.message : "Có lỗi xảy ra");
+
+        // Fallback to fake data nếu API lỗi
         const fakeData: BlacklistItem[] = [
           {
             value: "scammer@email.com",
             type: "email_address",
             reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammzxcer@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammera@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammerx@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammerc@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "sczammer@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scamsdzmer@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammser@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammfer@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scamazmer@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammxer@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
-          },
-          {
-            value: "scammerb@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "01/06/2024",
+            latestReport: "2024-06-01",
+            email_address: {
+              email_address: "scammer@email.com",
+              sender_address: "Scam Company",
+            },
           },
           {
             value: "0912345678",
-            type: "phone_number",
+            type: "phone",
             reportCount: 8,
-            latestReport: "30/05/2024",
+            latestReport: "2024-05-30",
+            phone: {
+              phone_number: "0912345678",
+            },
           },
           {
             value: "http://luadao.com",
             type: "website",
             reportCount: 15,
-            latestReport: "29/05/2024",
+            latestReport: "2024-05-29",
+            website: {
+              url: "http://luadao.com",
+            },
           },
           {
             value: "facebook.com/fakeprofile",
-            type: "social_profile",
+            type: "social",
             reportCount: 6,
-            latestReport: "28/05/2024",
+            latestReport: "2024-05-28",
+            social: {
+              platform: "Facebook",
+              profile_url: "https://facebook.com/fakeprofile",
+              username: "fakeuser123",
+            },
           },
           {
             value: "123456789",
             type: "bank_account",
             reportCount: 10,
-            latestReport: "27/05/2024",
+            latestReport: "2024-05-27",
+            bank_account: {
+              bank_name: "Vietcombank",
+              account_number: "123456789",
+              account_holder_name: "Nguyễn Văn Lừa",
+            },
           },
           {
-            value: "ZaloPay: 0987654321",
+            value: "0987654321",
             type: "e_wallet",
             reportCount: 4,
-            latestReport: "26/05/2024",
+            latestReport: "2024-05-26",
+            e_wallet: {
+              wallet_type: "MoMo",
+              wallet_id: "0987654321",
+              account_holder_name: "Trần Thị Lừa",
+            },
           },
           {
             value: "Nguyễn Văn Lừa",
-            type: "person",
+            type: "person_org",
             reportCount: 7,
-            latestReport: "25/05/2024",
+            latestReport: "2024-05-25",
+            person_org: {
+              name: "Nguyễn Văn Lừa",
+              role: "Giám đốc",
+              identification: "123456789012",
+              address: "123 Đường ABC, Quận 1, TP.HCM",
+              phone_number: "0123456789",
+              email_address: "fake@email.com",
+            },
           },
         ];
-        // Nếu filter chỉ cho phép 4 loại đầu, hãy loại bỏ các loại không có trong filter
+
         const allowedTypes = [
           "email_address",
-          "phone_number",
+          "phone",
           "website",
-          "social_profile",
+          "social",
           "bank_account",
           "e_wallet",
-          "person",
+          "person_org",
         ];
-        // Đảm bảo type luôn nằm trong allowedTypes, nếu không thì fallback về loại đầu tiên
+
         const safeType = allowedTypes.includes(type) ? type : allowedTypes[0];
-        // Đảm bảo kiểu type nhất quán (ReportType là union type string)
-        setData(
-          fakeData.filter((row) => String(row.type) === String(safeType))
+        const filteredData = fakeData.filter(
+          (row) => String(row.type) === String(safeType)
         );
-      } catch (err) {
-        console.error("Lỗi khi lấy danh sách đen:", err);
+        setData(filteredData);
       } finally {
         setLoading(false);
+        setIsSearching(false);
       }
     };
 
     fetchBlacklist();
-  }, [type]);
+  }, [type, searchQuery]);
+
+  const handlePageChange = async (newPage: number) => {
+    setLoading(true);
+    try {
+      const response = await BlacklistService.getBlacklist({
+        type,
+        search: searchQuery || undefined,
+        page: newPage,
+        limit: pagination.limit,
+        sortBy: "reportCount",
+        sortOrder: "desc",
+      });
+
+      setData(response.data);
+      setPagination(response.pagination);
+    } catch (err) {
+      console.error("Lỗi khi tải trang:", err);
+      setError(err instanceof Error ? err.message : "Có lỗi xảy ra");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+    setIsSearching(!!query);
+    setPagination((prev) => ({ ...prev, page: 1 })); // Reset về trang đầu khi search
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-gradient-to-br from-[#fff8e1] via-[#fbe9e7] to-[#e3f2fd]">
@@ -211,50 +234,105 @@ export default function BlacklistPage() {
             </div>
           </div>
           <div className="flex flex-row gap-4 md:flex-col">
-            {STATS.map((stat, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-100 rounded-2xl shadow min-w-[120px]"
-              >
-                {stat.icon}
-                <div>
-                  <div className="font-bold text-lg text-[#e53935]">
-                    {stat.value.toLocaleString()}
-                  </div>
-                  <div className="text-xs text-gray-600">{stat.label}</div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-100 rounded-2xl shadow min-w-[120px]">
+              <ShieldAlert className="w-6 h-6 text-[#e53935] animate-pulse" />
+              <div>
+                <div className="font-bold text-lg text-[#e53935]">
+                  {stats.totalItems.toLocaleString()}
                 </div>
+                <div className="text-xs text-gray-600">Tổng mục bị báo cáo</div>
               </div>
-            ))}
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-100 rounded-2xl shadow min-w-[120px]">
+              <Sparkles className="w-6 h-6 text-[#fbc02d]" />
+              <div>
+                <div className="font-bold text-lg text-[#e53935]">
+                  {stats.totalReports.toLocaleString()}
+                </div>
+                <div className="text-xs text-gray-600">Lượt báo cáo</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-100 rounded-2xl shadow min-w-[120px]">
+              <Users className="w-6 h-6 text-[#43a047]" />
+              <div>
+                <div className="font-bold text-lg text-[#e53935]">
+                  {stats.totalUsers.toLocaleString()}
+                </div>
+                <div className="text-xs text-gray-600">Người dùng đóng góp</div>
+              </div>
+            </div>
           </div>
         </div>
+
         {/* Bộ lọc */}
         <div className="flex flex-col items-center w-full gap-4 p-4 bg-white border border-gray-100 shadow rounded-2xl md:flex-row">
-          <BlacklistFilter selectedType={type} onChange={setType} />
-          <div className="flex flex-wrap justify-end flex-1 gap-2 text-xs text-gray-500">
-            <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full">
-              Ví dụ: scam@email.com
-            </span>
-            <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full">
-              Ví dụ: 0912345678
-            </span>
-            <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full">
-              Ví dụ: http://luadao.com
-            </span>
+          <div className="w-full md:w-auto">
+            <BlacklistFilter
+              selectedType={type}
+              onChange={setType}
+              onSearch={handleSearch}
+              searchValue={searchQuery}
+            />
           </div>
+
+          {/* Search Results Info */}
+          {searchQuery && (
+            <div className="flex flex-col gap-2 text-xs text-gray-600">
+              <span className="font-medium">
+                Kết quả tìm kiếm cho: "{searchQuery}"
+              </span>
+              {pagination.total > 0 && (
+                <span>Tìm thấy {pagination.total} kết quả</span>
+              )}
+            </div>
+          )}
+
+          {/* Ví dụ - chỉ hiện khi không search */}
+          {!searchQuery && (
+            <div className="flex flex-wrap justify-end flex-1 gap-2 text-xs text-gray-500">
+              <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full">
+                Ví dụ: scam@email.com
+              </span>
+              <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full">
+                Ví dụ: 0912345678
+              </span>
+              <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full">
+                Ví dụ: http://luadao.com
+              </span>
+            </div>
+          )}
         </div>
+
+        {/* Hiển thị lỗi nếu có */}
+        {error && (
+          <div className="p-4 border border-red-200 bg-red-50 rounded-2xl">
+            <div className="flex items-center gap-2 text-red-600">
+              <Info className="w-5 h-5" />
+              <span className="font-semibold">Có lỗi xảy ra:</span>
+            </div>
+            <p className="mt-1 text-sm text-red-600">{error}</p>
+          </div>
+        )}
+
         {/* Bảng dữ liệu */}
         <div className="w-full p-4 bg-white border border-gray-100 shadow-lg rounded-2xl">
-          {loading ? (
+          {loading || isSearching ? (
             <div className="flex items-center justify-center py-10">
               <span className="animate-spin rounded-full border-4 border-[#e53935] border-t-transparent w-8 h-8 mr-3"></span>
               <span className="text-lg text-[#e53935] font-semibold">
-                Đang tải dữ liệu...
+                {isSearching ? "Đang tìm kiếm..." : "Đang tải dữ liệu..."}
               </span>
             </div>
           ) : (
-            <BlacklistTable data={data} />
+            <BlacklistTable
+              data={data}
+              selectedType={type}
+              pagination={pagination}
+              onPageChange={handlePageChange}
+            />
           )}
         </div>
+
         {/* FAQ + Đóng góp */}
         <div className="flex flex-col gap-6 md:flex-row">
           <div className="flex-1 p-5 bg-white border border-gray-100 shadow rounded-2xl">

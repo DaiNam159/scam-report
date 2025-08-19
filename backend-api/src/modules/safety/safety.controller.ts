@@ -16,7 +16,7 @@ export class SafetyController {
     if (!url) return { message: 'Missing url query param' };
     return this.safetyService.checkUrlWithIPQS(url);
   }
-  @Get('screenshot')
+  @Get('screenshot-website')
   async getScreenshot(@Query('url') url: string, @Res() res: Response) {
     if (!url) {
       return res.status(400).json({ error: 'Missing url parameter' });
@@ -29,13 +29,5 @@ export class SafetyController {
   @Post('screenshot-url')
   async screenshotUrl(@Body('url') url: string) {
     return await this.safetyService.screenshotUrl(url);
-  }
-  @Post('screenshot-url-full-page')
-  async screenshotUrlFullPage(
-    @Body() body: { url: string; sections?: number },
-  ) {
-    const { url, sections } = body;
-
-    return await this.safetyService.screenshotUrlFullPage(url, sections || 5);
   }
 }

@@ -19,6 +19,7 @@ import { OptionalJwtAuthGuard } from 'src/common/guards/optional-jwt-auth.guard'
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { EditStatusDto } from './dto/edit-status.dto';
+
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
