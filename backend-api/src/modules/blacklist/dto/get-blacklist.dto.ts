@@ -1,6 +1,6 @@
 import { IsOptional, IsEnum, IsString, IsInt, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { ReportType } from '../../../types/report.type';
+import { ReportType } from 'src/types/report.type';
 
 export class GetBlacklistDto {
   @IsOptional()

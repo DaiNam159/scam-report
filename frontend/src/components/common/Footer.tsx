@@ -11,9 +11,7 @@ const UserFooter = () => (
             alt="Logo"
             className="rounded-full shadow w-14 h-14"
           />
-          <span className="font-extrabold text-2xl text-[#e53935]">
-            Scam Report
-          </span>
+          <span className="font-bold text-2xl text-[#e53935]">Scam Report</span>
         </div>
         <span className="mt-2 text-base font-medium text-gray-600">
           Báo cáo & Cảnh báo lừa đảo trực tuyến

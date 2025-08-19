@@ -2,7 +2,6 @@
 import { AuthService } from "@/services/AuthService";
 import { ReportService } from "@/services/ReportService";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 type DateUpdated = {
   day: number;
@@ -10,7 +9,6 @@ type DateUpdated = {
   year: number;
 };
 const UserHeader = () => {
-  const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
   const [dateUpdated, setDateUpdated] = useState<DateUpdated | null>(null);
 
@@ -59,25 +57,25 @@ const UserHeader = () => {
             Trang chủ
           </Link>
           <Link
-            href="/report"
+            href="/bao-cao"
             className="text-lg font-semibold text-black transition hover:text-red-600"
           >
             Báo cáo
           </Link>
           <Link
-            href="/lookup"
+            href="/tra-cuu"
             className="text-lg font-semibold text-black transition hover:text-red-600"
           >
             Tra cứu
           </Link>
           <Link
-            href="/blacklist"
+            href="/danh-sach-den"
             className="text-lg font-semibold text-black transition hover:text-red-600"
           >
             Danh sách đen
           </Link>
           <Link
-            href="/support"
+            href="/ho-tro"
             className="text-lg font-semibold text-black transition hover:text-red-600"
           >
             Hỗ trợ
@@ -88,13 +86,13 @@ const UserHeader = () => {
           {!profile ? (
             <>
               <Link
-                href="/login"
+                href="/dang-nhap"
                 className="px-4 py-2 font-semibold text-red-600 transition border border-red-600 rounded hover:bg-red-50 hover:text-red-700"
               >
                 Đăng nhập
               </Link>
               <Link
-                href="/register"
+                href="/dang-ky"
                 className="px-4 py-2 font-semibold text-white transition bg-red-600 rounded hover:bg-red-700"
               >
                 Đăng ký

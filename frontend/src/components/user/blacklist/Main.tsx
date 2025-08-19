@@ -8,7 +8,7 @@ import { BlacklistItem } from "@/types/BlacklistType";
 import { ShieldAlert, Users, Info, Sparkles } from "lucide-react";
 import { BlacklistService, BlacklistStats } from "@/services/BlacklistService";
 
-export default function BlacklistPage() {
+export default function BlacklistComponent() {
   const [type, setType] = useState<ReportType>("email_address");
   const [data, setData] = useState<BlacklistItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -218,7 +218,7 @@ export default function BlacklistPage() {
         <div className="relative flex flex-col items-center gap-6 p-8 overflow-hidden bg-white border border-gray-100 shadow-xl md:flex-row rounded-3xl">
           <div className="flex flex-col items-center flex-1 md:items-start">
             <ShieldAlert className="w-14 h-14 text-[#e53935] animate-pulse mb-2" />
-            <h1 className="text-3xl md:text-4xl font-extrabold text-center md:text-left mb-2 text-[#e53935] tracking-tight drop-shadow">
+            <h1 className="text-3xl md:text-4xl font-bold text-center md:text-left mb-2 text-[#e53935] tracking-tight drop-shadow">
               Danh sách đen lừa đảo
             </h1>
             <p className="max-w-2xl mb-2 text-lg text-center text-gray-700 md:text-left">
@@ -357,7 +357,7 @@ export default function BlacklistPage() {
               cộng đồng!
             </div>
             <a
-              href="/report"
+              href="/bao-cao"
               className="inline-block px-6 py-3 rounded-xl bg-white text-[#e53935] font-bold shadow hover:bg-gray-100 transition"
             >
               Gửi báo cáo lừa đảo

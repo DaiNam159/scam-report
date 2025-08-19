@@ -1,6 +1,6 @@
 "use client";
-import UserHeader from "@/components/user/Header";
-import UserFooter from "@/components/user/Footer";
+import UserHeader from "@/components/common/Header";
+import UserFooter from "@/components/common/Footer";
 
 export default function UserLayout({
   children,

@@ -12,6 +12,7 @@ import { ReportSocial } from 'src/entities/report_social.entity';
 import { ReportBankAccount } from 'src/entities/report_bank_account.entity';
 import { ReportSms } from 'src/entities/report_sms.entity';
 import { Report } from 'src/entities/reports.entity';
+import { Stats } from 'src/entities/stats.entity';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { Report } from 'src/entities/reports.entity';
       ReportSocial,
       ReportBankAccount,
       ReportSms,
+      Stats,
     ]),
   ],
   controllers: [ReportController],

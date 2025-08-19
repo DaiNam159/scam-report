@@ -13,6 +13,7 @@ import { ReportBankAccount } from 'src/entities/report_bank_account.entity';
 import { ReportSms } from 'src/entities/report_sms.entity';
 import { ReportPhone } from 'src/entities/report_phone.entity';
 import axios from 'axios';
+import { Stats } from 'src/entities/stats.entity';
 @Injectable()
 export class ReportService {
   constructor(
@@ -45,6 +46,9 @@ export class ReportService {
 
     @InjectRepository(ReportPhone)
     private readonly phoneRepo: Repository<ReportPhone>,
+
+    @InjectRepository(Stats)
+    private readonly statsRepo: Repository<Stats>,
 
     // inject các bảng khác tương tự
   ) {}
@@ -386,6 +390,14 @@ export class ReportService {
   async searchRelatedReports(inputText: string) {
     try {
       const baseUrl = process.env.FAST_API_URL;
+      const stats = await this.statsRepo.findOne({
+        where: { id: 1 },
+      });
+      if (!stats) {
+        throw new Error('Stats not found');
+      }
+      stats.lookup_count++;
+      await this.statsRepo.save(stats);
 
       if (!baseUrl) {
         throw new Error(

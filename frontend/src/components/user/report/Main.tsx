@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { ReportService } from "@/services/ReportService";
 import { UserService } from "@/services/UserService";
 
-export default function ReportPage() {
+export default function ReportComponent() {
   const FAQS = [
     {
       a: "Để báo cáo lừa đảo, bạn cần cung cấp thông tin chi tiết về hành vi lừa đảo, kèm theo bằng chứng nếu có.",

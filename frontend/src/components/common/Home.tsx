@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   ShieldAlert,
@@ -36,28 +37,28 @@ const mainFeatures = [
     icon: <ShieldAlert className="w-10 h-10 text-[#e53935]" />,
     title: "Báo cáo lừa đảo",
     desc: "Gửi tố cáo các vụ việc lừa đảo, giúp cộng đồng cảnh giác và phòng tránh.",
-    link: "/report",
+    link: "/tra-cuu",
     color: "from-[#e53935] to-[#ffb300]",
   },
   {
     icon: <Ban className="w-10 h-10 text-[#222]" />,
     title: "Danh sách đen",
     desc: "Tổng hợp tài khoản, số điện thoại, website... đã bị báo cáo lừa đảo nhiều lần.",
-    link: "/blacklist",
+    link: "/danh-sach-den",
     color: "from-[#222] to-[#757575]",
   },
   {
     icon: <FileText className="w-10 h-10 text-[#fbc02d]" />,
     title: "Tin tức & Cảnh báo",
     desc: "Cập nhật các thủ đoạn lừa đảo mới, cảnh báo nóng từ cộng đồng và chuyên gia.",
-    link: "/news",
+    link: "/tin-tuc",
     color: "from-[#fbc02d] to-[#fffde7]",
   },
   {
     icon: <Lightbulb className="w-10 h-10 text-[#1565c0]" />,
     title: "Kiến thức an toàn số",
     desc: "Cẩm nang, hướng dẫn nhận biết và phòng tránh lừa đảo trên môi trường số.",
-    link: "/knowledge",
+    link: "/kien-thuc",
     color: "from-[#1565c0] to-[#e3f2fd]",
   },
 ];
@@ -184,7 +185,7 @@ const UserHome = () => (
         transition={{ duration: 0.8, type: "spring" }}
       >
         <motion.h1
-          className="text-5xl md:text-6xl font-extrabold text-[#e53935] mb-6 drop-shadow tracking-tight"
+          className="text-5xl md:text-6xl font-bold text-[#e53935] mb-6 drop-shadow tracking-tight"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.7 }}
@@ -208,7 +209,7 @@ const UserHome = () => (
           transition={{ delay: 0.7, duration: 0.5 }}
         >
           <Link
-            href="/report"
+            href="/tra-cuu"
             className="inline-block bg-gradient-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-semibold px-10 py-4 rounded-full text-xl transition shadow-lg animate-bounce"
           >
             Báo cáo lừa đảo ngay
@@ -231,9 +232,7 @@ const UserHome = () => (
             variants={fadeInUp}
           >
             <motion.div {...pulse}>{h.icon}</motion.div>
-            <div className="mt-3 text-3xl font-extrabold text-black">
-              {h.value}
-            </div>
+            <div className="mt-3 text-3xl font-bold text-black">{h.value}</div>
             <div className="text-base text-gray-600">{h.label}</div>
           </motion.div>
         ))}
@@ -242,7 +241,7 @@ const UserHome = () => (
 
     {/* Main Features Section */}
     <section className="px-2 py-20 mx-auto max-w-7xl">
-      <h2 className="text-3xl font-extrabold tracking-tight text-center text-black mb-14">
+      <h2 className="text-3xl font-bold tracking-tight text-center text-black mb-14">
         Tính năng nổi bật
       </h2>
       <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-4">
@@ -297,7 +296,7 @@ const UserHome = () => (
 
     {/* Why Us Section */}
     <section className="px-2 py-20 bg-gray-50">
-      <h2 className="text-3xl font-extrabold tracking-tight text-center text-black mb-14">
+      <h2 className="text-3xl font-bold tracking-tight text-center text-black mb-14">
         Vì sao chọn chúng tôi?
       </h2>
       <div className="grid grid-cols-1 gap-12 mx-auto sm:grid-cols-2 md:grid-cols-4 max-w-7xl">

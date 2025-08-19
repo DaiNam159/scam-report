@@ -13,6 +13,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { SafetyModule } from './modules/safety/safety.module';
 import { BlacklistModule } from './modules/blacklist/blacklist.module';
 import { TestModule } from './modules/test/test.module';
+import { StatsModule } from './modules/stats/stats.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,6 +28,7 @@ import { TestModule } from './modules/test/test.module';
     SafetyModule,
     BlacklistModule,
     TestModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

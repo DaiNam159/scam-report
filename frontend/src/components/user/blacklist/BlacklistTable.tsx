@@ -221,12 +221,6 @@ export default function BlacklistTable({
     ? data
     : data.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  useEffect(() => {
-    if (data && data.length > 0) {
-      console.log("Data has changed:", data);
-    }
-  }, [data]);
-
   if (!data || data.length === 0) {
     return (
       <div className="p-8 text-xs text-center text-gray-600 bg-white border border-gray-200 shadow rounded-2xl md:text-sm">

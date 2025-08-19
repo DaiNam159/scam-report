@@ -18,54 +18,13 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-export default function LookupPage() {
+export default function LookupComponent() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [googleSafeResult, setGoogleSafeResult] = useState<any>(null);
   const [urlCheckResults, setUrlCheckResults] = useState<any[]>([]);
   const [currentQuery, setCurrentQuery] = useState<string>("");
-  // const handleSearch = async (
-  //   query: string,
-  //   checkContent?: boolean,
-  //   useGoogleSafe?: boolean
-  // ) => {
-  //   setLoading(true);
-  //   setResult(null);
-  //   setGoogleSafeResult(null);
 
-  //   console.log("handleSearch called with:", {
-  //     query,
-  //     checkContent,
-  //     useGoogleSafe,
-  //   }); // Debug log
-
-  //   try {
-  //     if (useGoogleSafe) {
-  //       // Gọi Google Safe Browsing API
-  //       console.log("Calling Google Safe Browsing API for:", query); // Debug log
-  //       const safeResult = await SafetyService.checkUrl(query);
-  //       setGoogleSafeResult(safeResult);
-  //     } else {
-  //       // Tìm báo cáo liên quan
-  //       console.log("Searching related reports for:", query); // Debug log
-  //       const data = await ReportService.relatedReports(query);
-  //       setResult(data);
-  //     }
-  //   } catch (err) {
-  //     console.error("Lỗi khi tra cứu:", err);
-  //     if (useGoogleSafe) {
-  //       setGoogleSafeResult({
-  //         url: query,
-  //         isSafe: false,
-  //         error: "Lỗi khi kiểm tra với Google Safe Browsing",
-  //       });
-  //     } else {
-  //       setResult({ found: false });
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleSearch = async (
     query: string,
     checkContent?: boolean,
@@ -284,7 +243,7 @@ export default function LookupPage() {
               </div>
               <div className="flex flex-col items-center w-full">
                 <Sparkles className="w-10 h-10 text-[#fbc02d] mb-2 animate-bounce" />
-                <h1 className="text-xl md:text-2xl font-extrabold text-center mb-2 text-[#e53935] tracking-tight drop-shadow flex items-center gap-2">
+                <h1 className="text-xl md:text-2xl font-bold text-center mb-2 text-[#e53935] tracking-tight drop-shadow flex items-center gap-2">
                   Tra cứu thông tin lừa đảo
                 </h1>
                 <p className="max-w-2xl mb-2 text-sm text-center text-gray-700">
@@ -356,7 +315,7 @@ export default function LookupPage() {
                     </span>
                   </div>
                   <a
-                    href="/report"
+                    href="/tra-cuu"
                     className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white font-bold shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
                   >
                     Gửi báo cáo lừa đảo

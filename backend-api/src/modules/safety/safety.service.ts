@@ -1,6 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
+import { Stats } from 'src/entities/stats.entity';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class SafetyService {
@@ -15,7 +18,11 @@ export class SafetyService {
   private readonly ipqsEndpoint = 'https://ipqualityscore.com/api/json/url';
   private readonly screenshotEndpoint =
     'https://shot.screenshotapi.net/screenshot';
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @InjectRepository(Stats)
+    private statsRepo: Repository<Stats>,
+  ) {
     this.safe_browsing_apiKey =
       process.env.SAFETY_API_KEY ||
       this.configService.get<string>('SAFETY_API_KEY') ||
@@ -53,6 +60,14 @@ export class SafetyService {
     };
 
     try {
+      const stats = await this.statsRepo.findOne({
+        where: { id: 1 },
+      });
+      if (!stats) {
+        throw new Error('Stats not found');
+      }
+      stats.lookup_count++;
+      await this.statsRepo.save(stats);
       const res = await axios.post(
         `${this.endpoint}?key=${this.safe_browsing_apiKey}`,
         body,
