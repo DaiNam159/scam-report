@@ -61,24 +61,52 @@ export class UserService {
     }
   }
   async getAllUsers(
-    page: number = 1,
-    limit: number = 10,
-  ): Promise<{ data: User[]; total: number; page: number; limit: number }> {
+    page: number,
+    limit: number,
+    sortBy?: string,
+    sortOrder: 'ASC' | 'DESC' = 'ASC',
+    filters: any = {},
+  ) {
     try {
-      const [data, total] = await this.userRepo.findAndCount({
-        skip: (page - 1) * limit,
-        take: limit,
-        order: { id: 'ASC' },
-      });
+      const qb = this.userRepo.createQueryBuilder('user');
 
-      return {
-        data,
-        total,
-        page,
-        limit,
-      };
-    } catch (error: any) {
-      throw new Error('Error fetching users: ' + error.message);
+      // Search theo email hoặc tên
+      if (filters.search) {
+        qb.andWhere('(user.email LIKE :search OR user.fullName LIKE :search)', {
+          search: `%${filters.search}%`,
+        });
+      }
+
+      // Trạng thái hoạt động
+      if (filters.isActive !== undefined) {
+        qb.andWhere('user.isActive = :isActive', {
+          isActive: filters.isActive,
+        });
+      }
+
+      // Lọc theo ngày tạo
+      if (filters.dateFrom) {
+        qb.andWhere('user.createdAt >= :dateFrom', {
+          dateFrom: filters.dateFrom,
+        });
+      }
+      if (filters.dateTo) {
+        qb.andWhere('user.createdAt <= :dateTo', { dateTo: filters.dateTo });
+      }
+
+      // Sort
+      if (sortBy) {
+        qb.orderBy(`user.${sortBy}`, sortOrder);
+      }
+
+      // Pagination
+      qb.skip((page - 1) * limit).take(limit);
+
+      const [data, total] = await qb.getManyAndCount();
+
+      return { data, total, page, limit };
+    } catch (error) {
+      throw new Error(`Error fetching users: ${error.message}`);
     }
   }
 }

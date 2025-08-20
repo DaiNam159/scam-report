@@ -10,9 +10,21 @@ export const UserService = {
       throw error;
     }
   },
-  async getAllUsers(page = 1, limit = 10) {
+  async getAllUsers(
+    page: number = 1,
+    limit: number = 10,
+    params: Record<string, any> = {}
+  ) {
     try {
-      const res = await api.get(`${UserUrl}?page=${page}&limit=${limit}`);
+      const query = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...Object.fromEntries(
+          Object.entries(params).filter(([_, v]) => v !== undefined && v !== "")
+        ),
+      });
+
+      const res = await api.get(`${UserUrl}?${query.toString()}`);
       return res.data;
     } catch (error) {
       throw error;
@@ -49,5 +61,15 @@ export const UserService = {
     } catch (error) {
       throw error;
     }
+  },
+  async getActiveUsers() {
+    // API call to get count of active users
+  },
+
+  async getInactiveUsers() {
+    // API call to get count of inactive users
+  },
+  async getTotalUsers() {
+    // API call to get total count of users
   },
 };
