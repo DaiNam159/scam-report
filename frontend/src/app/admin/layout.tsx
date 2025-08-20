@@ -4,7 +4,13 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { AuthService } from "@/services/AuthService";
 import Link from "next/link";
-import { FaBars, FaTimes, FaTachometerAlt, FaFileAlt } from "react-icons/fa";
+import {
+  FaBars,
+  FaTimes,
+  FaTachometerAlt,
+  FaFileAlt,
+  FaUsers,
+} from "react-icons/fa";
 
 export default function AdminLayout({
   children,
@@ -64,6 +70,12 @@ export default function AdminLayout({
             className="flex items-center px-4 py-2 hover:bg-gray-700"
           >
             <FaFileAlt className="mr-2" /> Quản lý báo cáo
+          </Link>
+          <Link
+            href="/admin/nguoi-dung"
+            className="flex items-center px-4 py-2 hover:bg-gray-700"
+          >
+            <FaUsers className="mr-2" /> Quản lý người dùng
           </Link>
         </nav>
       </div>
