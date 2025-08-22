@@ -22,6 +22,7 @@ export default function LoginComponent() {
       await AuthService.login(form.email, form.password);
       const profile = await AuthService.getProfile(); // lấy thông tin người dùng
       const userProfie = profile.user;
+      console.log("mmb: ", userProfie);
       if (userProfie.isAdmin) {
         router.push("/admin/dashboard");
       } else {

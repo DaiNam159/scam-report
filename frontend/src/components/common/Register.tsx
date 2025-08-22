@@ -29,7 +29,7 @@ export default function RegisterComponent() {
     try {
       await AuthService.register(form.email, form.password);
       alert("Đăng ký thành công, vui lòng đăng nhập");
-      router.push("/login");
+      router.push("/dang-nhap");
     } catch (err) {
       alert("Đăng ký thất bại");
       throw err;
