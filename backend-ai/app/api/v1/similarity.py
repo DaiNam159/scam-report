@@ -18,7 +18,7 @@ async def check_text_similarity(request: TextRequest, db: Session = Depends(get_
 
 @router.get("/test")
 async def test_similarity(db: Session = Depends(get_db)):
-    return get_all_report_texts(db)
+    return "test"
 
 @router.post("/related-reports")
 async def get_related_reports(request: TextRequest, db: Session = Depends(get_db)):
