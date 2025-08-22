@@ -1,3 +1,4 @@
+import { UserFilters } from "@/components/admin/user/UserFilter";
 import api from "@/lib/axiosInstance";
 
 const UserUrl = "/user";
@@ -13,14 +14,19 @@ export const UserService = {
   async getAllUsers(
     page: number = 1,
     limit: number = 10,
-    params: Record<string, any> = {}
+    params: UserFilters = {},
+    sort: { sortBy: string; sortOrder: "ASC" | "DESC" } = {
+      sortBy: "id",
+      sortOrder: "ASC",
+    }
   ) {
     try {
+      params = { ...params, ...sort };
       const query = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
         ...Object.fromEntries(
-          Object.entries(params).filter(([_, v]) => v !== undefined && v !== "")
+          Object.entries(params).filter(([, v]) => v !== undefined && v !== "")
         ),
       });
 
@@ -30,7 +36,8 @@ export const UserService = {
       throw error;
     }
   },
-  async updateUser(id: number, userData: any) {
+
+  async updateUser(id: number, userData: { name: string; email: string }) {
     try {
       const res = await api.put(`${UserUrl}/`, { id, userData });
       return res.data;
@@ -71,5 +78,13 @@ export const UserService = {
   },
   async getTotalUsers() {
     // API call to get total count of users
+  },
+  async getRegisterToday() {
+    try {
+      const res = await api.get(`${UserUrl}/register-today`);
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
   },
 };

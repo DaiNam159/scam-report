@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReportEmailAddress } from 'src/entities/report_email_address.entity';
 import { ReportPersonOrg } from 'src/entities/report_person_org.entity';
-import { In, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Report, ReportStatus, ReportType } from 'src/entities/reports.entity';
 import { ReportWebsite } from 'src/entities/report_website.entity';
@@ -387,6 +387,16 @@ export class ReportService {
       throw error;
     }
   }
+  async getTotalReportRejected() {
+    try {
+      const total = await this.reportRepo.count({
+        where: { status: ReportStatus.REJECTED },
+      });
+      return total;
+    } catch (error) {
+      throw error;
+    }
+  }
   async getTotalReport() {
     try {
       const total = await this.reportRepo.count();
@@ -561,6 +571,23 @@ export class ReportService {
       throw new Error(
         `Không thể lấy thời gian cập nhật báo cáo: ${error.message}`,
       );
+    }
+  }
+  async getTotalReportToday() {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      const total = await this.reportRepo.count({
+        where: {
+          created_at: Between(today, tomorrow),
+        },
+      });
+      return total;
+    } catch (error) {
+      console.error('Lỗi khi lấy tổng báo cáo hôm nay:', error.message);
+      throw new Error(`Không thể lấy tổng báo cáo hôm nay: ${error.message}`);
     }
   }
 }

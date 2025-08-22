@@ -201,6 +201,7 @@ const renderCellValue = (key: string, row: BlacklistItem, type: ReportType) => {
     default:
       return row.value;
   }
+  if (!type) return null;
 };
 
 export default function BlacklistTable({

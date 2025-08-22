@@ -1,3 +1,4 @@
+import { Report } from "@/models/ReportModel";
 import {
   ShieldAlert,
   CheckCircle2,
@@ -11,14 +12,13 @@ import {
   Users,
   CreditCard,
   Wallet,
-  MessageSquare,
   MessageSquareText,
   Hourglass,
 } from "lucide-react";
 
 interface LookupResultProps {
   loading: boolean;
-  result: any;
+  result?: Report | null;
 }
 
 const getReportTypeIcon = (type: string) => {
@@ -68,7 +68,7 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const getReportDetails = (report: any) => {
+const getReportDetails = (report: Report) => {
   const type = report.report_type;
 
   switch (type) {
@@ -255,7 +255,7 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
         </div>
 
         <div className="space-y-4 overflow-y-auto max-h-96">
-          {result.map((report, index) => (
+          {result.map((report) => (
             <div
               key={report.id}
               className="p-4 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50"
@@ -337,10 +337,7 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
   }
 
   // Nếu không tìm thấy gì (result.found === false hoặc array rỗng)
-  if (
-    result.found === false ||
-    (Array.isArray(result) && result.length === 0)
-  ) {
+  if (Array.isArray(result) && result.length === 0) {
     return (
       <div className="flex flex-col items-center p-8 text-center bg-white border border-gray-200 shadow rounded-2xl">
         <CheckCircle2 className="w-12 h-12 text-[#388e3c] mb-2" />
@@ -368,15 +365,15 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
       <div className="text-xl font-bold text-[#e53935] mb-2">
         Cảnh báo: Đã phát hiện lừa đảo!
       </div>
-      {result.type && (
+      {result.report_type && (
         <span className="inline-block bg-[#fbc02d] text-[#b71c1c] font-semibold px-4 py-1 rounded-full mb-2 text-sm">
-          {result.type}
+          {result.report_type}
         </span>
       )}
       <div className="mb-2 font-semibold text-gray-800">
-        {result.detail || "Đối tượng này đã bị báo cáo lừa đảo trên hệ thống."}
+        {"Đối tượng này đã bị báo cáo lừa đảo trên hệ thống."}
       </div>
-      {result.count && (
+      {/* {result.count && (
         <div className="mb-2 text-sm text-gray-600">
           Số lần bị báo cáo:{" "}
           <span className="font-bold text-[#e53935]">{result.count}</span>
@@ -386,7 +383,7 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
         <div className="mb-2 text-sm text-gray-500">
           Báo cáo gần nhất: {result.lastReport}
         </div>
-      )}
+      )} */}
       <div className="mt-4">
         <a
           href="/report"

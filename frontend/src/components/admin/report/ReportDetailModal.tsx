@@ -1,7 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { ReportType, ReportStatus } from "@/types/ReportType";
 import { Report } from "@/models/ReportModel";
 import DetailRenderer from "./ReportDetails";
 
@@ -11,32 +10,25 @@ interface Props {
   onClose: () => void;
 }
 
-const reportTypeLabels: Record<ReportType, string> = {
-  email_address: "Địa chỉ email",
-  person_org: "Người / Tổ chức",
-  email_content: "Nội dung email",
-  phone: "Số điện thoại",
-  sms: "Tin nhắn SMS",
-  website: "Trang web",
-  social: "Trang mạng xã hội",
-  bank_account: "Tài khoản ngân hàng",
-  e_wallet: "Ví điện tử",
-};
+// const reportTypeLabels: Record<ReportType, string> = {
+//   email_address: "Địa chỉ email",
+//   person_org: "Người / Tổ chức",
+//   email_content: "Nội dung email",
+//   phone: "Số điện thoại",
+//   sms: "Tin nhắn SMS",
+//   website: "Trang web",
+//   social: "Trang mạng xã hội",
+//   bank_account: "Tài khoản ngân hàng",
+//   e_wallet: "Ví điện tử",
+// };
 
-const statusLabels: Record<ReportStatus, string> = {
-  pending: "Chờ xử lý",
-  approved: "Đã phê duyệt",
-  rejected: "Đã từ chối",
-};
+// const statusLabels: Record<ReportStatus, string> = {
+//   pending: "Chờ xử lý",
+//   approved: "Đã phê duyệt",
+//   rejected: "Đã từ chối",
+// };
 
 export default function ReportDetailModal({ report, isOpen, onClose }: Props) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("vi-VN", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  };
-
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>

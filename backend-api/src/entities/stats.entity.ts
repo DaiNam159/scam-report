@@ -7,4 +7,10 @@ export class Stats {
 
   @Column({ type: 'int' })
   lookup_count: number;
+
+  @Column({ type: 'int' })
+  access_count: number;
+
+  @Column({ type: 'int' })
+  online_count: number;
 }

@@ -6,3 +6,5 @@ python-dotenv
 pydantic[email]
 pydantic_settings
 cryptography
+scikit-learn
+pymysql

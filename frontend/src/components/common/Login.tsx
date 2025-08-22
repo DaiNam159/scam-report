@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldAlert, Sparkles, Info } from "lucide-react";
+import { ShieldAlert, Info } from "lucide-react";
 import Link from "next/link";
 import { AuthService } from "@/services/AuthService";
 
@@ -27,8 +27,9 @@ export default function LoginComponent() {
       } else {
         router.push("/");
       }
-    } catch (err: any) {
-      alert(err.message || "Sai email hoặc mật khẩu");
+    } catch (err) {
+      alert("Sai email hoặc mật khẩu");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -96,12 +97,12 @@ export default function LoginComponent() {
           </a>
         </div>
         <div className="w-full mt-2 text-sm text-center">
-          <a
+          <Link
             href="/"
             className="inline-block mt-2 px-4 py-2 rounded-xl bg-gray-100 text-[#e53935] font-semibold shadow hover:bg-gray-200 transition"
           >
             Quay về trang chủ
-          </a>
+          </Link>
         </div>
         <div className="flex items-center justify-center w-full gap-2 mt-4 text-xs text-center text-gray-400">
           <Info className="w-4 h-4" />

@@ -1,5 +1,6 @@
 import api from "@/lib/axiosInstance";
 import { ReportFilters } from "@/components/admin/report/ReportFilter";
+import { ReportSubmit } from "@/types/ReportType";
 
 const reportUrl = "/report";
 export class ReportService {
@@ -14,8 +15,10 @@ export class ReportService {
       );
     }
   }
-  static async submitReport(data: any) {
+  static async submitReport(data: ReportSubmit) {
     try {
+      // console.log("Submitting report with data:", data);
+      // return;
       const res = await api.post(reportUrl, data);
       return res.data;
     } catch (err) {
@@ -111,11 +114,28 @@ export class ReportService {
       throw error;
     }
   }
+  static async countRejectedReport() {
+    try {
+      const res = await api.get(`${reportUrl}/count-rejected`);
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async countTodayReport() {
+    try {
+      const res = await api.get(`${reportUrl}/count-today`);
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  }
   static async relatedReports(input_text: string) {
     try {
       const res = await api.post(`${reportUrl}/related-reports`, {
         input_text,
       });
+      console.log("Related reports response:", res.data);
       return res.data;
     } catch (error) {
       console.error("Error fetching related reports:", error);

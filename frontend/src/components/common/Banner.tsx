@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Ban, FileText, ListTree, ShieldAlert } from "lucide-react";
 const UserBanner = () => {
   return (

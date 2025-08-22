@@ -30,8 +30,9 @@ export default function RegisterComponent() {
       await AuthService.register(form.email, form.password);
       alert("Đăng ký thành công, vui lòng đăng nhập");
       router.push("/login");
-    } catch (err: any) {
-      alert(err.message || "Đăng ký thất bại");
+    } catch (err) {
+      alert("Đăng ký thất bại");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -129,12 +130,12 @@ export default function RegisterComponent() {
           </a>
         </div>
         <div className="w-full mt-2 text-sm text-center">
-          <a
+          <Link
             href="/"
             className="inline-block mt-2 px-4 py-2 rounded-xl bg-gray-100 text-[#e53935] font-semibold shadow hover:bg-gray-200 transition"
           >
             Quay về trang chủ
-          </a>
+          </Link>
         </div>
         <div className="flex items-center justify-center w-full gap-2 mt-4 text-xs text-center text-gray-400">
           <Info className="w-4 h-4" />

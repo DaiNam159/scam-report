@@ -54,6 +54,15 @@ export class ReportController {
   async getCountPendingReports() {
     return this.reportService.getTotalReportPending();
   }
+
+  @Get('count-rejected')
+  async getCountRejectedReports() {
+    return this.reportService.getTotalReportRejected();
+  }
+  @Get('count-today')
+  async getCountTodayReports() {
+    return this.reportService.getTotalReportToday();
+  }
   // @UseGuards(AuthGuard('jwt'), AdminGuard)
   @Get()
   getReports(@Query() query: GetReportsDto) {

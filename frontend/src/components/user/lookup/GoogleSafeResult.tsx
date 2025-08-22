@@ -8,17 +8,7 @@ import {
   Loader2,
   ExternalLink,
 } from "lucide-react";
-
-interface ApiResult {
-  name: string;
-  loading: boolean;
-  result?: {
-    isSafe: boolean;
-    matches?: any[];
-    error?: string;
-    details?: any;
-  };
-}
+import { ApiResult } from "@/types/SafetyType";
 
 interface GoogleSafeResultProps {
   url: string;
@@ -101,7 +91,7 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
           {api.name === "IPQS" && (
             <div
               className={`p-4 border ${
-                result.details.risk_score === 0
+                result.details?.risk_score === 0
                   ? "border-green-200 bg-green-50"
                   : "border-yellow-200 bg-yellow-50"
               } rounded-lg `}
@@ -109,14 +99,14 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2
                   className={`w-5 h-5 ${
-                    result.details.risk_score === 0
+                    result.details?.risk_score === 0
                       ? "text-green-600"
                       : "text-yellow-600"
                   }`}
                 />
                 <span
                   className={`font-semibold ${
-                    result.details.risk_score === 0
+                    result.details?.risk_score === 0
                       ? "text-green-800"
                       : "text-yellow-800"
                   }`}
@@ -126,12 +116,16 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
               </div>
               <div
                 className={`text-sm ${
+                  result.details?.risk_score !== undefined &&
                   result.details.risk_score < 20
                     ? "text-green-700"
                     : "text-yellow-700"
                 }`}
               >
-                {result.details.risk_score === 0 ? "An toàn" : "Có nguy cơ"}
+                {result.details?.risk_score !== undefined &&
+                result.details.risk_score === 0
+                  ? "An toàn"
+                  : "Có nguy cơ"}
               </div>
               {result.details && (
                 <div
@@ -142,9 +136,6 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
                   }`}
                 >
                   <div>Risk Score: {result.details.risk_score || 0}/100</div>
-                  {result.details.country && (
-                    <div>Quốc gia: {result.details.country}</div>
-                  )}
                 </div>
               )}
             </div>
@@ -182,9 +173,6 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
             {result.details.malware && <div>• Malware detected</div>}
             {result.details.phishing && <div>• Phishing detected</div>}
             {result.details.suspicious && <div>• Suspicious activity</div>}
-            {result.details.country && (
-              <div>Quốc gia: {result.details.country}</div>
-            )}
           </div>
         )}
       </div>

@@ -18,3 +18,34 @@ export enum ReportStatus {
   PENDING = "pending",
   REJECTED = "rejected",
 }
+
+export interface ReportSubmit {
+  reportType: ReportType;
+  title: string;
+  description: string;
+  evidence: string;
+  evidencePublicId: string;
+  emailAddress: string;
+  name: string;
+  role: string;
+  identification: string;
+  address: string;
+  socialLinks: string;
+  emailSubject: string;
+  emailBody: string;
+  senderAddress: string;
+  attachments: string;
+  suspiciousLinks: string;
+  phoneNumber: string;
+  smsContent: string;
+  websiteUrl: string;
+  platform: string;
+  profileUrl: string;
+  username: string;
+  bankName: string;
+  accountNumber: string;
+  accountHolderName: string;
+  walletType: string;
+  walletId: string;
+  contact: string;
+}

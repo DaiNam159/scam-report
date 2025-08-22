@@ -279,7 +279,7 @@ export default function BlacklistComponent() {
           {searchQuery && (
             <div className="flex flex-col gap-2 text-xs text-gray-600">
               <span className="font-medium">
-                Kết quả tìm kiếm cho: "{searchQuery}"
+                Kết quả tìm kiếm cho: &quot;{searchQuery}&quot;
               </span>
               {pagination.total > 0 && (
                 <span>Tìm thấy {pagination.total} kết quả</span>

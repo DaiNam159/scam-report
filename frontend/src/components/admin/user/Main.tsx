@@ -21,13 +21,6 @@ interface User {
   updatedAt: string;
 }
 
-interface UserResponse {
-  data: User[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
 export default function UserManagementComponent() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,11 +64,14 @@ export default function UserManagementComponent() {
     ) => {
       try {
         setIsFiltering(true);
-        const data = await UserService.getAllUsers(currentPage, limit, {
-          ...filterParams,
-          sortBy: sortKey,
-          sortOrder: sortDir,
-        });
+        const data = await UserService.getAllUsers(
+          currentPage,
+          limit,
+          {
+            ...filterParams,
+          },
+          { sortBy: sortKey, sortOrder: sortDir }
+        );
 
         setUsers(data.data);
         const newTotalPages = Math.ceil(data.total / limit);
@@ -212,7 +208,7 @@ export default function UserManagementComponent() {
       const maxPagesToShow = 5;
       const pages: (number | string)[] = [];
       let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-      let endPage = Math.min(totalPagesCount, startPage + maxPagesToShow - 1);
+      const endPage = Math.min(totalPagesCount, startPage + maxPagesToShow - 1);
 
       if (endPage - startPage + 1 < maxPagesToShow) {
         startPage = Math.max(1, endPage - maxPagesToShow + 1);

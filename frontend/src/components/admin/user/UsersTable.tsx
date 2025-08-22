@@ -1,9 +1,7 @@
 import { useState } from "react";
 import {
-  FaCheck,
   FaEdit,
   FaUsers,
-  FaTimes,
   FaTrash,
   FaSort,
   FaSortUp,

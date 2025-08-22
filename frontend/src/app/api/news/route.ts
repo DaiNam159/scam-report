@@ -1,10 +1,9 @@
 // Next.js 13+ App Router API Route (app/api/news/route.ts)
-import { NextRequest } from "next/server";
 import Parser from "rss-parser";
 
 const parser = new Parser();
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const keywords = [
     "Lừa đảo mạng",
     "Lừa đảo qua điện thoại",
@@ -28,6 +27,6 @@ export async function GET(req: NextRequest) {
     }));
     return Response.json(news);
   } catch (error) {
-    return Response.json([]);
+    throw error;
   }
 }

@@ -2,6 +2,7 @@ import { ReportService } from "@/services/ReportService";
 import { UploadService } from "@/services/UploadService";
 import { ReportType } from "@/types/ReportType";
 import { ReportFormProps } from "@/types/ReportType";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 // Configuration for type-specific fields
@@ -300,6 +301,9 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
     try {
       const finalData = { ...formData, reportType: type };
       const res = await ReportService.submitReport(finalData);
+      if (!res) {
+        alert("Đã xảy ra lỗi khi gửi báo cáo. Vui lòng thử lại sau.");
+      }
       setFormData(initialFormState(type));
     } catch (err) {
       console.log("Lỗi khi gửi form: ", err);
@@ -438,10 +442,12 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
           )}
           {/* hiển thị ảnh nếu có */}
           {formData.evidence && !isUploading && (
-            <img
+            <Image
               src={formData.evidence}
               alt="Bằng chứng"
-              className="w-32 mt-2 border rounded-xl"
+              width={128}
+              height={128}
+              className="object-cover mt-2 border rounded-xl"
             />
           )}
         </div>

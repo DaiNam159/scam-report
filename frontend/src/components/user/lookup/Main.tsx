@@ -3,8 +3,10 @@
 import GoogleSafeResult from "@/components/user/lookup/GoogleSafeResult";
 import LookupForm from "@/components/user/lookup/LookupForm";
 import LookupResult from "@/components/user/lookup/LookupResult";
+import { Report } from "@/models/ReportModel";
 import { ReportService } from "@/services/ReportService";
 import { SafetyService } from "@/services/SafetyService";
+import { ApiResult } from "@/types/SafetyType";
 import {
   ShieldAlert,
   Search,
@@ -16,18 +18,18 @@ import {
   Globe,
   MessageCircle,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function LookupComponent() {
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<Report | null>(null);
   const [loading, setLoading] = useState(false);
-  const [googleSafeResult, setGoogleSafeResult] = useState<any>(null);
-  const [urlCheckResults, setUrlCheckResults] = useState<any[]>([]);
+  const [urlCheckResults, setUrlCheckResults] = useState<ApiResult[]>([]);
   const [currentQuery, setCurrentQuery] = useState<string>("");
 
   const handleSearch = async (
     query: string,
-    checkContent?: boolean,
+    checkContent: boolean = false,
     useGoogleSafe?: boolean
   ) => {
     setLoading(true);
@@ -37,6 +39,7 @@ export default function LookupComponent() {
     try {
       if (useGoogleSafe) {
         // Khởi tạo state cho cả 2 API
+
         const initialResults = [
           { name: "Google Safe Browsing", loading: true, result: undefined },
           { name: "IPQS", loading: true, result: undefined },
@@ -111,9 +114,12 @@ export default function LookupComponent() {
         const data = await ReportService.relatedReports(query);
         setResult(data);
       }
+      if (checkContent) {
+        throw checkContent;
+      }
     } catch (err) {
       console.error("Lỗi khi tra cứu:", err);
-      setResult({ found: false });
+      setResult(null);
     } finally {
       setLoading(false);
     }
@@ -314,12 +320,12 @@ export default function LookupComponent() {
                       Bạn có thể đóng góp dữ liệu lừa đảo cho cộng đồng!
                     </span>
                   </div>
-                  <a
+                  <Link
                     href="/tra-cuu"
                     className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white font-bold shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
                   >
                     Gửi báo cáo lừa đảo
-                  </a>
+                  </Link>
                 </div>
                 {/* Câu hỏi thường gặp */}
                 <div className="w-full mt-8">

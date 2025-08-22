@@ -399,7 +399,7 @@ const UserHome = () => (
               className="object-cover w-16 h-16 mb-4 border-2 border-red-200 rounded-full"
             />
             <div className="mb-4 italic text-center text-gray-700">
-              "{fb.content}"
+              &quot;{fb.content}&quot;
             </div>
             <div className="font-semibold text-[#e53935]">{fb.name}</div>
           </motion.div>

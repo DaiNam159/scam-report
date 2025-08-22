@@ -1,6 +1,7 @@
 "use client";
 import { AuthService } from "@/services/AuthService";
 import { ReportService } from "@/services/ReportService";
+import { User } from "@/types/UserType";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 type DateUpdated = {
@@ -8,14 +9,16 @@ type DateUpdated = {
   month: number;
   year: number;
 };
+
 const UserHeader = () => {
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<User | null>(null);
   const [dateUpdated, setDateUpdated] = useState<DateUpdated | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const userProfile = await AuthService.getProfile(); // đúng cách
+        console.log("User profile:", userProfile);
         setProfile(userProfile.user); // nếu null thì set null, nếu có thì set user
       } catch (error) {
         console.warn("Không lấy được profile:", error);

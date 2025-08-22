@@ -1,5 +1,4 @@
 import { Report } from "@/models/ReportModel";
-import { ReportStatus, ReportType } from "@/types/ReportType";
 
 interface Props {
   report: Report;

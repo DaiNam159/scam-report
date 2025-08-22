@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './../../entities/user.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update.dto';
 
 @Injectable()
@@ -107,6 +107,23 @@ export class UserService {
       return { data, total, page, limit };
     } catch (error) {
       throw new Error(`Error fetching users: ${error.message}`);
+    }
+  }
+  async getRegisterToday() {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      const count = await this.userRepo.count({
+        where: {
+          createdAt: Between(today, tomorrow),
+        },
+      });
+      return count;
+    } catch (error) {
+      throw new Error(`Error fetching today's registrations: ${error.message}`);
     }
   }
 }

@@ -32,19 +32,8 @@ export const BlacklistService = {
     try {
       const response = await api.get("/blacklist", { params });
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching blacklist:", error);
-
-      // Xử lý các loại lỗi khác nhau
-      if (error.response?.status === 404) {
-        throw new Error("Không tìm thấy dữ liệu blacklist.");
-      } else if (error.response?.status >= 500) {
-        throw new Error("Lỗi server. Vui lòng thử lại sau.");
-      } else if (error.code === "NETWORK_ERROR") {
-        throw new Error(
-          "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng."
-        );
-      }
 
       throw new Error("Không thể tải danh sách đen. Vui lòng thử lại sau.");
     }
@@ -54,7 +43,7 @@ export const BlacklistService = {
     try {
       const response = await api.get("/blacklist/stats");
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching blacklist stats:", error);
 
       // Trả về dữ liệu mặc định nếu API lỗi

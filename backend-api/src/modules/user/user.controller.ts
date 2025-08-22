@@ -48,6 +48,12 @@ export class UserController {
   async countUsers() {
     return this.userService.countUsers();
   }
+
+  @Get('register-today')
+  async getRegisterToday() {
+    return this.userService.getRegisterToday();
+  }
+
   @Put('active')
   async activeUsers(@Body() body: { id: number }) {
     return this.userService.enableUser(body.id);

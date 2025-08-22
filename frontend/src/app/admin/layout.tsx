@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+
 import { AuthService } from "@/services/AuthService";
 import Link from "next/link";
 import {
@@ -31,6 +31,7 @@ export default function AdminLayout({
           setLoading(false);
         }
       } catch (err) {
+        console.error("Error fetching profile:", err);
         router.push("/dang-nhap");
       }
     };
