@@ -1,16 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { AuthService } from "@/services/AuthService";
-import Link from "next/link";
-import {
-  FaBars,
-  FaTimes,
-  FaTachometerAlt,
-  FaFileAlt,
-  FaUsers,
-} from "react-icons/fa";
+import AdminSidebar from "@/components/admin/layout/AdminSidebar";
+import AdminHeader from "@/components/admin/layout/AdminHeader";
 
 export default function AdminLayout({
   children,
@@ -20,6 +13,8 @@ export default function AdminLayout({
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [adminUser, setAdminUser] = useState<any>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -28,6 +23,7 @@ export default function AdminLayout({
         if (!res.isLoggedIn || !res.user.isAdmin) {
           router.push("/dang-nhap");
         } else {
+          setAdminUser(res.user);
           setLoading(false);
         }
       } catch (err) {
@@ -38,81 +34,55 @@ export default function AdminLayout({
     fetchProfile();
   }, [router]);
 
-  if (loading)
+  const handleLogout = async () => {
+    await AuthService.logout();
+    router.push("/dang-nhap");
+  };
+
+  if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        Đang tải...
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="inline-block w-8 h-8 border-4 border-blue-600 border-solid rounded-full border-r-transparent animate-spin"></div>
+          <p className="mt-2 text-sm text-gray-600">Đang tải...</p>
+        </div>
       </div>
     );
+  }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 text-white transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:inset-0 transition-transform duration-300 ease-in-out`}
-      >
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <button className="md:hidden" onClick={() => setSidebarOpen(false)}>
-            <FaTimes size={24} />
-          </button>
-        </div>
-        <nav className="mt-4">
-          <Link
-            href="/admin/dashboard"
-            className="flex items-center px-4 py-2 hover:bg-gray-700"
-          >
-            <FaTachometerAlt className="mr-2" /> Bảng điều khiển
-          </Link>
-          <Link
-            href="/admin/bao-cao"
-            className="flex items-center px-4 py-2 hover:bg-gray-700"
-          >
-            <FaFileAlt className="mr-2" /> Quản lý báo cáo
-          </Link>
-          <Link
-            href="/admin/nguoi-dung"
-            className="flex items-center px-4 py-2 hover:bg-gray-700"
-          >
-            <FaUsers className="mr-2" /> Quản lý người dùng
-          </Link>
-        </nav>
-      </div>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar Component */}
+      <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Main Content */}
-      <div className="flex flex-col flex-1">
-        {/* Top Bar */}
-        <header className="flex items-center justify-between p-4 bg-white shadow-md">
-          <button
-            className="text-gray-800 md:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <FaBars size={24} />
-          </button>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={async () => {
-                await AuthService.logout();
-                router.push("/dang-nhap");
-              }}
-              className="px-4 py-2 text-white transition bg-red-500 rounded-md hover:bg-red-600"
-            >
-              Đăng xuất
-            </button>
-          </div>
-        </header>
+      <div className="flex flex-col flex-1 min-w-0">
+        {/* Header Component */}
+        <AdminHeader
+          setSidebarOpen={setSidebarOpen}
+          userDropdownOpen={userDropdownOpen}
+          setUserDropdownOpen={setUserDropdownOpen}
+          adminUser={adminUser}
+          onLogout={handleLogout}
+        />
 
         {/* Content Area */}
-        <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-gray-50">{children}</main>
       </div>
 
-      {/* Overlay for mobile sidebar */}
+      {/* Mobile Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Click outside to close dropdown */}
+      {userDropdownOpen && (
+        <div
+          className="fixed inset-0 z-30"
+          onClick={() => setUserDropdownOpen(false)}
         />
       )}
     </div>
