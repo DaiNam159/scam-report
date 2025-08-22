@@ -5,7 +5,9 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('test')
 export class TestController {
   @Get()
-  getHello() {
-    return { msg: 'Hello Swagger' };
+  getTestFunction() {
+    const fe_url = process.env.FRONTEND_PORT;
+
+    return { frontend_url: fe_url };
   }
 }
