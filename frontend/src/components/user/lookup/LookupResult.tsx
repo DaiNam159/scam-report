@@ -315,7 +315,7 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
 
         <div className="mt-6 text-center">
           <a
-            href="/report"
+            href="/bao-cao"
             className="inline-block bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white font-semibold px-6 py-3 rounded-xl shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
           >
             Báo cáo thêm hoặc xem chi tiết
@@ -386,7 +386,7 @@ const LookupResult = ({ loading, result }: LookupResultProps) => {
       )} */}
       <div className="mt-4">
         <a
-          href="/report"
+          href="/bao-cao"
           className="inline-block bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white font-semibold px-6 py-2 rounded-xl shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
         >
           Báo cáo thêm hoặc xem chi tiết

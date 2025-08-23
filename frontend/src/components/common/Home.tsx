@@ -529,7 +529,7 @@ const UserHome = () => (
           cùng bạn trong công cuộc phòng chống lừa đảo trực tuyến.
         </p>
         <Link
-          href="/support"
+          href="/ho-tro"
           className="inline-block bg-gradient-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-semibold px-4 sm:px-6 lg:px-10 py-2.5 sm:py-3 lg:py-4 rounded-full text-sm sm:text-base lg:text-xl transition shadow hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
         >
           Liên hệ hỗ trợ

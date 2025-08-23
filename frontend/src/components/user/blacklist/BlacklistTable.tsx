@@ -238,7 +238,7 @@ export default function BlacklistTable({
   }
 
   const navigateToDetail = (item: BlacklistItem) => {
-    const url = `/lookup/${item.value}`;
+    const url = `/tra-cuu/${item.value}`;
     router.push(url);
   };
 

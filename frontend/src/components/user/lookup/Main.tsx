@@ -303,7 +303,7 @@ export default function LookupComponent() {
                       chuyển tiền cho đối tượng chưa xác thực. Nếu phát hiện lừa
                       đảo, hãy{" "}
                       <a
-                        href="/report"
+                        href="/bao-cao"
                         className="text-[#e53935] font-semibold underline hover:text-red-700"
                       >
                         báo cáo ngay

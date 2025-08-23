@@ -28,19 +28,19 @@ const UserFooter = () => (
           <Link href="/" className="hover:text-[#e53935] transition">
             Trang chủ
           </Link>
-          <Link href="/report" className="hover:text-[#e53935] transition">
+          <Link href="/bao-cao" className="hover:text-[#e53935] transition">
             Báo cáo lừa đảo
           </Link>
-          <Link href="/lookup" className="hover:text-[#e53935] transition">
+          <Link href="/tra-cuu" className="hover:text-[#e53935] transition">
             Tra cứu
           </Link>
-          <Link href="/blacklist" className="hover:text-[#e53935] transition">
+          <Link
+            href="/danh-sach-den"
+            className="hover:text-[#e53935] transition"
+          >
             Danh sách đen
           </Link>
-          <Link href="/news" className="hover:text-[#e53935] transition">
-            Tin tức
-          </Link>
-          <Link href="/support" className="hover:text-[#e53935] transition">
+          <Link href="/ho-tro" className="hover:text-[#e53935] transition">
             Hỗ trợ
           </Link>
         </nav>

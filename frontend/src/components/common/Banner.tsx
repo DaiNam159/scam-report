@@ -1,4 +1,3 @@
-import { Ban, FileText, ListTree, ShieldAlert } from "lucide-react";
 const UserBanner = () => {
   return (
     <section className="py-10 text-center text-black bg-white">
