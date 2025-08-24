@@ -434,7 +434,10 @@ export class ReportService {
       });
 
       const related_data = response.data;
-      const ids = related_data.map((item) => item.matched_report_id);
+      const ids = related_data
+        .map((item) => parseInt(item.matched_report_id, 10))
+        .filter((id) => Number.isInteger(id));
+
       if (!ids.length) return [];
 
       const reports = await this.reportRepo.find({

@@ -110,7 +110,6 @@ export default function LookupComponent() {
           );
         }
       } else {
-        // Tìm báo cáo liên quan
         const data = await ReportService.relatedReports(query);
         setResult(data);
       }
