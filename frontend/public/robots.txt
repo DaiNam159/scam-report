@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://scamreportguard.vercel.app
+
+# Sitemaps
+Sitemap: https://scamreportguard.vercel.app/sitemap.xml
