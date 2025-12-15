@@ -43,6 +43,24 @@ export interface ScanDetails {
   final_url: string;
   scanned_url: string;
   request_id: string;
+  provider: string;
+  url: string;
+  summary: {
+    harmless: number;
+    malicious: number;
+    suspicious: number;
+    undetected: number;
+    timeout: number;
+    total: number;
+  };
+  verdict: string;
+  maliciousEngines?: maliciousEngineData[];
+  scannedAt: string;
+}
+
+export interface maliciousEngineData {
+  engine: string;
+  result: string;
 }
 
 export interface GoogleSafeBrowsingMatch {

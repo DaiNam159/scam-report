@@ -15,6 +15,9 @@ import { ReportSocial } from '../../entities/report_social.entity';
 import { ReportBankAccount } from '../../entities/report_bank_account.entity';
 import { ReportEWallet } from '../../entities/report_e_wallet.entity';
 import { User } from '../../entities/user.entity';
+import { GetDetailBlacklistDto } from './dto/get-detail-blacklist.dto';
+import { console } from 'inspector';
+import { report } from 'process';
 
 @Injectable()
 export class BlacklistService {
@@ -100,6 +103,124 @@ export class BlacklistService {
         page,
         limit,
         totalPages,
+      },
+    };
+  }
+
+  async getDetailsByTypeAndValue(dto: GetDetailBlacklistDto) {
+    const { type, value } = dto;
+
+    let blacklistItems: BlacklistItemDto[] = [];
+
+    if (type) {
+      blacklistItems = await this.getBlacklistByType(type, value);
+    } else {
+      // Lấy tất cả các loại
+      const allTypes = [
+        'email_address',
+        'phone',
+        'website',
+        'social',
+        'bank_account',
+        'e_wallet',
+        'person_org',
+      ];
+      for (const reportType of allTypes) {
+        const items = await this.getBlacklistByType(reportType as any, value);
+        blacklistItems.push(...items);
+      }
+    }
+
+    let reportList: Report[] = [];
+    if (blacklistItems.length > 0) {
+      switch (blacklistItems[0].type) {
+        case 'email_address':
+          reportList = await this.reportRepository
+            .createQueryBuilder('a')
+            .innerJoin('a.email_address', 'b')
+            .where('a.report_type = :type', { type: ReportType.EMAIL_ADDRESS })
+            .andWhere('b.email_address = :email', { email: value })
+            .select(['a'])
+            .getMany();
+          break;
+        case 'phone':
+          reportList = await this.reportRepository
+            .createQueryBuilder('a')
+            .innerJoin('a.phone', 'b')
+            .where('a.report_type = :type', { type: ReportType.PHONE })
+            .andWhere('b.phone_number = :phone', { phone: value })
+            .select(['a'])
+            .getMany();
+          break;
+        case 'website':
+          reportList = await this.reportRepository
+            .createQueryBuilder('a')
+            .innerJoin('a.website', 'b')
+            .where('a.report_type = :type', { type: ReportType.WEBSITE })
+            .andWhere('b.url = :url', { url: value })
+            .select(['a'])
+            .getMany();
+          break;
+        case 'social':
+          reportList = await this.reportRepository
+            .createQueryBuilder('a')
+            .innerJoin('a.social', 'b')
+            .where('a.report_type = :type', { type: ReportType.SOCIAL })
+            .andWhere('b.username = :username', { username: value })
+            .select(['a'])
+            .getMany();
+          break;
+        case 'bank_account':
+          reportList = await this.reportRepository
+            .createQueryBuilder('a')
+            .innerJoin('a.bank_account', 'b')
+            .where('a.report_type = :type', { type: ReportType.BANK_ACCOUNT })
+            .andWhere('b.account_number = :account_number', {
+              account_number: value,
+            })
+            .select(['a'])
+            .getMany();
+          break;
+        case 'e_wallet':
+          reportList = await this.reportRepository
+            .createQueryBuilder('a')
+            .innerJoin('a.e_wallet', 'b')
+            .where('a.report_type = :type', { type: ReportType.E_WALLET })
+            .andWhere('b.wallet_id = :wallet_id', { wallet_id: value })
+            .select(['a'])
+            .getMany();
+          break;
+        case 'person_org':
+          reportList = await this.reportRepository
+            .createQueryBuilder('a')
+            .innerJoin('a.person_org', 'b')
+            .where('a.report_type = :type', { type: ReportType.PERSON_ORG })
+            .andWhere('b.name = :name', { name: value })
+            .select(['a'])
+            .getMany();
+          break;
+        default:
+          reportList = [];
+          break;
+      }
+    }
+
+    reportList = reportList.filter((r) => r.status !== 'rejected');
+    const totalReports = reportList.length;
+    const approvedReports = reportList.filter(
+      (report) => report.status === 'approved',
+    ).length;
+    const pendingReports = reportList.filter(
+      (report) => report.status === 'pending',
+    ).length;
+
+    return {
+      blacklistItem: blacklistItems[0],
+      reportList,
+      reportStats: {
+        totalReports,
+        approvedReports,
+        pendingReports,
       },
     };
   }

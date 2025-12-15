@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ShieldAlert, Info } from "lucide-react";
 import Link from "next/link";
 import { AuthService } from "@/services/AuthService";
+import { toast } from "sonner";
 
 export default function LoginComponent() {
   const router = useRouter();
@@ -19,18 +20,24 @@ export default function LoginComponent() {
     e.preventDefault();
     setLoading(true);
     try {
+      console.log("mmb1: ", form);
       await AuthService.login(form.email, form.password);
       const profile = await AuthService.getProfile(); // lấy thông tin người dùng
       const userProfie = profile.user;
-      console.log("mmb: ", userProfie);
-      if (userProfie.isAdmin) {
+      if (userProfie.isBanned) {
+        toast.error("Tài khoản của bạn đã bị khóa.");
+        setLoading(false);
+        return;
+      } else if (userProfie.isAdmin) {
         router.push("/admin/dashboard");
+        toast.success("Đăng nhập thành công");
       } else {
         router.push("/");
+        toast.success("Đăng nhập thành công");
       }
     } catch (err) {
-      alert("Sai email hoặc mật khẩu");
-      throw err;
+      toast.error("Sai email hoặc mật khẩu");
+      return;
     } finally {
       setLoading(false);
     }

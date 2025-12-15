@@ -140,6 +140,21 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
               )}
             </div>
           )}
+          {api.name === "VirusTotal" && (
+            <div className="p-4 border border-green-200 rounded-lg bg-green-50">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                <span className="font-semibold text-green-800">{api.name}</span>
+              </div>
+              <div className="text-sm text-green-700">An toàn</div>
+              {result.details && result.details?.summary && (
+                <div className="mt-2 text-xs text-green-600">
+                  <div>Harmless: {result.details.summary.harmless}</div>
+                  <div>Undetected: {result.details.summary.undetected}</div>
+                </div>
+              )}
+            </div>
+          )}
         </>
       );
     }
@@ -173,6 +188,73 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
             {result.details.malware && <div>• Malware detected</div>}
             {result.details.phishing && <div>• Phishing detected</div>}
             {result.details.suspicious && <div>• Suspicious activity</div>}
+          </div>
+        )}
+
+        {/* Chi tiết cho VirusTotal */}
+        {api.name === "VirusTotal" && result.details && result.details && (
+          <div className="mt-2 space-y-2 text-xs text-red-600">
+            {result.details.summary && (
+              <div className="p-2 border border-red-300 rounded bg-red-100/50">
+                <div className="mb-1 font-semibold">Tổng quan quét:</div>
+                <div className="grid grid-cols-2 gap-1">
+                  <div>
+                    • Malicious:{" "}
+                    <span className="font-bold">
+                      {result.details.summary.malicious}
+                    </span>
+                  </div>
+                  <div>
+                    • Suspicious:{" "}
+                    <span className="font-bold">
+                      {result.details.summary.suspicious}
+                    </span>
+                  </div>
+                  <div>• Harmless: {result.details.summary.harmless}</div>
+                  <div>• Undetected: {result.details.summary.undetected}</div>
+                </div>
+                <div className="mt-1 font-semibold">
+                  Tổng cộng: {result.details.summary.total} nguồn
+                </div>
+              </div>
+            )}
+            {result.details.maliciousEngines &&
+              result.details.maliciousEngines.length > 0 && (
+                <div className="overflow-hidden border border-red-300 rounded">
+                  <div className="px-2 py-1 mb-1 font-semibold bg-red-200">
+                    Nguồn phát hiện mối đe dọa:
+                  </div>
+                  <div className="max-h-[200px] overflow-y-auto">
+                    <table className="w-full text-xs">
+                      <thead className="sticky top-0 bg-red-100">
+                        <tr>
+                          <th className="px-2 py-1 font-semibold text-left border-b border-red-300">
+                            Nguồn
+                          </th>
+                          <th className="px-2 py-1 font-semibold text-left border-b border-red-300">
+                            Kết quả
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {result.details.maliciousEngines.map((engine, idx) => (
+                          <tr
+                            key={idx}
+                            className={idx % 2 === 0 ? "bg-red-50" : "bg-white"}
+                          >
+                            <td className="px-2 py-1 border-b border-red-200">
+                              {engine.engine}
+                            </td>
+                            <td className="px-2 py-1 font-semibold border-b border-red-200">
+                              {engine.result}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
           </div>
         )}
       </div>
@@ -271,8 +353,8 @@ const GoogleSafeResult: React.FC<GoogleSafeResultProps> = ({
         </div>
 
         {/* Cột 2: Ảnh website */}
-        <div className="flex flex-col items-center justify-center">
-          <div className="w-full overflow-hidden border border-gray-200 shadow rounded-xl bg-gray-50 relative min-h-[200px] flex items-center justify-center">
+        <div className="flex flex-col items-center justify-start">
+          <div className="w-full overflow-hidden border-2 border-gray-300 shadow-md rounded-xl bg-gray-50 relative min-h-[200px] flex items-center justify-center">
             {isImgLoading && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-50">
                 <Loader2 className="w-10 h-10 text-blue-400 animate-spin" />

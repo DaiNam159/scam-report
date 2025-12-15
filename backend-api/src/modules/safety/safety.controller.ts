@@ -26,6 +26,13 @@ export class SafetyController {
     res.setHeader('Content-Type', 'image/png');
     res.send(pngBuffer); // gửi ảnh trực tiếp
   }
+
+  @Get('check-url-vitrustotal')
+  async checkUrlVirustotal(@Query('url') url: string) {
+    if (!url) return { message: 'Missing url query param' };
+    return this.safetyService.checkUrlWithVirusTotal(url);
+  }
+
   @Post('screenshot-url')
   async screenshotUrl(@Body('url') url: string) {
     return await this.safetyService.screenshotUrl(url);

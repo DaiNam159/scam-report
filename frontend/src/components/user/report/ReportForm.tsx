@@ -4,6 +4,7 @@ import { ReportType } from "@/types/ReportType";
 import { ReportFormProps } from "@/types/ReportType";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 // Configuration for type-specific fields
 const typeConfig: Record<
@@ -274,11 +275,39 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
   const [formData, setFormData] = useState(initialFormState(type));
   const [isUploading, setIsUploading] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+
+  // Helper function to auto-add https:// to URLs
+  const normalizeUrl = (url: string): string => {
+    if (!url || url.trim() === "") return url;
+    const trimmedUrl = url.trim();
+    // Check if URL already has a protocol
+    if (!/^https?:\/\//i.test(trimmedUrl)) {
+      return `https://${trimmedUrl}`;
+    }
+    return trimmedUrl;
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+
+    // Auto-add https:// for URL inputs on blur
+    let processedValue = value;
+
+    setFormData((prev) => ({ ...prev, [name]: processedValue }));
+  };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+
+    // Auto-add https:// for URL inputs when losing focus
+    if (type === "url" && value.trim()) {
+      const normalizedValue = normalizeUrl(value);
+      setFormData((prev) => ({ ...prev, [name]: normalizedValue }));
+    }
   };
   useEffect(() => {
     const checkRequiredFields = (): boolean => {
@@ -299,14 +328,21 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const checkSpam = await ReportService.checkSpamByUserMin(2);
+      if (checkSpam) {
+        toast.error(
+          "Bạn đã gửi quá nhiều báo cáo trong thời gian ngắn. Vui lòng chờ trước khi gửi tiếp."
+        );
+        return;
+      }
       const finalData = { ...formData, reportType: type };
       const res = await ReportService.submitReport(finalData);
       if (!res) {
-        alert("Đã xảy ra lỗi khi gửi báo cáo. Vui lòng thử lại sau.");
+        toast.error("Đã xảy ra lỗi khi gửi báo cáo. Vui lòng thử lại sau.");
       }
       setFormData(initialFormState(type));
     } catch (err) {
-      console.log("Lỗi khi gửi form: ", err);
+      toast.error("Lỗi khi gửi form: " + err);
       throw err;
     }
   };
@@ -395,6 +431,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ type }) => {
                 name={field.name}
                 value={formData[field.name as keyof typeof formData]}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={field.placeholder}
                 required={field.required}
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e53935] bg-white text-black"

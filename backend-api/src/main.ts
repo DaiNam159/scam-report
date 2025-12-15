@@ -21,7 +21,10 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
   app.use(cookieParser());
   app.enableCors({
-    origin: [process.env.FRONTEND_PORT, 'http://localhost:3000'],
+    origin: [
+      process.env.FRONTEND_URL || 'http://localhost:3000',
+      'http://localhost:3000',
+    ],
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe());

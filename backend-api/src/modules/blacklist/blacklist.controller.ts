@@ -1,7 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { BlacklistService } from './blacklist.service';
 import { GetBlacklistDto, BlacklistResponseDto } from './dto/get-blacklist.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { GetDetailBlacklistDto } from './dto/get-detail-blacklist.dto';
 
 @Controller('blacklist')
 export class BlacklistController {
@@ -45,5 +46,10 @@ export class BlacklistController {
   @Get('stats')
   async getStats(): Promise<any> {
     return await this.blacklistService.getBlacklistStats();
+  }
+
+  @Post('blacklist-detail')
+  async getBlacklistDetails(@Body() dto: GetDetailBlacklistDto): Promise<any> {
+    return await this.blacklistService.getDetailsByTypeAndValue(dto);
   }
 }

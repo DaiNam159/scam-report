@@ -87,4 +87,12 @@ export const UserService = {
       throw error;
     }
   },
+  async banUser(userId: number, reason: string) {
+    try {
+      const res = await api.put(`${UserUrl}/ban`, { userId, reason });
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

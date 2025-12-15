@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Put, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update.dto';
+import { BanUserDto } from './dto/ban-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -65,6 +66,10 @@ export class UserController {
   @Put('update')
   async updateUser(@Body() body: { id: number; userData: UpdateUserDto }) {
     return this.userService.updateUser(body.id, body.userData);
+  }
+  @Put('ban')
+  async banUsers(@Body() dto: BanUserDto) {
+    return this.userService.BanUsers(dto);
   }
   @Delete()
   async deleteUser(@Body() body: { id: number }) {

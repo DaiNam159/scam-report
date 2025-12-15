@@ -8,6 +8,7 @@ import {
   FaSortDown,
   FaUserCheck,
   FaUser,
+  FaBan,
 } from "react-icons/fa";
 
 interface User {
@@ -15,6 +16,7 @@ interface User {
   email: string;
   fullName?: string;
   isActive: boolean;
+  banReason?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,6 +25,7 @@ interface Props {
   users: User[];
   onEdit: (user: User) => void;
   onDelete: (id: number) => void;
+  onBan: (userId: number, reason: string) => void;
   onToggleStatus: (id: number, isActive: boolean) => void;
   onSortChange?: (column: string, direction: "ASC" | "DESC") => void;
   sortBy?: string;
@@ -52,6 +55,7 @@ export default function UsersTable({
   users,
   onEdit,
   onDelete,
+  onBan,
   onToggleStatus,
   onSortChange,
   sortBy,
@@ -161,7 +165,8 @@ export default function UsersTable({
               </td>
               <td className="px-6 py-4 border-b border-blue-50 whitespace-nowrap w-[140px] min-w-[140px] max-w-[140px] text-center h-[72px]">
                 <div className="flex items-center justify-center h-full">
-                  <div className="grid grid-cols-2 gap-1 w-[120px]">
+                  <div className="grid grid-cols-2 gap-2 w-[120px]">
+                    {/* Edit */}
                     <button
                       onClick={() => onEdit(user)}
                       title="Chỉnh sửa"
@@ -170,6 +175,7 @@ export default function UsersTable({
                       <FaEdit className="w-4 h-4" />
                     </button>
 
+                    {/* Active / Deactive */}
                     {user.isActive ? (
                       <button
                         onClick={() => onToggleStatus(user.id, false)}
@@ -188,12 +194,22 @@ export default function UsersTable({
                       </button>
                     )}
 
+                    {/* Delete */}
                     <button
                       onClick={() => onDelete(user.id)}
                       title="Xóa"
-                      className="flex items-center justify-center w-8 h-8 col-span-2 text-red-700 transition border border-red-100 rounded-full bg-red-50 hover:bg-red-100"
+                      className="flex items-center justify-center w-8 h-8 text-red-700 transition border border-red-100 rounded-full bg-red-50 hover:bg-red-100"
                     >
                       <FaTrash className="w-4 h-4" />
+                    </button>
+
+                    {/* Ban */}
+                    <button
+                      onClick={() => onBan(user.id, user.banReason || "")}
+                      title="Khóa"
+                      className="flex items-center justify-center w-8 h-8 text-red-700 transition border border-red-100 rounded-full bg-red-50 hover:bg-red-100"
+                    >
+                      <FaBan className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { ReportType } from "@/types/ReportType";
 import { BlacklistItem } from "@/types/BlacklistType";
 import api from "@/lib/axiosInstance";
+import { BlackListDetailType } from "@/types/BlackListDetailType";
 
 export interface BlacklistParams {
   type?: ReportType;
@@ -74,6 +75,22 @@ export const BlacklistService = {
     } catch (error) {
       console.error("Error searching blacklist:", error);
       throw new Error("Không thể tìm kiếm. Vui lòng thử lại sau.");
+    }
+  },
+
+  async getBlacklistDetails(
+    type: ReportType,
+    value: string
+  ): Promise<BlackListDetailType> {
+    try {
+      const response = await api.post("/blacklist/blacklist-detail", {
+        type,
+        value,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching blacklist details:", error);
+      throw new Error("Không thể tải chi tiết. Vui lòng thử lại sau.");
     }
   },
 };

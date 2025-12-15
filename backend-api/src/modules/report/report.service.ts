@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReportEmailAddress } from 'src/entities/report_email_address.entity';
 import { ReportPersonOrg } from 'src/entities/report_person_org.entity';
-import { Between, In, Repository } from 'typeorm';
+import { Between, Brackets, In, MoreThan, Repository } from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Report, ReportStatus, ReportType } from 'src/entities/reports.entity';
 import { ReportWebsite } from 'src/entities/report_website.entity';
@@ -15,6 +19,14 @@ import { ReportPhone } from 'src/entities/report_phone.entity';
 import axios from 'axios';
 import { Stats } from 'src/entities/stats.entity';
 import { GetReportsDto } from './dto/get-reports.dto';
+import { CheckSpamReportsDto } from './dto/check-spam.dto';
+import { BlockType, UserBlacklist } from 'src/entities/user_blacklist.entity';
+import {
+  WEEKDAY_LABELS,
+  WeeklyReportChartItem,
+} from './dto/types/weekly-stats.dto';
+import { BlacklistService } from '../blacklist/blacklist.service';
+import { GetBlacklistDto } from '../blacklist/dto/get-blacklist.dto';
 @Injectable()
 export class ReportService {
   constructor(
@@ -51,6 +63,10 @@ export class ReportService {
     @InjectRepository(Stats)
     private readonly statsRepo: Repository<Stats>,
 
+    @InjectRepository(UserBlacklist)
+    private readonly UserBlackListRepo: Repository<UserBlacklist>,
+
+    private readonly BlackListService: BlacklistService,
     // inject các bảng khác tương tự
   ) {}
   async createReport(dto: CreateReportDto, ip: string, userId: number) {
@@ -158,6 +174,53 @@ export class ReportService {
     }
     const { repo, data } = handler(dto);
     await repo.save(data);
+
+    const countReport = await this.reportRepo.count();
+
+    //xử lý lấy blacklist
+    //lấy value search
+    let search: string | undefined = undefined;
+    switch (dto.reportType) {
+      case 'email_address':
+        search = dto.emailAddress;
+        break;
+      case 'phone':
+        search = dto.phoneNumber;
+        break;
+      case 'website':
+        search = dto.websiteUrl;
+        break;
+      case 'social':
+        search = dto.username;
+        break;
+      case 'bank_account':
+        search = dto.accountNumber;
+        break;
+      case 'e_wallet':
+        search = dto.walletId;
+        break;
+      case 'person_org':
+        search = dto.name;
+        break;
+      default:
+        search = '';
+    }
+    let getBlackListDto: GetBlacklistDto = {
+      search,
+      type: dto.reportType ?? undefined,
+      page: 1,
+      limit: countReport,
+    };
+
+    const blacklist = await this.BlackListService.getBlacklist(getBlackListDto);
+
+    if (
+      blacklist.data &&
+      blacklist.data.length > 0 &&
+      blacklist.data[0].reportCount > 0
+    ) {
+      await this.approveReport(saved.id);
+    }
     return {
       id: saved.id,
       message: 'Report created successfully',
@@ -309,6 +372,76 @@ export class ReportService {
         total,
         page,
         limit,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Get reports created by specific user
+  async getMyReports(userId: number, query: GetReportsDto) {
+    try {
+      const { page = 1, limit = 10, status } = query;
+
+      const qb = this.reportRepo
+        .createQueryBuilder('report')
+        .leftJoinAndSelect('report.user', 'user')
+        .leftJoinAndSelect('report.email_address', 'email_address')
+        .leftJoinAndSelect('report.person_org', 'person_org')
+        .leftJoinAndSelect('report.email_content', 'email_content')
+        .leftJoinAndSelect('report.phone', 'phone')
+        .leftJoinAndSelect('report.sms', 'sms')
+        .leftJoinAndSelect('report.website', 'website')
+        .leftJoinAndSelect('report.social', 'social')
+        .leftJoinAndSelect('report.bank_account', 'bank_account')
+        .leftJoinAndSelect('report.e_wallet', 'e_wallet')
+        .where('report.user_id = :userId', { userId })
+        .skip((page - 1) * limit)
+        .take(limit);
+
+      // Filter by status if provided
+      if (status) {
+        qb.andWhere('report.status = :status', { status });
+      }
+
+      // Order by created_at DESC (newest first)
+      qb.orderBy('report.created_at', 'DESC');
+
+      const [reports, total] = await qb.getManyAndCount();
+
+      // Clean up the response to only include relevant relations
+      const cleaned = reports.map((report) => {
+        const { report_type } = report;
+        const allowed = [
+          'email_address',
+          'email_content',
+          'website',
+          'phone',
+          'sms',
+          'social',
+          'person_org',
+          'bank_account',
+          'e_wallet',
+        ];
+
+        const filtered = Object.fromEntries(
+          Object.entries(report).filter(([key]) => {
+            if (!allowed.includes(key)) return true;
+            return key === report_type;
+          }),
+        );
+
+        return filtered;
+      });
+
+      return {
+        data: cleaned,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
       };
     } catch (error) {
       throw error;
@@ -592,5 +725,131 @@ export class ReportService {
       console.error('Lỗi khi lấy tổng báo cáo hôm nay:', error.message);
       throw new Error(`Không thể lấy tổng báo cáo hôm nay: ${error.message}`);
     }
+  }
+
+  async checkSpamByUserMinute(dto: CheckSpamReportsDto) {
+    try {
+      const since = new Date(Date.now() - dto.minutes * 60 * 1000);
+
+      const count = await this.reportRepo
+        .createQueryBuilder('report')
+        .where('report.created_at > NOW() - INTERVAL 20 MINUTE')
+        .andWhere('(report.user_id = :userId OR report.user_ip = :userIp)', {
+          userId: dto.userId,
+          userIp: dto.userIp,
+        })
+        .getCount();
+
+      if (count >= 3) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async checkSpam() {
+    try {
+      const spamReports = await this.reportRepo
+        .createQueryBuilder('report')
+        .select('report.user_ip', 'userIp')
+        .addSelect('report.user_id', 'userId')
+        .addSelect('COUNT(*)', 'rejectedCount')
+        .where('report.status = :status', { status: 'REJECTED' })
+        .groupBy('report.user_ip')
+        .addGroupBy('report.user_id')
+        .having('COUNT(*) >= :minRejected', { minRejected: 5 })
+        .getRawMany();
+
+      for (const r of spamReports) {
+        const { userId, userIp, rejectedCount } = r;
+        let blockType: BlockType;
+
+        if (userId && userIp) {
+          blockType = BlockType.USER_IP;
+        } else if (userId) {
+          blockType = BlockType.USER;
+        } else if (userIp) {
+          blockType = BlockType.IP;
+        } else {
+          continue;
+        }
+
+        const spam = this.UserBlackListRepo.create({
+          user_id: userId || null,
+          user_ip: userIp || null,
+          block_type: blockType,
+          reason: `Dấu hiệu Spam`,
+          isAdminBlock: false,
+        });
+        await this.UserBlackListRepo.save(spam);
+      }
+
+      return spamReports;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getWeeklyReportStats(): Promise<WeeklyReportChartItem[]> {
+    const now = new Date();
+    // Tạo bản sao và set về đầu ngày LOCAL
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // Tính ngày Thứ 2 của tuần hiện tại
+    const currentDayOfWeek = today.getDay(); // 0 = CN, 1 = T2, ..., 6 = T7
+    const daysFromMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1; // CN = 6, T2 = 0, T3 = 1, ...
+
+    const mondayThisWeek = new Date(today);
+    mondayThisWeek.setDate(today.getDate() - daysFromMonday);
+
+    // Thứ 2 tuần trước = Thứ 2 tuần này - 7 ngày
+    const mondayLastWeek = new Date(mondayThisWeek);
+    mondayLastWeek.setDate(mondayThisWeek.getDate() - 7);
+
+    // CN tuần trước = Thứ 2 tuần này - 1 ngày
+    const sundayLastWeek = new Date(mondayThisWeek);
+    sundayLastWeek.setDate(mondayThisWeek.getDate() - 1);
+    sundayLastWeek.setHours(23, 59, 59, 999);
+
+    const stats = await this.reportRepo
+      .createQueryBuilder('report')
+      .select('DATE(report.created_at)', 'date')
+      .addSelect('COUNT(*)', 'count')
+      .where('report.created_at >= :mondayLastWeek', { mondayLastWeek })
+      .andWhere('report.created_at <= :sundayLastWeek', { sundayLastWeek })
+      .groupBy('DATE(report.created_at)')
+      .getRawMany<{
+        date: string;
+        count: string;
+      }>();
+
+    // Khởi tạo map YYYY-MM-DD -> count
+    const countByDate = new Map<string, number>();
+
+    stats.forEach((s) => {
+      const dateStr = new Date(s.date).toLocaleDateString('sv-SE'); // YYYY-MM-DD
+      countByDate.set(dateStr, Number(s.count));
+    });
+
+    const result: WeeklyReportChartItem[] = [];
+
+    // Duyệt từ Thứ 2 -> CN (7 ngày)
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(mondayLastWeek);
+      date.setDate(mondayLastWeek.getDate() + i);
+
+      const dateStr = date.toLocaleDateString('sv-SE'); // YYYY-MM-DD
+
+      result.push({
+        label: WEEKDAY_LABELS[i],
+        date: dateStr,
+        day: String(date.getDate()).padStart(2, '0'),
+        month: String(date.getMonth() + 1).padStart(2, '0'),
+        year: String(date.getFullYear()),
+        value: countByDate.get(dateStr) || 0,
+      });
+    }
+    return result;
   }
 }

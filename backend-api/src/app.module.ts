@@ -14,6 +14,9 @@ import { SafetyModule } from './modules/safety/safety.module';
 import { BlacklistModule } from './modules/blacklist/blacklist.module';
 import { TestModule } from './modules/test/test.module';
 import { StatsModule } from './modules/stats/stats.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { ProfileModule } from './modules/profile/profile.module';
+import { EmailVerificationModule } from './modules/email-verification/email-verification.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +32,9 @@ import { StatsModule } from './modules/stats/stats.module';
     BlacklistModule,
     TestModule,
     StatsModule,
+    ChatModule,
+    ProfileModule,
+    EmailVerificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

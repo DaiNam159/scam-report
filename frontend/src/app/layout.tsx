@@ -1,17 +1,19 @@
 import React from "react";
 import "./globals.css";
+import { Toaster } from "sonner";
 export const metadata = {
-  title: "Scam Report Guard - Báo cáo & Tra cứu lừa đảo",
+  metadataBase: new URL(process.env.SITE_URL!),
+  title: "Scam Report - Báo cáo & Tra cứu lừa đảo",
   description:
     "Công cụ báo cáo, tra cứu số điện thoại, tài khoản ngân hàng và website lừa đảo nhanh chóng, chính xác.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Scam Report Guard",
+    title: "Scam Report",
     description: "Báo cáo và tra cứu lừa đảo hiệu quả.",
-    url: "https://scamreportguard.vercel.app",
-    siteName: "Scam Report Guard",
+    url: "/",
+    siteName: "Scam Report",
     images: [
       {
         url: "/share-img.png",
@@ -32,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
+        <Toaster position="top-right" richColors closeButton />
         <div>{children}</div>
       </body>
     </html>

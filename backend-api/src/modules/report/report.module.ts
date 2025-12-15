@@ -13,6 +13,8 @@ import { ReportBankAccount } from 'src/entities/report_bank_account.entity';
 import { ReportSms } from 'src/entities/report_sms.entity';
 import { Report } from 'src/entities/reports.entity';
 import { Stats } from 'src/entities/stats.entity';
+import { UserBlacklist } from 'src/entities/user_blacklist.entity';
+import { BlacklistModule } from '../blacklist/blacklist.module';
 
 @Module({
   imports: [
@@ -28,7 +30,9 @@ import { Stats } from 'src/entities/stats.entity';
       ReportBankAccount,
       ReportSms,
       Stats,
+      UserBlacklist,
     ]),
+    BlacklistModule,
   ],
   controllers: [ReportController],
   providers: [ReportService],

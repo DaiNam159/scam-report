@@ -49,6 +49,9 @@ export default function UserManagementComponent() {
     totalPages: 1,
     pageNumbers: [],
   });
+  const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
+  const [banUserId, setBanUserId] = useState<number | null>(null);
+  const [banReason, setBanReason] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -149,6 +152,31 @@ export default function UserManagementComponent() {
       console.error("Error deleting user:", error);
     }
   }, []);
+
+  const handleBan = useCallback((userId: number) => {
+    setBanUserId(userId);
+    setBanReason("");
+    setIsBanDialogOpen(true);
+  }, []);
+
+  const handleConfirmBan = async () => {
+    if (!banUserId || !banReason.trim()) {
+      alert("Vui lòng nhập lý do khóa tài khoản");
+      return;
+    }
+
+    try {
+      await UserService.banUser(banUserId, banReason);
+      setUsers((prev) => prev.filter((u) => u.id !== banUserId));
+      setTotalUsers((prev) => prev - 1);
+      setIsBanDialogOpen(false);
+      setBanUserId(null);
+      setBanReason("");
+    } catch (error) {
+      console.error("Error banning user:", error);
+      alert("Có lỗi xảy ra khi khóa tài khoản");
+    }
+  };
 
   const handleToggleStatus = useCallback(
     async (id: number, isActive: boolean) => {
@@ -373,6 +401,7 @@ export default function UserManagementComponent() {
               users={users}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onBan={handleBan}
               onToggleStatus={handleToggleStatus}
               onSortChange={handleSortChange}
               sortBy={sortBy}
@@ -384,18 +413,25 @@ export default function UserManagementComponent() {
 
       {/* Edit User Modal */}
       {isEditDialogOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            {/* Backdrop - Màu xám mờ */}
             <div
-              className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
+              className="fixed inset-0 transition-opacity bg-black/30 bg-opacity-30"
               onClick={() => setIsEditDialogOpen(false)}
+              aria-hidden="true"
             />
 
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen">
+            {/* Center alignment */}
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
               &#8203;
             </span>
 
-            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+            {/* Modal content */}
+            <div className="relative inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl">
               <div className="mb-4">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                   Chỉnh sửa người dùng
@@ -419,6 +455,7 @@ export default function UserManagementComponent() {
                     }
                     placeholder="Nhập tên người dùng"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    autoFocus
                   />
                 </div>
 
@@ -454,6 +491,83 @@ export default function UserManagementComponent() {
                   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Cập nhật
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Ban User Modal */}
+      {isBanDialogOpen && (
+        <div className="fixed inset-0 z-[9999] overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 transition-opacity bg-black/30 bg-opacity-30"
+              onClick={() => setIsBanDialogOpen(false)}
+              aria-hidden="true"
+            />
+
+            {/* Center alignment */}
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+
+            {/* Modal content */}
+            <div className="relative inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl">
+              <div className="mb-4">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Khóa tài khoản người dùng
+                </h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  Vui lòng nhập lý do khóa tài khoản
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="banReason"
+                    className="block mb-1 text-sm font-medium text-gray-700"
+                  >
+                    Lý do khóa <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="banReason"
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    placeholder="Nhập lý do khóa tài khoản (tối thiểu 10 ký tự)"
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    autoFocus
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Đã nhập: {banReason.length} ký tự
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end mt-6 space-x-3">
+                <button
+                  onClick={() => {
+                    setIsBanDialogOpen(false);
+                    setBanUserId(null);
+                    setBanReason("");
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleConfirmBan}
+                  disabled={!banReason.trim() || banReason.length < 10}
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                  Xác nhận khóa
                 </button>
               </div>
             </div>

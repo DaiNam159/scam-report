@@ -193,7 +193,7 @@ const UserHome = () => (
           transition={{ delay: 0.2, duration: 0.7 }}
         >
           Cảnh Báo & Tra Cứu
-          <br className="block sm:hidden" />
+          <br className="block sm:hidden" /> <br />
           Lừa Đảo Trực Tuyến
         </motion.h1>
         <motion.p

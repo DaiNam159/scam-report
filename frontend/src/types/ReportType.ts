@@ -49,3 +49,18 @@ export interface ReportSubmit {
   walletId: string;
   contact: string;
 }
+
+export interface ReportResponse {
+  id: number;
+  reportType: ReportType;
+  title: string;
+  description: string;
+  evidence: string;
+  evidencePublicId: string;
+  emailAddress: string;
+  user_ip: string;
+  status: ReportStatus;
+  contact: string;
+  created_at: string;
+  updated_at: string;
+}

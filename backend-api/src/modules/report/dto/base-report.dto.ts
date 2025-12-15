@@ -1,4 +1,5 @@
 import { IsEnum, IsOptional, IsString, IsInt } from 'class-validator';
+import { ReportType } from 'src/types/report.type';
 
 export class BaseReportDto {
   @IsEnum([
@@ -12,7 +13,7 @@ export class BaseReportDto {
     'e_wallet',
     'person_org',
   ])
-  reportType: string;
+  reportType: ReportType;
 
   @IsOptional()
   @IsString()

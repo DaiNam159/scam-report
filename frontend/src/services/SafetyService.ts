@@ -23,4 +23,15 @@ export const SafetyService = {
       throw error;
     }
   },
+
+  async checkUrlWithVirustotal(url: string) {
+    try {
+      const response = await api.get("/safety/check-url-vitrustotal", {
+        params: { url },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

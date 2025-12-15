@@ -22,6 +22,9 @@ import QuickActions from "./QuickActions";
 import { ReportService } from "@/services/ReportService";
 import { UserService } from "@/services/UserService";
 import { StatsService } from "@/services/StatsService";
+import AdminChatList from "@/components/chat/AdminChatList";
+import { AuthService } from "@/services/AuthService";
+import { User } from "@/types/UserType";
 
 interface DashboardStats {
   totalReports: number;
@@ -43,6 +46,15 @@ interface RecentActivity {
   status?: string;
 }
 
+interface weeklyReportChartItem {
+  label: string;
+  date: string;
+  day: string;
+  month: string;
+  year: string;
+  value: number;
+}
+
 export default function DashboardAdminComponent() {
   const [stats, setStats] = useState<DashboardStats>({
     totalReports: 0,
@@ -55,16 +67,30 @@ export default function DashboardAdminComponent() {
     usersToday: 0,
   });
 
+  const [profile, setProfile] = useState<User | null>(null);
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(
     []
   );
   const [loading, setLoading] = useState(true);
   const [weeklyData, setWeeklyData] = useState<number[]>([]);
   const [monthlyUsers, setMonthlyUsers] = useState<number[]>([]);
+  const [weeklyReportsData, setWeeklyReportsData] = useState<
+    weeklyReportChartItem[]
+  >([]);
 
   useEffect(() => {
+    fetchProfile();
     fetchDashboardData();
   }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const userProfile = await AuthService.getProfile();
+      setProfile(userProfile.user);
+    } catch (error) {
+      console.error("Failed to get profile:", error);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -79,6 +105,8 @@ export default function DashboardAdminComponent() {
       const onlineUsers = await StatsService.getOnlineUsers();
       const rpToday = await ReportService.countTodayReport();
       const usToday = await UserService.getRegisterToday();
+      const wlDataReports = await ReportService.getWeeklyReportStats();
+      setWeeklyReportsData(wlDataReports);
       setStats({
         totalReports: totalRp,
         totalUsers: totalUs,
@@ -152,15 +180,15 @@ export default function DashboardAdminComponent() {
     { label: "Từ chối", value: stats.rejectedReports, color: "#ef4444" },
   ];
 
-  const weeklyReportsData = [
-    { label: "Thứ 2", value: weeklyData[0] || 0 },
-    { label: "Thứ 3", value: weeklyData[1] || 0 },
-    { label: "Thứ 4", value: weeklyData[2] || 0 },
-    { label: "Thứ 5", value: weeklyData[3] || 0 },
-    { label: "Thứ 6", value: weeklyData[4] || 0 },
-    { label: "Thứ 7", value: weeklyData[5] || 0 },
-    { label: "CN", value: weeklyData[6] || 0 },
-  ];
+  // const weeklyReportsData = [
+  //   { label: "Thứ 2", value: weeklyData[0] || 0 },
+  //   { label: "Thứ 3", value: weeklyData[1] || 0 },
+  //   { label: "Thứ 4", value: weeklyData[2] || 0 },
+  //   { label: "Thứ 5", value: weeklyData[3] || 0 },
+  //   { label: "Thứ 6", value: weeklyData[4] || 0 },
+  //   { label: "Thứ 7", value: weeklyData[5] || 0 },
+  //   { label: "CN", value: weeklyData[6] || 0 },
+  // ];
 
   const monthlyUsersData = [
     { label: "T1", value: monthlyUsers[0] || 0 },
@@ -278,7 +306,7 @@ export default function DashboardAdminComponent() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">
-                    Báo cáo tuần này
+                    Báo cáo tuần trước
                   </h3>
                   <p className="text-sm text-gray-600">Theo từng ngày</p>
                 </div>
@@ -327,6 +355,9 @@ export default function DashboardAdminComponent() {
 
       {/* Enhanced Quick Actions */}
       <QuickActions stats={stats} />
+
+      {/* Admin Chat */}
+      {profile && <AdminChatList adminId={profile.id} />}
     </div>
   );
 }

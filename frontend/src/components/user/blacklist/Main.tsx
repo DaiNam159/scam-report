@@ -81,83 +81,6 @@ export default function BlacklistComponent() {
         setError(err instanceof Error ? err.message : "Có lỗi xảy ra");
 
         // Fallback to fake data nếu API lỗi
-        const fakeData: BlacklistItem[] = [
-          {
-            value: "scammer@email.com",
-            type: "email_address",
-            reportCount: 12,
-            latestReport: "2024-06-01",
-            email_address: {
-              email_address: "scammer@email.com",
-              sender_address: "Scam Company",
-            },
-          },
-          {
-            value: "0912345678",
-            type: "phone",
-            reportCount: 8,
-            latestReport: "2024-05-30",
-            phone: {
-              phone_number: "0912345678",
-            },
-          },
-          {
-            value: "http://luadao.com",
-            type: "website",
-            reportCount: 15,
-            latestReport: "2024-05-29",
-            website: {
-              url: "http://luadao.com",
-            },
-          },
-          {
-            value: "facebook.com/fakeprofile",
-            type: "social",
-            reportCount: 6,
-            latestReport: "2024-05-28",
-            social: {
-              platform: "Facebook",
-              profile_url: "https://facebook.com/fakeprofile",
-              username: "fakeuser123",
-            },
-          },
-          {
-            value: "123456789",
-            type: "bank_account",
-            reportCount: 10,
-            latestReport: "2024-05-27",
-            bank_account: {
-              bank_name: "Vietcombank",
-              account_number: "123456789",
-              account_holder_name: "Nguyễn Văn Lừa",
-            },
-          },
-          {
-            value: "0987654321",
-            type: "e_wallet",
-            reportCount: 4,
-            latestReport: "2024-05-26",
-            e_wallet: {
-              wallet_type: "MoMo",
-              wallet_id: "0987654321",
-              account_holder_name: "Trần Thị Lừa",
-            },
-          },
-          {
-            value: "Nguyễn Văn Lừa",
-            type: "person_org",
-            reportCount: 7,
-            latestReport: "2024-05-25",
-            person_org: {
-              name: "Nguyễn Văn Lừa",
-              role: "Giám đốc",
-              identification: "123456789012",
-              address: "123 Đường ABC, Quận 1, TP.HCM",
-              phone_number: "0123456789",
-              email_address: "fake@email.com",
-            },
-          },
-        ];
 
         const allowedTypes = [
           "email_address",
@@ -170,7 +93,7 @@ export default function BlacklistComponent() {
         ];
 
         const safeType = allowedTypes.includes(type) ? type : allowedTypes[0];
-        const filteredData = fakeData.filter(
+        const filteredData = data.filter(
           (row) => String(row.type) === String(safeType)
         );
         setData(filteredData);

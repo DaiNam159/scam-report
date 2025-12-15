@@ -142,4 +142,44 @@ export class ReportService {
       throw error;
     }
   }
+  static async checkSpamByUserMin(minutes: number) {
+    try {
+      const res = await api.get(`${reportUrl}/check-spam-minutes`, {
+        params: { minutes },
+      });
+      return res.data;
+    } catch (error) {
+      console.error("Error checking spam by user minute:", error);
+      throw error;
+    }
+  }
+  static async getWeeklyReportStats() {
+    try {
+      const res = await api.get(`${reportUrl}/weekly-stats`);
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching weekly report stats:", error);
+      throw error;
+    }
+  }
+
+  // Lấy danh sách báo cáo của user hiện tại
+  static async getMyReports(page: number = 1, status?: string) {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: "10",
+      });
+
+      if (status && status !== "all") {
+        params.append("status", status);
+      }
+
+      const response = await api.get(`${reportUrl}/my-reports?${params}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching my reports:", error);
+      throw error;
+    }
+  }
 }

@@ -16,6 +16,8 @@ import {
   FaSearch,
   FaList,
   FaQuestionCircle,
+  FaUserEdit,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 type DateUpdated = {
@@ -35,15 +37,13 @@ const UserHeader = () => {
     const fetchProfile = async () => {
       try {
         const userProfile = await AuthService.getProfile();
-        console.log("User profile:", userProfile);
         setProfile(userProfile.user);
       } catch (error) {
-        console.warn("Không lấy được profile:", error);
         setProfile(null);
       }
     };
     fetchProfile();
-  }, []);
+  }, [pathname]); // Re-fetch profile when pathname changes
 
   useEffect(() => {
     const fetchDateUpdated = async () => {
@@ -99,8 +99,18 @@ const UserHeader = () => {
 
   // Function to get current page breadcrumb
   const getCurrentPageBreadcrumb = () => {
+    if (pathname?.startsWith("/tra-cuu")) {
+      // Nếu đúng trang chi tiết
+      const segments = pathname.split("/").filter(Boolean); // ["tra-cuu", "type", "value"]
+      if (segments.length > 1) {
+        return ["Tra cứu", "Chi tiết"];
+      } else {
+        return ["Tra cứu"];
+      }
+    }
+
     const currentItem = navigationItems.find((item) => item.active);
-    return currentItem?.label || "Trang chủ";
+    return currentItem ? [currentItem.label] : ["Trang chủ"];
   };
 
   return (
@@ -181,24 +191,26 @@ const UserHeader = () => {
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 rounded-lg hover:bg-gray-100"
                   >
-                    <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-xs font-semibold text-white rounded-full bg-gradient-to-r from-red-500 to-orange-500">
-                      {profile.fullName?.charAt(0) ||
-                        profile.email?.charAt(0) ||
-                        "U"}
-                    </div>
+                    {profile.avatarUrl ? (
+                      <img
+                        src={profile.avatarUrl}
+                        alt="Avatar"
+                        className="flex-shrink-0 object-cover w-8 h-8 rounded-full"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-xs font-semibold text-white rounded-full bg-gradient-to-r from-red-500 to-orange-500">
+                        {profile.fullName?.charAt(0) ||
+                          profile.email?.charAt(0) ||
+                          "U"}
+                      </div>
+                    )}
                     <span className="truncate max-w-24 lg:max-w-32">
                       {profile.fullName || profile.email}
                     </span>
-                    <FaChevronDown
-                      className={`w-3 h-3 transition-transform flex-shrink-0 ${
-                        userMenuOpen ? "rotate-180" : ""
-                      }`}
-                    />
                   </button>
 
-                  {/* User Dropdown */}
                   {userMenuOpen && (
-                    <div className="absolute right-0 z-[10000] w-48 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg top-full">
+                    <div className="absolute right-0 z-[9999] w-56 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg top-full">
                       <div className="p-3 border-b border-gray-100">
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {profile.fullName}
@@ -208,10 +220,27 @@ const UserHeader = () => {
                         </p>
                       </div>
                       <div className="py-2">
+                        <Link
+                          href="/bao-cao-cua-toi"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center w-full gap-3 px-4 py-2 text-sm text-left text-gray-700 transition-colors hover:bg-gray-50"
+                        >
+                          <FaFileAlt className="text-green-600" />
+                          Báo cáo của tôi
+                        </Link>
+                        <Link
+                          href="/thong-tin-ca-nhan"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center w-full gap-3 px-4 py-2 text-sm text-left text-gray-700 transition-colors hover:bg-gray-50"
+                        >
+                          <FaUserEdit className="text-blue-600" />
+                          Chỉnh sửa thông tin
+                        </Link>
                         <button
                           onClick={handleLogout}
-                          className="w-full px-3 py-2 text-sm text-left text-red-600 transition-colors hover:bg-red-50"
+                          className="flex items-center w-full gap-3 px-4 py-2 text-sm text-left text-red-600 transition-colors hover:bg-red-50"
                         >
+                          <FaSignOutAlt />
                           Đăng xuất
                         </button>
                       </div>
@@ -238,11 +267,19 @@ const UserHeader = () => {
               {/* Mobile User Avatar - Show when logged in */}
               {profile && (
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center justify-center flex-shrink-0 text-xs font-semibold text-white rounded-full w-7 h-7 bg-gradient-to-r from-red-500 to-orange-500">
-                    {profile.fullName?.charAt(0) ||
-                      profile.email?.charAt(0) ||
-                      "U"}
-                  </div>
+                  {profile.avatarUrl ? (
+                    <img
+                      src={profile.avatarUrl}
+                      alt="Avatar"
+                      className="flex-shrink-0 object-cover rounded-full w-7 h-7"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center flex-shrink-0 text-xs font-semibold text-white rounded-full w-7 h-7 bg-gradient-to-r from-red-500 to-orange-500">
+                      {profile.fullName?.charAt(0) ||
+                        profile.email?.charAt(0) ||
+                        "U"}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -262,14 +299,23 @@ const UserHeader = () => {
           <div className="mx-auto max-w-7xl">
             <div className="flex items-center justify-between px-3 py-1 sm:px-4 sm:py-2 lg:px-8">
               <div className="flex-1 min-w-0 text-xs text-gray-600 truncate sm:text-sm">
-                <span className="font-medium">Trang chủ</span>
-                {pathname !== "/" && (
-                  <>
-                    <span className="mx-1 sm:mx-2">/</span>
-                    <span className="font-semibold text-red-600 truncate">
-                      {getCurrentPageBreadcrumb()}
+                {["Trang chủ", ...getCurrentPageBreadcrumb()].map(
+                  (label, index, arr) => (
+                    <span key={index}>
+                      <span
+                        className={
+                          index === arr.length - 1
+                            ? "font-semibold text-red-600"
+                            : "font-medium"
+                        }
+                      >
+                        {label}
+                      </span>
+                      {index < arr.length - 1 && (
+                        <span className="mx-1 sm:mx-2">/</span>
+                      )}
                     </span>
-                  </>
+                  )
                 )}
               </div>
               {dateUpdated && (
@@ -325,11 +371,19 @@ const UserHeader = () => {
               {profile && (
                 <div className="p-4 mb-6 border border-gray-200 rounded-lg bg-gradient-to-r from-gray-50 to-blue-50">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 font-semibold text-white rounded-full bg-gradient-to-r from-red-500 to-orange-500">
-                      {profile.fullName?.charAt(0) ||
-                        profile.email?.charAt(0) ||
-                        "U"}
-                    </div>
+                    {profile.avatarUrl ? (
+                      <img
+                        src={profile.avatarUrl}
+                        alt="Avatar"
+                        className="flex-shrink-0 object-cover w-12 h-12 rounded-full"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 font-semibold text-white rounded-full bg-gradient-to-r from-red-500 to-orange-500">
+                        {profile.fullName?.charAt(0) ||
+                          profile.email?.charAt(0) ||
+                          "U"}
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {profile.fullName || "Người dùng"}
@@ -388,15 +442,34 @@ const UserHeader = () => {
                     </Link>
                   </>
                 ) : (
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="flex items-center justify-center w-full px-4 py-3 text-center text-red-600 transition-colors border border-red-600 rounded-lg hover:bg-red-50"
-                  >
-                    <span className="font-semibold">Đăng xuất</span>
-                  </button>
+                  <>
+                    <Link
+                      href="/bao-cao-cua-toi"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-center w-full gap-2 px-4 py-3 text-center text-green-600 transition-colors border border-green-600 rounded-lg hover:bg-green-50"
+                    >
+                      <FaFileAlt />
+                      <span className="font-semibold">Báo cáo của tôi</span>
+                    </Link>
+                    <Link
+                      href="/thong-tin-ca-nhan"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-center w-full gap-2 px-4 py-3 text-center text-blue-600 transition-colors border border-blue-600 rounded-lg hover:bg-blue-50"
+                    >
+                      <FaUserEdit />
+                      <span className="font-semibold">Chỉnh sửa thông tin</span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="flex items-center justify-center w-full gap-2 px-4 py-3 text-center text-red-600 transition-colors border border-red-600 rounded-lg hover:bg-red-50"
+                    >
+                      <FaSignOutAlt />
+                      <span className="font-semibold">Đăng xuất</span>
+                    </button>
+                  </>
                 )}
               </div>
             </div>

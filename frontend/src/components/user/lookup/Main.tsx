@@ -43,6 +43,7 @@ export default function LookupComponent() {
         const initialResults = [
           { name: "Google Safe Browsing", loading: true, result: undefined },
           { name: "IPQS", loading: true, result: undefined },
+          { name: "VirusTotal", loading: true, result: undefined },
         ];
         setUrlCheckResults([...initialResults]);
 
@@ -103,6 +104,38 @@ export default function LookupComponent() {
                     result: {
                       isSafe: false,
                       error: "Lỗi khi kiểm tra với IPQS",
+                    },
+                  }
+                : api
+            )
+          );
+        }
+
+        // Cuối cùng gọi VirusTotal
+        try {
+          const virustotalResult = await SafetyService.checkUrlWithVirustotal(
+            query
+          );
+
+          // Cập nhật kết quả VirusTotal
+          setUrlCheckResults((prev) =>
+            prev.map((api) =>
+              api.name === "VirusTotal"
+                ? { ...api, loading: false, result: virustotalResult }
+                : api
+            )
+          );
+        } catch (error) {
+          console.error("Error with VirusTotal:", error);
+          setUrlCheckResults((prev) =>
+            prev.map((api) =>
+              api.name === "VirusTotal"
+                ? {
+                    ...api,
+                    loading: false,
+                    result: {
+                      isSafe: false,
+                      error: "Lỗi khi kiểm tra với VirusTotal",
                     },
                   }
                 : api

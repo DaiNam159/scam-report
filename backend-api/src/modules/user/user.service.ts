@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './../../entities/user.entity';
 import { Between, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update.dto';
+import { BanUserDto } from './dto/ban-user.dto';
 
 @Injectable()
 export class UserService {
@@ -124,6 +125,21 @@ export class UserService {
       return count;
     } catch (error) {
       throw new Error(`Error fetching today's registrations: ${error.message}`);
+    }
+  }
+
+  async BanUsers(dto: BanUserDto) {
+    try {
+      const user = await this.userRepo.findOne({ where: { id: dto.userId } });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      user.isBanned = true;
+      user.banReason = dto.reason;
+      user.isActive = false;
+      await this.userRepo.save(user);
+    } catch (error) {
+      throw new Error(`Error fetching spam users: ${error.message}`);
     }
   }
 }

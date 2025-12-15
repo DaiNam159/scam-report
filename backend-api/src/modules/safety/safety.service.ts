@@ -2,6 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
+import {
+  translateSecurityCategory,
+  translateSecurityResult,
+} from 'src/common/helpers/translate.helper';
 import { Stats } from 'src/entities/stats.entity';
 import { In, Repository } from 'typeorm';
 
@@ -11,6 +15,7 @@ export class SafetyService {
   private readonly ipqs_apiKey: string;
   private readonly screenshot_apiKey: string;
   private readonly urlscan_apiKey: string;
+  private readonly virustotal_apiKey: string;
 
   private readonly endpoint =
     'https://safebrowsing.googleapis.com/v4/threatMatches:find';
@@ -38,6 +43,10 @@ export class SafetyService {
     this.urlscan_apiKey =
       process.env.URLSCAN_API_KEY ||
       this.configService.get<string>('URLSCAN_API_KEY') ||
+      '';
+    this.virustotal_apiKey =
+      process.env.VIRUSTOTAL_API_KEY ||
+      this.configService.get<string>('VIRUSTOTAL_API_KEY') ||
       '';
   }
 
@@ -475,5 +484,101 @@ export class SafetyService {
       console.error('Error taking screenshot:', error);
       throw new Error('Failed to take screenshot');
     }
+  }
+
+  async checkUrlWithVirusTotal(url: string) {
+    const API_KEY = this.virustotal_apiKey;
+    const BASE_URL = 'https://www.virustotal.com/api/v3';
+
+    if (!API_KEY) {
+      throw new Error('VirusTotal API key not found');
+    }
+
+    /* =========================
+     * STEP 1: Submit URL
+     * ========================= */
+    const submitResponse = await axios.post(
+      `${BASE_URL}/urls`,
+      new URLSearchParams({ url }),
+      {
+        headers: {
+          'x-apikey': API_KEY,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    );
+
+    const getDataUrl = submitResponse.data.data.links.self;
+    /* =========================
+     * STEP 2: Poll result
+     * ========================= */
+    let analysisAttributes: any = null;
+
+    for (let i = 0; i < 10; i++) {
+      const res = await axios.get(getDataUrl, {
+        headers: { 'x-apikey': API_KEY },
+      });
+
+      if (res.data.data.attributes.status === 'completed') {
+        analysisAttributes = res.data.data.attributes;
+        break;
+      }
+
+      // chờ 2s rồi poll tiếp
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+
+    if (!analysisAttributes) {
+      throw new Error('VirusTotal analysis timeout');
+    }
+
+    /* =========================
+     * STEP 3: Extract stats
+     * ========================= */
+    const stats = analysisAttributes.stats;
+
+    const total =
+      stats.malicious + stats.suspicious + stats.harmless + stats.undetected;
+
+    /* =========================
+     * STEP 4: Determine verdict
+     * ========================= */
+    let verdict: 'safe' | 'suspicious' | 'malicious' = 'safe';
+
+    if (stats.malicious > 0) verdict = 'malicious';
+    else if (stats.suspicious > 0) verdict = 'suspicious';
+
+    /* =========================
+     * STEP 5: Extract malicious engines
+     * ========================= */
+    const maliciousEngines = Object.values(analysisAttributes.results || {})
+      .filter((r: any) => r.category === 'SCAN_CATEGORY_MALICIOUS')
+      .map((r: any) => ({
+        engine: r.engine_name,
+        result: translateSecurityResult(r.result),
+        category: translateSecurityCategory(r.category),
+      }));
+
+    /* =========================
+     * STEP 6: Final response
+     * ========================= */
+    return {
+      url: new URL(url).hostname,
+      isSafe: verdict === 'safe',
+      details: {
+        provider: 'VirusTotal',
+        url,
+        verdict,
+        summary: {
+          malicious: stats.malicious,
+          suspicious: stats.suspicious,
+          harmless: stats.harmless,
+          undetected: stats.undetected,
+          total,
+        },
+        maliciousEngines,
+        scannedAt: new Date(analysisAttributes.date * 1000).toISOString(),
+      },
+    };
   }
 }

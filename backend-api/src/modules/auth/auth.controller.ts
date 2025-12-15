@@ -25,11 +25,14 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   async login(@Request() req, @Res({ passthrough: true }) res: Response) {
     const token = await this.authService.login(req.user);
+
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.cookie('access_token', token.access_token, {
       httpOnly: true,
-      secure: true, // HTTPS bắt buộc
-      sameSite: 'none', // Cross-domain cookie
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: isProduction, // Only HTTPS in production
+      sameSite: isProduction ? 'none' : 'lax', // 'lax' for localhost
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
     return { message: 'Login successful' };
   }
@@ -48,7 +51,11 @@ export class AuthController {
   @Get('me')
   @UseGuards(OptionalJwtAuthGuard)
   getProfile(@Req() req) {
+    console.log('GET /auth/me - Cookies:', req.cookies);
+    console.log('GET /auth/me - User:', req.user);
+
     if (!req.user) {
+      console.log('No user found in request');
       return { isLoggedIn: false };
     }
 
@@ -59,10 +66,13 @@ export class AuthController {
   }
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.clearCookie('access_token', {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/',
     });
     return { message: 'Logout successful' };
   }
