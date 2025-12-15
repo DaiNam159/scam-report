@@ -13,26 +13,32 @@ import {
   Award,
   Globe2,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import React from "react";
 import Image from "next/image";
+import { motion, Variants } from "framer-motion";
 
 // Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i = 1) => ({
+const fadeInUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 40,
+  },
+  visible: (i: number = 1) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.12, duration: 0.6, type: "spring" },
+    transition: {
+      delay: i * 0.12,
+      duration: 0.6,
+    },
   }),
 };
 
-const pulse = {
-  animate: {
-    scale: [1, 1.08, 1],
-    transition: { repeat: Infinity, duration: 2, ease: "easeInOut" },
-  },
-};
+// const pulse = {
+//   animate: {
+//     scale: [1, 1.08, 1],
+//     transition: { repeat: Infinity, duration: 2, ease: "easeInOut" },
+//   },
+// };
 
 const mainFeatures = [
   {
@@ -235,7 +241,17 @@ const UserHome = () => (
             viewport={{ once: true }}
             variants={fadeInUp}
           >
-            <motion.div {...pulse} className="mb-2">
+            <motion.div
+              className="mb-2"
+              animate={{
+                scale: [1, 1.08, 1],
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 2,
+                ease: "easeInOut",
+              }}
+            >
               <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8">
                 {React.cloneElement(h.icon, {
                   className: "w-full h-full text-[#e53935]",
