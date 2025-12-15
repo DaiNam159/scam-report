@@ -24,6 +24,11 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@Request() req, @Res({ passthrough: true }) res: Response) {
+    console.log(
+      '✅ Login successful for user:',
+      req.user?.email || req.user?.id,
+    );
+
     const token = await this.authService.login(req.user);
 
     const isProduction = process.env.NODE_ENV === 'production';
@@ -34,6 +39,9 @@ export class AuthController {
       sameSite: isProduction ? 'none' : 'lax', // 'lax' for localhost
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
+
+    console.log('🍪 Cookie set with sameSite:', isProduction ? 'none' : 'lax');
+
     return { message: 'Login successful' };
   }
 
