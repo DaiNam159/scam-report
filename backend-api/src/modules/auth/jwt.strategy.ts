@@ -14,7 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          return req?.cookies?.['access_token']; // Tên cookie bạn đã set trong backend
+          const token = req?.cookies?.['access_token'];
+          console.log('🔍 JWT Extract - Cookies:', req?.cookies);
+          console.log('🎫 JWT Token found:', token ? 'Yes' : 'No');
+          return token;
         },
       ]),
       ignoreExpiration: false,
@@ -30,7 +33,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    console.log('🔐 JWT Validate - Payload:', payload);
+
     const user = await this.userService.findById(payload.sub);
+
+    console.log(
+      '👤 JWT Validate - User found:',
+      user ? `Yes (${user.email})` : 'No',
+    );
+
     if (!user) throw new UnauthorizedException();
 
     const { password, ...result } = user;

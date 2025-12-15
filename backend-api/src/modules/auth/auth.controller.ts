@@ -33,6 +33,12 @@ export class AuthController {
 
     const isProduction = process.env.NODE_ENV === 'production';
 
+    console.log('🌍 Environment:', {
+      NODE_ENV: process.env.NODE_ENV,
+      isProduction,
+      origin: req.headers.origin,
+    });
+
     res.cookie('access_token', token.access_token, {
       httpOnly: true,
       secure: isProduction, // Only HTTPS in production
@@ -40,7 +46,11 @@ export class AuthController {
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
-    console.log('🍪 Cookie set with sameSite:', isProduction ? 'none' : 'lax');
+    console.log('🍪 Cookie settings:', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+    });
 
     return { message: 'Login successful' };
   }
