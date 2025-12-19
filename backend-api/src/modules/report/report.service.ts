@@ -679,7 +679,6 @@ export class ReportService {
       }
       return reports;
     } catch (error) {
-      console.log('FASTAPI url: ', process.env.FAST_API_URL);
       console.error('Lỗi khi gọi FastAPI:', error.message);
       if (error.response) {
         console.error('Response status:', error.response.status);
