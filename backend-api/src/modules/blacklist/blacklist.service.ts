@@ -261,7 +261,8 @@ export class BlacklistService {
         'COUNT(report.id) as reportCount',
         'MAX(report.updated_at) as latestReport',
       ])
-      .groupBy('email.email_address');
+      .groupBy('email.email_address')
+      .having('COUNT(report.id) >= :minReports', { minReports: 3 });
 
     if (search) {
       query.andWhere('email.email_address LIKE :search', {
@@ -294,7 +295,8 @@ export class BlacklistService {
         'COUNT(report.id) as reportCount',
         'MAX(report.updated_at) as latestReport',
       ])
-      .groupBy('phone.phone_number');
+      .groupBy('phone.phone_number')
+      .having('COUNT(report.id) >= :minReports', { minReports: 3 });
 
     if (search) {
       query.andWhere('phone.phone_number LIKE :search', {
@@ -327,7 +329,8 @@ export class BlacklistService {
         'COUNT(report.id) as reportCount',
         'MAX(report.updated_at) as latestReport',
       ])
-      .groupBy('website.url');
+      .groupBy('website.url')
+      .having('COUNT(report.id) >= :minReports', { minReports: 3 });
 
     if (search) {
       query.andWhere('website.url LIKE :search', { search: `%${search}%` });
@@ -360,7 +363,8 @@ export class BlacklistService {
         'COUNT(report.id) as reportCount',
         'MAX(report.updated_at) as latestReport',
       ])
-      .groupBy('social.platform, social.profile_url, social.username');
+      .groupBy('social.platform, social.profile_url, social.username')
+      .having('COUNT(report.id) >= :minReports', { minReports: 3 });
 
     if (search) {
       query.andWhere(
@@ -398,7 +402,8 @@ export class BlacklistService {
         'COUNT(report.id) as reportCount',
         'MAX(report.updated_at) as latestReport',
       ])
-      .groupBy('bank.bank_name, bank.account_number, bank.account_holder_name');
+      .groupBy('bank.bank_name, bank.account_number, bank.account_holder_name')
+      .having('COUNT(report.id) >= :minReports', { minReports: 3 });
 
     if (search) {
       query.andWhere(
@@ -438,7 +443,8 @@ export class BlacklistService {
       ])
       .groupBy(
         'wallet.wallet_type, wallet.wallet_id, wallet.account_holder_name',
-      );
+      )
+      .having('COUNT(report.id) >= :minReports', { minReports: 3 });
 
     if (search) {
       query.andWhere(
@@ -481,7 +487,8 @@ export class BlacklistService {
       ])
       .groupBy(
         'person.name, person.role, person.identification, person.address, person.phone_number, person.email_address',
-      );
+      )
+      .having('COUNT(report.id) >= :minReports', { minReports: 3 });
 
     if (search) {
       query.andWhere(
