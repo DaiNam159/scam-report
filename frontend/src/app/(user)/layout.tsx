@@ -17,7 +17,6 @@ export default function UserLayout({
   useEffect(() => {
     const trackVisit = async () => {
       await StatsService.trackVisit();
-      console.log("Visit tracked successfully");
     };
     trackVisit();
 

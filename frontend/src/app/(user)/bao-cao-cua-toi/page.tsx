@@ -82,7 +82,7 @@ export default function MyReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
       <div className="container px-4 py-8 mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-8">
@@ -115,7 +115,7 @@ export default function MyReportsPage() {
                   }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     statusFilter === filter.value
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
+                      ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-md"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
@@ -162,7 +162,7 @@ export default function MyReportsPage() {
               {statusFilter === "all" && (
                 <button
                   onClick={() => router.push("/bao-cao")}
-                  className="inline-flex items-center gap-2 px-6 py-3 font-medium text-white transition-all duration-200 rounded-lg shadow-md bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg"
+                  className="inline-flex items-center gap-2 px-6 py-3 font-medium text-white transition-all duration-200 rounded-lg shadow-md bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg"
                 >
                   <svg
                     className="w-5 h-5"
@@ -221,7 +221,7 @@ export default function MyReportsPage() {
                         onClick={() => setCurrentPage(page)}
                         className={`px-4 py-2 rounded-lg transition-all duration-200 ${
                           currentPage === page
-                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md"
+                            ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-md"
                             : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
                         }`}
                       >

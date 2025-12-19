@@ -18,6 +18,7 @@ import {
   FaQuestionCircle,
   FaUserEdit,
   FaSignOutAlt,
+  FaNewspaper,
 } from "react-icons/fa";
 
 type DateUpdated = {
@@ -95,6 +96,12 @@ const UserHeader = () => {
       icon: FaQuestionCircle,
       active: pathname === "/ho-tro",
     },
+    {
+      href: "/tin-tuc",
+      label: "Tin tức",
+      icon: FaNewspaper,
+      active: pathname === "/tin-tuc",
+    },
   ];
 
   // Function to get current page breadcrumb
@@ -115,16 +122,16 @@ const UserHeader = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-[9999] bg-white border-b border-gray-200 shadow-lg">
+      <header className="sticky top-0 bg-white border-b border-gray-200 shadow-lg z-9999">
         {/* Main Header */}
         <div className="mx-auto max-w-7xl">
           <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 lg:px-8 lg:py-4">
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center flex-shrink-0 min-w-0 gap-1 sm:gap-2 lg:gap-3 group"
+              className="flex items-center min-w-0 gap-1 shrink-0 sm:gap-2 lg:gap-3 group"
             >
-              <div className="relative flex-shrink-0">
+              <div className="relative shrink-0">
                 <Image
                   src="/logo.webp"
                   alt="Logo"
@@ -132,10 +139,10 @@ const UserHeader = () => {
                   height={64}
                   className="w-8 h-8 transition-transform sm:w-10 sm:h-10 lg:w-16 lg:h-16 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 transition-opacity rounded-full opacity-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 group-hover:opacity-100"></div>
+                <div className="absolute inset-0 transition-opacity rounded-full opacity-0 bg-linear-to-r from-red-500/20 to-orange-500/20 group-hover:opacity-100"></div>
               </div>
               <div className="hidden min-w-0 sm:block">
-                <h1 className="text-base font-bold text-transparent truncate sm:text-lg lg:text-2xl bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text">
+                <h1 className="text-base font-bold text-transparent truncate sm:text-lg lg:text-2xl bg-linear-to-r from-red-600 to-orange-600 bg-clip-text">
                   ScamReport
                 </h1>
                 <p className="hidden text-xs text-gray-600 lg:block">
@@ -152,7 +159,7 @@ const UserHeader = () => {
                   href={item.href}
                   className={`group flex items-center gap-2 px-3 lg:px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 relative ${
                     item.active
-                      ? "bg-gradient-to-r from-red-50 to-orange-50 text-red-700 border-b-2 border-red-600 shadow-sm"
+                      ? "bg-linear-to-r from-red-50 to-orange-50 text-red-700 border-b-2 border-red-600 shadow-sm"
                       : "text-gray-700 hover:bg-red-50 hover:text-red-700"
                   }`}
                 >
@@ -169,7 +176,7 @@ const UserHeader = () => {
             </nav>
 
             {/* Desktop Auth Section */}
-            <div className="items-center flex-shrink-0 hidden gap-2 lg:gap-3 lg:flex">
+            <div className="items-center hidden gap-2 shrink-0 lg:gap-3 lg:flex">
               {!profile ? (
                 <div className="flex items-center gap-2 lg:gap-3">
                   <Link
@@ -180,7 +187,7 @@ const UserHeader = () => {
                   </Link>
                   <Link
                     href="/dang-ky"
-                    className="px-3 lg:px-4 py-2 text-sm font-semibold text-white transition-all duration-200 rounded-lg shadow-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap"
+                    className="px-3 lg:px-4 py-2 text-sm font-semibold text-white transition-all duration-200 rounded-lg shadow-lg bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap"
                   >
                     Đăng ký
                   </Link>
@@ -195,10 +202,10 @@ const UserHeader = () => {
                       <img
                         src={profile.avatarUrl}
                         alt="Avatar"
-                        className="flex-shrink-0 object-cover w-8 h-8 rounded-full"
+                        className="object-cover w-8 h-8 rounded-full shrink-0"
                       />
                     ) : (
-                      <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-xs font-semibold text-white rounded-full bg-gradient-to-r from-red-500 to-orange-500">
+                      <div className="flex items-center justify-center w-8 h-8 text-xs font-semibold text-white rounded-full shrink-0 bg-linear-to-r from-red-500 to-orange-500">
                         {profile.fullName?.charAt(0) ||
                           profile.email?.charAt(0) ||
                           "U"}
@@ -210,7 +217,7 @@ const UserHeader = () => {
                   </button>
 
                   {userMenuOpen && (
-                    <div className="absolute right-0 z-[9999] w-56 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg top-full">
+                    <div className="absolute right-0 w-56 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-9999 top-full">
                       <div className="p-3 border-b border-gray-100">
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {profile.fullName}
@@ -271,10 +278,10 @@ const UserHeader = () => {
                     <img
                       src={profile.avatarUrl}
                       alt="Avatar"
-                      className="flex-shrink-0 object-cover rounded-full w-7 h-7"
+                      className="object-cover rounded-full shrink-0 w-7 h-7"
                     />
                   ) : (
-                    <div className="flex items-center justify-center flex-shrink-0 text-xs font-semibold text-white rounded-full w-7 h-7 bg-gradient-to-r from-red-500 to-orange-500">
+                    <div className="flex items-center justify-center text-xs font-semibold text-white rounded-full shrink-0 w-7 h-7 bg-linear-to-r from-red-500 to-orange-500">
                       {profile.fullName?.charAt(0) ||
                         profile.email?.charAt(0) ||
                         "U"}
@@ -286,7 +293,7 @@ const UserHeader = () => {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="flex-shrink-0 p-2 text-gray-600 transition-colors rounded-lg hover:text-gray-900 hover:bg-gray-100"
+                className="p-2 text-gray-600 transition-colors rounded-lg shrink-0 hover:text-gray-900 hover:bg-gray-100"
               >
                 {mobileMenuOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
               </button>
@@ -295,7 +302,7 @@ const UserHeader = () => {
         </div>
 
         {/* Breadcrumb Bar */}
-        <div className="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+        <div className="border-t border-gray-200 bg-linear-to-r from-gray-50 to-gray-100">
           <div className="mx-auto max-w-7xl">
             <div className="flex items-center justify-between px-3 py-1 sm:px-4 sm:py-2 lg:px-8">
               <div className="flex-1 min-w-0 text-xs text-gray-600 truncate sm:text-sm">
@@ -319,11 +326,11 @@ const UserHeader = () => {
                 )}
               </div>
               {dateUpdated && (
-                <div className="flex items-center flex-shrink-0 gap-1 sm:gap-2">
+                <div className="flex items-center gap-1 shrink-0 sm:gap-2">
                   <span className="hidden text-xs text-gray-500 sm:inline">
                     Cập nhật:
                   </span>
-                  <span className="px-2 py-1 text-xs font-semibold text-white rounded-full shadow-sm bg-gradient-to-r from-gray-800 to-gray-900 whitespace-nowrap">
+                  <span className="px-2 py-1 text-xs font-semibold text-white rounded-full shadow-sm bg-linear-to-r from-gray-800 to-gray-900 whitespace-nowrap">
                     {dateUpdated.day}/{dateUpdated.month}/{dateUpdated.year}
                   </span>
                 </div>
@@ -335,14 +342,14 @@ const UserHeader = () => {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-[10000] lg:hidden">
+        <div className="fixed inset-0 z-10000 lg:hidden">
           <div
             className="fixed inset-0 bg-black bg-opacity-50"
             onClick={() => setMobileMenuOpen(false)}
           />
           <div className="fixed top-0 right-0 h-full max-w-full bg-white shadow-xl w-72 sm:w-80">
             {/* Mobile Menu Header */}
-            <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-red-50 to-orange-50">
+            <div className="flex items-center justify-between p-4 border-b bg-linear-to-r from-red-50 to-orange-50">
               <div className="flex items-center gap-3">
                 <Image
                   src="/logo.webp"
@@ -369,16 +376,16 @@ const UserHeader = () => {
             <div className="h-full p-4 pb-20 overflow-y-auto">
               {/* Mobile User Info - Show at top when logged in */}
               {profile && (
-                <div className="p-4 mb-6 border border-gray-200 rounded-lg bg-gradient-to-r from-gray-50 to-blue-50">
+                <div className="p-4 mb-6 border border-gray-200 rounded-lg bg-linear-to-r from-gray-50 to-blue-50">
                   <div className="flex items-center gap-3">
                     {profile.avatarUrl ? (
                       <img
                         src={profile.avatarUrl}
                         alt="Avatar"
-                        className="flex-shrink-0 object-cover w-12 h-12 rounded-full"
+                        className="object-cover w-12 h-12 rounded-full shrink-0"
                       />
                     ) : (
-                      <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 font-semibold text-white rounded-full bg-gradient-to-r from-red-500 to-orange-500">
+                      <div className="flex items-center justify-center w-12 h-12 font-semibold text-white rounded-full shrink-0 bg-linear-to-r from-red-500 to-orange-500">
                         {profile.fullName?.charAt(0) ||
                           profile.email?.charAt(0) ||
                           "U"}
@@ -405,12 +412,12 @@ const UserHeader = () => {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors relative ${
                       item.active
-                        ? "bg-gradient-to-r from-red-50 to-orange-50 text-red-700 border-l-4 border-red-600 shadow-sm"
+                        ? "bg-linear-to-r from-red-50 to-orange-50 text-red-700 border-l-4 border-red-600 shadow-sm"
                         : "text-gray-700 hover:bg-red-50 hover:text-red-700"
                     }`}
                   >
                     <item.icon
-                      className={`w-5 h-5 transition-all duration-200 flex-shrink-0 ${
+                      className={`w-5 h-5 transition-all duration-200 shrink-0 ${
                         item.active ? "text-red-600 scale-110" : ""
                       }`}
                     />
@@ -436,7 +443,7 @@ const UserHeader = () => {
                     <Link
                       href="/dang-ky"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center justify-center w-full px-4 py-3 text-center text-white transition-colors rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
+                      className="flex items-center justify-center w-full px-4 py-3 text-center text-white transition-colors rounded-lg bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
                     >
                       <span className="font-semibold">Đăng ký</span>
                     </Link>
@@ -480,7 +487,7 @@ const UserHeader = () => {
       {/* Click outside to close user menu */}
       {userMenuOpen && (
         <div
-          className="fixed inset-0 z-[9998]"
+          className="fixed inset-0 z-9998"
           onClick={() => setUserMenuOpen(false)}
         />
       )}

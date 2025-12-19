@@ -20,7 +20,6 @@ export default function LoginComponent() {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("mmb1: ", form);
       await AuthService.login(form.email, form.password);
       const profile = await AuthService.getProfile(); // lấy thông tin người dùng
       const userProfie = profile.user;
@@ -44,7 +43,7 @@ export default function LoginComponent() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-gradient-to-br from-[#fff8e1] via-[#fbe9e7] to-[#e3f2fd]">
+    <div className="flex flex-col items-center justify-center min-h-screen px-2 py-10 bg-linear-to-br from-[#fff8e1] via-[#fbe9e7] to-[#e3f2fd]">
       <div className="relative flex flex-col items-center w-full max-w-md p-8 mx-auto overflow-hidden bg-white border border-gray-100 shadow-2xl rounded-3xl">
         <div className="absolute pointer-events-none -top-8 -right-8 opacity-10">
           <ShieldAlert className="w-32 h-32 text-[#e53935]" />
@@ -93,7 +92,7 @@ export default function LoginComponent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 font-bold text-lg rounded-xl bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
+            className="w-full py-3 font-bold text-lg rounded-xl bg-linear-to-r from-[#e53935] to-[#fbc02d] text-white shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
           >
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>

@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update.dto';
@@ -7,18 +15,24 @@ import { BanUserDto } from './dto/ban-user.dto';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  // @Get()
-  // async getAllUsers(
-  //   @Body() query: GetAllUsersDto
-  // ) {
-  //   return this.userService.getAllUsers(
-  //     query.page,
-  //     query.limit,
-  //     query.sortBy,
-  //     query.sortOrder,
-  //     query.filters,
-  //   );
-  // }
+
+  // Specific routes must come BEFORE generic @Get()
+  @Get('count')
+  async countUsers() {
+    return this.userService.countUsers();
+  }
+
+  @Get('register-today')
+  async getRegisterToday() {
+    return this.userService.getRegisterToday();
+  }
+
+  @Get('banned-users')
+  async getBannedUsers() {
+    return this.userService.getBannedUsers();
+  }
+
+  // Generic route comes LAST
   @Get()
   async getAllUsers(
     @Query('page') page: number = 1,
@@ -45,15 +59,6 @@ export class UserController {
       filters,
     );
   }
-  @Get('count')
-  async countUsers() {
-    return this.userService.countUsers();
-  }
-
-  @Get('register-today')
-  async getRegisterToday() {
-    return this.userService.getRegisterToday();
-  }
 
   @Put('active')
   async activeUsers(@Body() body: { id: number }) {
@@ -71,6 +76,12 @@ export class UserController {
   async banUsers(@Body() dto: BanUserDto) {
     return this.userService.BanUsers(dto);
   }
+
+  @Put('unban/:id')
+  async unbanUser(@Param('id') id: number) {
+    return this.userService.unbanUser(id);
+  }
+
   @Delete()
   async deleteUser(@Body() body: { id: number }) {
     return this.userService.deleteUser(body.id);

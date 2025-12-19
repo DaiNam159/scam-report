@@ -15,8 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           const token = req?.cookies?.['access_token'];
-          console.log('🔍 JWT Extract - Cookies:', req?.cookies);
-          console.log('🎫 JWT Token found:', token ? 'Yes' : 'No');
           return token;
         },
       ]),
@@ -33,14 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log('🔐 JWT Validate - Payload:', payload);
-
     const user = await this.userService.findById(payload.sub);
-
-    console.log(
-      '👤 JWT Validate - User found:',
-      user ? `Yes (${user.email})` : 'No',
-    );
 
     if (!user) throw new UnauthorizedException();
 

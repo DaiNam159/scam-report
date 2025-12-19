@@ -97,12 +97,10 @@ export default function UserManagementComponent() {
   );
   useEffect(() => {
     if (users.length === 0) return;
-    console.log("Users fetched:", users);
   }, [users]);
   const fetchStats = async () => {
     try {
       const data = await UserService.getAllUsers(1, 9999);
-      console.log("Fetched user stats:", data);
       const activeUsers = data.data.filter(
         (user: User) => user.isActive
       ).length;
@@ -291,7 +289,7 @@ export default function UserManagementComponent() {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen p-4 md:p-6 bg-linear-to-br from-gray-50 to-gray-100">
       {/* Header Section */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
@@ -369,7 +367,7 @@ export default function UserManagementComponent() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left border-separate border-spacing-0">
                 <thead>
-                  <tr className="border-b border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100">
+                  <tr className="border-b border-blue-200 bg-linear-to-r from-blue-50 to-blue-100">
                     {[...Array(6)].map((_, i) => (
                       <th
                         key={i}
@@ -382,11 +380,11 @@ export default function UserManagementComponent() {
                 </thead>
                 <tbody className="bg-white">
                   {[...Array(8)].map((_, i) => (
-                    <tr key={i} className="h-[72px]">
+                    <tr key={i} className="h-18">
                       {[...Array(6)].map((_, j) => (
                         <td
                           key={j}
-                          className="px-6 py-4 border-b border-blue-50 h-[72px]"
+                          className="px-6 py-4 border-b border-blue-50 h-18"
                         >
                           <div className="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
                         </td>
@@ -413,7 +411,7 @@ export default function UserManagementComponent() {
 
       {/* Edit User Modal */}
       {isEditDialogOpen && (
-        <div className="fixed inset-0 z-[9999] overflow-y-auto">
+        <div className="fixed inset-0 overflow-y-auto z-9999">
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             {/* Backdrop - Màu xám mờ */}
             <div
@@ -500,7 +498,7 @@ export default function UserManagementComponent() {
 
       {/* Ban User Modal */}
       {isBanDialogOpen && (
-        <div className="fixed inset-0 z-[9999] overflow-y-auto">
+        <div className="fixed inset-0 overflow-y-auto z-9999">
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             {/* Backdrop */}
             <div

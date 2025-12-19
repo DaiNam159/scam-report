@@ -27,11 +27,6 @@ export class EmailVerificationController {
 
     // Set JWT cookie for auto-login
     if (result.access_token) {
-      console.log(
-        'Setting cookie with token:',
-        result.access_token.substring(0, 20) + '...',
-      );
-
       const isProduction = process.env.NODE_ENV === 'production';
 
       res.cookie('access_token', result.access_token, {
@@ -40,10 +35,6 @@ export class EmailVerificationController {
         sameSite: isProduction ? 'none' : 'lax', // 'lax' for localhost
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         path: '/',
-      });
-      console.log('Cookie set successfully with config:', {
-        secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
       });
     }
 

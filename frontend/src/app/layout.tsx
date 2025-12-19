@@ -1,6 +1,7 @@
 import React from "react";
 import "./globals.css";
 import { Toaster } from "sonner";
+import TopLoadingBar from "@/components/common/TopLoadingBar";
 export const metadata = {
   metadataBase: new URL(process.env.SITE_URL!),
   title: "Scam Report - Báo cáo & Tra cứu lừa đảo",
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
+        <TopLoadingBar />
         <Toaster position="top-right" richColors closeButton />
         <div>{children}</div>
       </body>

@@ -5,12 +5,15 @@ import { User } from './../../entities/user.entity';
 import { Between, Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update.dto';
 import { BanUserDto } from './dto/ban-user.dto';
+import { UserBlacklist } from './../../entities/user_blacklist.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    @InjectRepository(UserBlacklist)
+    private blacklistRepo: Repository<UserBlacklist>,
   ) {}
 
   async findByEmail(email: string): Promise<User | null> {
@@ -140,6 +143,34 @@ export class UserService {
       await this.userRepo.save(user);
     } catch (error) {
       throw new Error(`Error fetching spam users: ${error.message}`);
+    }
+  }
+
+  async getBannedUsers() {
+    try {
+      const bannedUsers = await this.userRepo.find({
+        where: { isBanned: true },
+      });
+
+      return bannedUsers;
+    } catch (error) {
+      throw new Error(`Error fetching banned users: ${error.message}`);
+    }
+  }
+
+  async unbanUser(id: number) {
+    try {
+      const user = await this.userRepo.findOne({ where: { id } });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      user.isBanned = false;
+      user.banReason = '';
+      user.isActive = true;
+      await this.userRepo.save(user);
+      return { message: 'User unbanned successfully' };
+    } catch (error) {
+      throw new Error(`Error unbanning user: ${error.message}`);
     }
   }
 }

@@ -248,7 +248,7 @@ export default function DetailRenderer({ report }: Props) {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header với gradient */}
-            <div className="relative px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600">
+            <div className="relative px-6 py-4 bg-linear-to-r from-blue-600 to-indigo-600">
               <h3 className="flex items-center gap-2 text-lg font-semibold text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +291,7 @@ export default function DetailRenderer({ report }: Props) {
             </div>
 
             {/* Container ảnh */}
-            <div className="relative p-6 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="relative p-6 bg-linear-to-br from-gray-50 to-gray-100">
               <div className="bg-white rounded-xl shadow-inner overflow-hidden max-h-[70vh]">
                 <div className="overflow-auto max-h-[70vh] flex items-center justify-center p-4">
                   <img
@@ -308,7 +308,7 @@ export default function DetailRenderer({ report }: Props) {
             </div>
 
             {/* Footer với actions */}
-            <div className="px-6 py-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+            <div className="px-6 py-4 border-t border-gray-200 bg-linear-to-r from-gray-50 to-gray-100">
               <div className="flex items-center justify-between gap-4">
                 <div className="text-sm text-gray-600">
                   <span className="font-medium">Mẹo:</span> Click bên ngoài hoặc
@@ -340,7 +340,7 @@ export default function DetailRenderer({ report }: Props) {
                     href={currentImage}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 rounded-lg shadow-sm bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-md"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-200 rounded-lg shadow-sm bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-md"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

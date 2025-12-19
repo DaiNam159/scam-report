@@ -17,6 +17,7 @@ import { StatsModule } from './modules/stats/stats.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { EmailVerificationModule } from './modules/email-verification/email-verification.module';
+import { NewsModule } from './modules/news/news.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,6 +36,7 @@ import { EmailVerificationModule } from './modules/email-verification/email-veri
     ChatModule,
     ProfileModule,
     EmailVerificationModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

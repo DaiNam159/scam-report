@@ -24,7 +24,6 @@ export default function ContactForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    console.log("Form submitted:", formData);
   };
 
   return (
@@ -114,7 +113,7 @@ export default function ContactForm() {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-bold py-3 px-6 rounded-2xl flex items-center justify-center space-x-2 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="w-full bg-linear-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-bold py-3 px-6 rounded-2xl flex items-center justify-center space-x-2 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           <Send className="w-5 h-5" />
           <span>Gửi yêu cầu hỗ trợ</span>

@@ -59,11 +59,11 @@ export default function AdminChatList({ adminId }: AdminChatListProps) {
       {/* Floating button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition z-50"
+        className="fixed z-50 p-4 text-white transition rounded-full shadow-lg bottom-4 right-4 bg-linear-to-r from-blue-600 to-purple-600 hover:shadow-xl"
       >
         <FaComment className="text-2xl" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center">
+          <span className="absolute flex items-center justify-center w-6 h-6 text-xs text-white bg-red-500 rounded-full -top-1 -right-1">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -71,12 +71,12 @@ export default function AdminChatList({ adminId }: AdminChatListProps) {
 
       {/* Conversations list */}
       {isOpen && !selectedUser && (
-        <div className="fixed bottom-20 right-4 w-80 h-96 bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-50">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-t-lg flex items-center justify-between">
+        <div className="fixed z-50 flex flex-col bg-white border border-gray-200 rounded-lg shadow-2xl bottom-20 right-4 w-80 h-96">
+          <div className="flex items-center justify-between px-4 py-3 text-white rounded-t-lg bg-linear-to-r from-blue-600 to-purple-600">
             <h3 className="font-semibold">Tin nhắn</h3>
             <button
               onClick={() => setIsOpen(false)}
-              className="hover:bg-white/20 p-1 rounded transition"
+              className="p-1 transition rounded hover:bg-white/20"
             >
               <FaTimes />
             </button>
@@ -97,7 +97,7 @@ export default function AdminChatList({ adminId }: AdminChatListProps) {
                       conv.userFullName || conv.userEmail
                     )
                   }
-                  className="w-full p-4 border-b border-gray-200 hover:bg-gray-50 transition text-left"
+                  className="w-full p-4 text-left transition border-b border-gray-200 hover:bg-gray-50"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
@@ -114,7 +114,7 @@ export default function AdminChatList({ adminId }: AdminChatListProps) {
                       <p className="text-sm text-gray-600 truncate">
                         {conv.lastMessage}
                       </p>
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="mt-1 text-xs text-gray-400">
                         {new Date(conv.lastMessageAt).toLocaleString("vi-VN")}
                       </p>
                     </div>

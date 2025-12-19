@@ -182,7 +182,7 @@ const faq = [
 ];
 
 const UserHome = () => (
-  <div className="bg-gradient-to-b from-white via-red-50 to-white">
+  <div className="bg-linear-to-b from-white via-red-50 to-white">
     {/* Hero Section */}
     <section className="relative py-8 sm:py-12 lg:py-20 px-3 sm:px-6 lg:px-8 text-center overflow-hidden flex flex-col items-center justify-center min-h-[40vh] sm:min-h-[50vh] lg:min-h-[60vh]">
       <div className="absolute inset-0 pointer-events-none select-none opacity-10 bg-[url('/pattern.avif')] bg-repeat" />
@@ -220,7 +220,7 @@ const UserHome = () => (
         >
           <Link
             href="/tra-cuu"
-            className="inline-block bg-gradient-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-semibold px-4 sm:px-6 lg:px-10 py-2.5 sm:py-3 lg:py-4 rounded-full text-base sm:text-lg lg:text-xl transition shadow-lg hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
+            className="inline-block bg-linear-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-semibold px-4 sm:px-6 lg:px-10 py-2.5 sm:py-3 lg:py-4 rounded-full text-base sm:text-lg lg:text-xl transition shadow-lg hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
           >
             Báo cáo lừa đảo ngay
           </Link>
@@ -297,7 +297,7 @@ const UserHome = () => (
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10">
+              <div className="w-6 h-6 shrink-0 sm:w-8 sm:h-8 lg:w-10 lg:h-10">
                 {React.cloneElement(f.icon, {
                   className: "w-full h-full text-[#e53935]",
                 })}
@@ -310,7 +310,7 @@ const UserHome = () => (
             </h3>
 
             {/* Description - Hide on mobile, show on larger screens */}
-            <p className="flex-grow hidden mb-2 text-xs leading-relaxed text-center text-gray-600 sm:block lg:text-sm lg:mb-3 line-clamp-3">
+            <p className="hidden mb-2 text-xs leading-relaxed text-center text-gray-600 grow sm:block lg:text-sm lg:mb-3 line-clamp-3">
               {f.desc}
             </p>
 
@@ -348,7 +348,7 @@ const UserHome = () => (
             className="p-3 bg-white border border-gray-100 rounded-lg shadow-sm"
           >
             <div className="flex items-start gap-3">
-              <div className="w-5 h-5 flex-shrink-0 mt-0.5">
+              <div className="w-5 h-5 shrink-0 mt-0.5">
                 {React.cloneElement(f.icon, {
                   className: "w-full h-full text-[#e53935]",
                 })}
@@ -459,7 +459,7 @@ const UserHome = () => (
             <div className="font-bold text-sm sm:text-base text-[#e53935] mb-1 sm:mb-2 leading-tight line-clamp-2">
               {item.title}
             </div>
-            <div className="flex-grow mb-2 text-xs leading-relaxed text-gray-700 sm:text-sm sm:mb-3 line-clamp-3">
+            <div className="mb-2 text-xs leading-relaxed text-gray-700 grow sm:text-sm sm:mb-3 line-clamp-3">
               {item.desc}
             </div>
             <Link
@@ -482,16 +482,16 @@ const UserHome = () => (
         {feedbacks.map((fb, i) => (
           <motion.div
             key={i}
-            className="flex flex-col items-center p-4 sm:p-6 lg:p-8 transition bg-white border border-gray-100 shadow-lg rounded-2xl sm:rounded-3xl hover:shadow-2xl min-h-[200px] sm:min-h-[220px]"
+            className="flex flex-col items-center p-4 transition bg-white border border-gray-100 shadow-lg sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl hover:shadow-2xl min-h-50 sm:min-h-55"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.15, duration: 0.7, type: "spring" }}
           >
-            <div className="flex items-center justify-center w-12 h-12 mb-3 text-sm font-bold text-white border-2 border-red-200 rounded-full sm:w-14 sm:h-14 lg:w-16 lg:h-16 sm:mb-4 bg-gradient-to-br from-red-400 to-orange-500 sm:text-base lg:text-lg">
+            <div className="flex items-center justify-center w-12 h-12 mb-3 text-sm font-bold text-white border-2 border-red-200 rounded-full sm:w-14 sm:h-14 lg:w-16 lg:h-16 sm:mb-4 bg-linear-to-br from-red-400 to-orange-500 sm:text-base lg:text-lg">
               {fb.name.charAt(0)}
             </div>
-            <div className="flex-grow mb-3 text-xs italic leading-relaxed text-center text-gray-700 sm:mb-4 sm:text-sm lg:text-base">
+            <div className="mb-3 text-xs italic leading-relaxed text-center text-gray-700 grow sm:mb-4 sm:text-sm lg:text-base">
               &quot;{fb.content}&quot;
             </div>
             <div className="font-semibold text-[#e53935] text-xs sm:text-sm lg:text-base mt-auto">
@@ -511,7 +511,7 @@ const UserHome = () => (
         {faq.map((item, i) => (
           <motion.div
             key={i}
-            className="flex flex-col p-4 sm:p-6 lg:p-8 transition border border-gray-100 shadow bg-gray-50 rounded-2xl sm:rounded-3xl hover:shadow-xl min-h-[140px] sm:min-h-[160px]"
+            className="flex flex-col p-4 transition border border-gray-100 shadow sm:p-6 lg:p-8 bg-gray-50 rounded-2xl sm:rounded-3xl hover:shadow-xl min-h-35 sm:min-h-40"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -520,7 +520,7 @@ const UserHome = () => (
             <div className="font-semibold text-[#e53935] mb-2 sm:mb-3 text-xs sm:text-sm lg:text-base leading-tight">
               {item.q}
             </div>
-            <div className="flex-grow text-xs leading-relaxed text-gray-700 sm:text-sm lg:text-base">
+            <div className="text-xs leading-relaxed text-gray-700 grow sm:text-sm lg:text-base">
               {item.a}
             </div>
           </motion.div>
@@ -529,7 +529,7 @@ const UserHome = () => (
     </section>
 
     {/* Contact Section */}
-    <section className="px-3 py-8 text-center sm:px-6 lg:px-8 sm:py-12 lg:py-16 bg-gradient-to-r from-red-100 to-white">
+    <section className="px-3 py-8 text-center sm:px-6 lg:px-8 sm:py-12 lg:py-16 bg-linear-to-r from-red-100 to-white">
       <motion.div
         className="max-w-2xl mx-auto"
         initial={{ opacity: 0, y: 40 }}
@@ -546,7 +546,7 @@ const UserHome = () => (
         </p>
         <Link
           href="/ho-tro"
-          className="inline-block bg-gradient-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-semibold px-4 sm:px-6 lg:px-10 py-2.5 sm:py-3 lg:py-4 rounded-full text-sm sm:text-base lg:text-xl transition shadow hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
+          className="inline-block bg-linear-to-r from-[#e53935] to-[#fbc02d] hover:from-[#b71c1c] hover:to-[#fbc02d] text-white font-semibold px-4 sm:px-6 lg:px-10 py-2.5 sm:py-3 lg:py-4 rounded-full text-sm sm:text-base lg:text-xl transition shadow hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
         >
           Liên hệ hỗ trợ
         </Link>

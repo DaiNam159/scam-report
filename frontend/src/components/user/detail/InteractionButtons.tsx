@@ -28,7 +28,7 @@ export default function InteractionButtons({
           url: url,
         });
       } catch (err) {
-        console.log("Share cancelled");
+        // Share cancelled
       }
     } else {
       navigator.clipboard.writeText(url);
@@ -40,7 +40,7 @@ export default function InteractionButtons({
     <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-5">
       <a
         href="/bao-cao"
-        className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-semibold text-white transition-all rounded-lg shadow-sm bg-gradient-to-r from-red-500 to-orange-500 hover:shadow-md hover:scale-105"
+        className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-semibold text-white transition-all rounded-lg shadow-sm bg-linear-to-r from-red-500 to-orange-500 hover:shadow-md hover:scale-105"
       >
         <Plus className="w-4 h-4" />
         Gửi báo cáo mới
@@ -56,7 +56,7 @@ export default function InteractionButtons({
 
       <button
         onClick={handleShare}
-        className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-semibold text-white transition-all rounded-lg shadow-sm bg-gradient-to-r from-blue-500 to-cyan-500 hover:shadow-md hover:scale-105"
+        className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-semibold text-white transition-all rounded-lg shadow-sm bg-linear-to-r from-blue-500 to-cyan-500 hover:shadow-md hover:scale-105"
       >
         <Share2 className="w-4 h-4" />
         Chia sẻ

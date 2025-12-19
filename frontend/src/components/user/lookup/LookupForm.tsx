@@ -18,12 +18,6 @@ const LookupForm = ({ onSearch }: LookupFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      console.log("LookupForm submitting:", {
-        query: query.trim(),
-        mode,
-        useGoogleSafe,
-      }); // Debug log
-
       onSearch(query.trim(), mode === "content", useGoogleSafe);
     }
   };
@@ -95,7 +89,7 @@ const LookupForm = ({ onSearch }: LookupFormProps) => {
         </div>
         <button
           type="submit"
-          className="mt-2 sm:mt-0 px-8 py-3 font-bold text-base rounded-xl bg-gradient-to-r from-[#e53935] to-[#fbc02d] text-white shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
+          className="mt-2 sm:mt-0 px-8 py-3 font-bold text-base rounded-xl bg-linear-to-r from-[#e53935] to-[#fbc02d] text-white shadow hover:from-[#b71c1c] hover:to-[#fbc02d] transition"
         >
           Tra cứu
         </button>
@@ -110,7 +104,6 @@ const LookupForm = ({ onSearch }: LookupFormProps) => {
               type="checkbox"
               checked={useGoogleSafe}
               onChange={(e) => {
-                console.log("Checkbox changed:", e.target.checked); // Debug log
                 setUseGoogleSafe(e.target.checked);
               }}
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"

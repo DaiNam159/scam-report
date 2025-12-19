@@ -8,6 +8,8 @@ import {
   FaFileAlt,
   FaUsers,
   FaHome,
+  FaBan,
+  FaNewspaper,
 } from "react-icons/fa";
 
 interface AdminSidebarProps {
@@ -41,6 +43,18 @@ export default function AdminSidebar({
       label: "Quản lý người dùng",
       active: pathname === "/admin/nguoi-dung",
     },
+    {
+      href: "/admin/tin-tuc",
+      icon: FaNewspaper,
+      label: "Quản lý tin tức",
+      active: pathname?.startsWith("/admin/tin-tuc"),
+    },
+    {
+      href: "/admin/danh-sach-den",
+      icon: FaBan,
+      label: "Danh sách đen",
+      active: pathname === "/admin/danh-sach-den",
+    },
   ];
 
   return (
@@ -50,7 +64,7 @@ export default function AdminSidebar({
       } lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300 ease-in-out`}
     >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700">
+      <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-linear-to-r from-blue-600 to-blue-700">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-white shadow-sm rounded-xl">
             <FaTachometerAlt className="w-6 h-6 text-blue-600" />
@@ -78,7 +92,7 @@ export default function AdminSidebar({
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${
                 item.active
-                  ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-l-4 border-blue-600 shadow-md transform scale-105"
+                  ? "bg-linear-to-r from-blue-50 to-indigo-50 text-blue-700 border-l-4 border-blue-600 shadow-md transform scale-105"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:transform hover:scale-102"
               }`}
               onClick={() => setSidebarOpen(false)}
@@ -98,7 +112,7 @@ export default function AdminSidebar({
               {item.active && (
                 <div className="flex items-center gap-1 ml-auto">
                   <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-                  <div className="absolute right-0 w-1 h-8 transform -translate-y-1/2 rounded-l-full top-1/2 bg-gradient-to-b from-blue-400 to-blue-600"></div>
+                  <div className="absolute right-0 w-1 h-8 transform -translate-y-1/2 rounded-l-full top-1/2 bg-linear-to-b from-blue-400 to-blue-600"></div>
                 </div>
               )}
               {!item.active && (

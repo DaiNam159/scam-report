@@ -55,7 +55,7 @@ export default function DetailHeader({
           url: url,
         });
       } catch (err) {
-        console.log("Share cancelled");
+        // Share cancelled
       }
     } else {
       navigator.clipboard.writeText(url);
@@ -67,12 +67,12 @@ export default function DetailHeader({
     <div className="relative p-5 mb-5 overflow-hidden border shadow-lg bg-white/80 backdrop-blur-xl border-white/50 rounded-xl group">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#e53935] via-[#f57c00] to-[#fbc02d]" />
+        <div className="absolute inset-0 bg-linear-to-br from-[#e53935] via-[#f57c00] to-[#fbc02d]" />
       </div>
 
       {/* Decorative circles */}
-      <div className="absolute w-24 h-24 rounded-full -top-6 -right-6 bg-gradient-to-br from-red-400/20 to-orange-400/20 blur-2xl" />
-      <div className="absolute w-24 h-24 rounded-full -bottom-6 -left-6 bg-gradient-to-br from-yellow-400/20 to-red-400/20 blur-2xl" />
+      <div className="absolute w-24 h-24 rounded-full -top-6 -right-6 bg-linear-to-br from-red-400/20 to-orange-400/20 blur-2xl" />
+      <div className="absolute w-24 h-24 rounded-full -bottom-6 -left-6 bg-linear-to-br from-yellow-400/20 to-red-400/20 blur-2xl" />
 
       <div className="relative">
         {/* Back and Share buttons */}
@@ -86,7 +86,7 @@ export default function DetailHeader({
           </button>
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white transition-all rounded-lg shadow-sm bg-gradient-to-r from-blue-500 to-cyan-500 hover:shadow-md hover:scale-105"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white transition-all rounded-lg shadow-sm bg-linear-to-r from-blue-500 to-cyan-500 hover:shadow-md hover:scale-105"
           >
             <Share2 className="w-3.5 h-3.5" />
             Chia sẻ
@@ -94,17 +94,17 @@ export default function DetailHeader({
         </div>
 
         <div className="flex flex-col items-start gap-3 md:flex-row">
-          <div className="relative p-2.5 transition-transform duration-300 shadow-md bg-gradient-to-br from-red-500 to-orange-500 rounded-lg group-hover:scale-105">
+          <div className="relative p-2.5 transition-transform duration-300 shadow-md bg-linear-to-br from-red-500 to-orange-500 rounded-lg group-hover:scale-105">
             <ShieldAlert className="text-white w-7 h-7 drop-shadow-lg animate-pulse" />
             <div className="absolute inset-0 rounded-lg bg-white/20 backdrop-blur-sm" />
           </div>
           <div className="flex-1 w-full">
             <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#e53935] via-[#f57c00] to-[#fbc02d] bg-clip-text text-transparent tracking-tight">
+              <h1 className="text-xl md:text-2xl font-bold bg-linear-to-r from-[#e53935] via-[#f57c00] to-[#fbc02d] bg-clip-text text-transparent tracking-tight">
                 Chi tiết đối tượng lừa đảo
               </h1>
             </div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-full shadow-sm">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 bg-linear-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-full shadow-sm">
               <AlertTriangle className="w-3.5 h-3.5 text-[#fbc02d]" />
               <span className="text-xs font-semibold text-gray-800">
                 {getTypeLabel(type)}
@@ -112,12 +112,12 @@ export default function DetailHeader({
             </div>
 
             {/* Value Box */}
-            <div className="p-3 mb-2 transition-all border rounded-lg shadow-sm bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 border-red-200/50 hover:shadow-md">
+            <div className="p-3 mb-2 transition-all border rounded-lg shadow-sm bg-linear-to-br from-red-50 via-orange-50 to-yellow-50 border-red-200/50 hover:shadow-md">
               <p className="flex items-center gap-1 mb-1 text-xs font-semibold tracking-wide text-gray-600 uppercase">
                 <span className="w-1 h-1 bg-red-500 rounded-full animate-pulse" />
                 Giá trị bị báo cáo:
               </p>
-              <p className="text-base md:text-lg font-bold bg-gradient-to-r from-[#e53935] to-[#f57c00] bg-clip-text text-transparent break-all">
+              <p className="text-base md:text-lg font-bold bg-linear-to-r from-[#e53935] to-[#f57c00] bg-clip-text text-transparent break-all">
                 {value}
               </p>
             </div>

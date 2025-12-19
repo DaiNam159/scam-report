@@ -70,7 +70,6 @@ export class ReportService {
       const res = await api.put(`${reportUrl}/approve`, { id });
       return res;
     } catch (error) {
-      console.log("hehehahaha: ", error);
       throw error;
     }
   }

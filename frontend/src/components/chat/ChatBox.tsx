@@ -170,13 +170,13 @@ export default function ChatBox({
   };
 
   return (
-    <div className="fixed bottom-4 right-4 w-[360px] h-[480px] bg-white rounded-2xl shadow-2xl flex flex-col z-[9998] overflow-hidden border border-gray-200">
+    <div className="fixed flex flex-col overflow-hidden bg-white border border-gray-200 shadow-2xl bottom-4 right-4 w-90 h-120 rounded-2xl z-9998">
       {/* Header */}
       <div
         className={`relative flex items-center justify-between px-4 py-3 text-white ${
           isAdmin
-            ? "bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700"
-            : "bg-gradient-to-r from-red-600 to-orange-600"
+            ? "bg-linear-to-r from-blue-600 via-blue-700 to-purple-700"
+            : "bg-linear-to-r from-red-600 to-orange-600"
         }`}
       >
         {" "}
@@ -209,15 +209,15 @@ export default function ChatBox({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 p-3 space-y-2.5 overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
+      <div className="flex-1 p-3 space-y-2.5 overflow-y-auto bg-linear-to-b from-gray-50 to-white">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <div
                 className={`inline-flex items-center justify-center w-16 h-16 mx-auto mb-3 rounded-full ${
                   isAdmin
-                    ? "bg-gradient-to-r from-blue-100 to-purple-100"
-                    : "bg-gradient-to-r from-red-100 to-orange-100"
+                    ? "bg-linear-to-r from-blue-100 to-purple-100"
+                    : "bg-linear-to-r from-red-100 to-orange-100"
                 }`}
               >
                 <FaUser
@@ -249,13 +249,13 @@ export default function ChatBox({
                     isOwnMessage
                       ? `${
                           isAdmin
-                            ? "bg-gradient-to-r from-blue-600 to-purple-600"
-                            : "bg-gradient-to-r from-red-600 to-orange-600"
+                            ? "bg-linear-to-r from-blue-600 to-purple-600"
+                            : "bg-linear-to-r from-red-600 to-orange-600"
                         } text-white rounded-br-md`
                       : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
                   }`}
                 >
-                  <p className="text-[13px] leading-relaxed break-words whitespace-pre-wrap">
+                  <p className="text-[13px] leading-relaxed wrap-break-word whitespace-pre-wrap">
                     {msg.message}
                   </p>
                   <p
@@ -301,8 +301,8 @@ export default function ChatBox({
             disabled={loading || !newMessage.trim()}
             className={`flex items-center justify-center w-10 h-10 text-white transition-all duration-200 shadow-lg rounded-xl ${
               isAdmin
-                ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                : "bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700"
+                ? "bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                : "bg-linear-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700"
             } disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed hover:shadow-xl disabled:shadow-none hover:scale-105 active:scale-95`}
             aria-label="Gửi"
           >
