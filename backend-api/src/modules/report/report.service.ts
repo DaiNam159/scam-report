@@ -568,8 +568,6 @@ export class ReportService {
 
       const related_data = response.data;
 
-      console.log('báo cáo liên quan:', related_data);
-      return;
       const ids = related_data
         .map((item) => parseInt(item.matched_report_id, 10))
         .filter((id) => Number.isInteger(id));
@@ -681,6 +679,7 @@ export class ReportService {
       }
       return reports;
     } catch (error) {
+      console.log('FASTAPI url: ', process.env.FAST_API_URL);
       console.error('Lỗi khi gọi FastAPI:', error.message);
       if (error.response) {
         console.error('Response status:', error.response.status);
